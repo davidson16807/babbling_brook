@@ -1,18 +1,13 @@
-# HUMAN WRITTEN
-
-from Codec import Codec
-
 class ComposedCodec:
-    def __init__(self, encoder_sequence: List[Codec[...]]):
-        self.encoder_sequence = encoder_sequence
+    def __init__(self, *codecs):
+        self.encoder_sequence = codecs
+
     def encode(self, content):
-        code = None
         for codec in self.encoder_sequence:
-            code = encode.encode(content)
-        return code
-    def decode(self, code):
-        content = None
-        for codec in reverse(self.encoder_sequence):
-            content = self.encoder_sequence.decode(content)
+            content = codec.encode(content)
         return content
 
+    def decode(self, code):
+        for codec in reversed(self.encoder_sequence):
+            code = codec.decode(code)
+        return code

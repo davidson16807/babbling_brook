@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "babbling-brook"
+version = "0.1.0"
+description = "Babbling Brook model and data foundation"
+requires-python = ">=3.10"
+dependencies = ["PyGLM>=2.8.3"]
+
+[project.optional-dependencies]
+render = ["moderngl", "pygame-ce"]
+
+[tool.setuptools]
+package-dir = {babbling_brook = "code"}
+packages = [
+    "babbling_brook", "babbling_brook.model", "babbling_brook.model.components",
+    "babbling_brook.model.stores", "babbling_brook.model.systems",
+    "babbling_brook.codecs", "babbling_brook.codecs.maps", "babbling_brook.adapters",
+    "babbling_brook.update", "babbling_brook.view", "babbling_brook.view.programs",
+    "babbling_brook.view.views",
+]
+
+[tool.setuptools.package-data]
+"babbling_brook.view" = ["shaders/*"]
+"babbling_brook.view.programs" = ["README.md"]

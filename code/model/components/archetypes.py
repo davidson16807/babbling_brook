@@ -12,7 +12,14 @@ Component tables are ordinary dictionaries. Treat stored GLM vectors as values:
 systems/updaters replace them, never mutate their coordinates in place.
 """
 
+from dataclasses import dataclass
+from math import isnan
+
 # COMPONENTS
+
+@dataclass(frozen=True)
+class DirectionFrames:
+    textures: tuple[str, str]
 
 @dataclass(frozen=True)
 class CharacterAnimation:
@@ -31,8 +38,13 @@ class CharacterArchetype:
 class TileArchetype:
     texture: str
     show_exposed_sides: bool = True
-    is_smooth: bool = False
+    # Zero is flat; infinity allows unlimited erosion. Heights use world units.
+    max_erosion: float = 0.0
     is_collidable: bool = True
+
+    def __post_init__(self):
+        if isnan(self.max_erosion) or self.max_erosion < 0:
+            raise ValueError("max_erosion must be nonnegative")
 
 
 @dataclass(frozen=True)

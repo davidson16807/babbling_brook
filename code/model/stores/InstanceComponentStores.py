@@ -2,6 +2,11 @@
 
 from dataclasses import dataclass, field
 
+from pyglm import glm
+
+from ..components.instances import CharacterAnimationState, VerticalPhysics
+from ..identifiers import ArchetypeId, EntityId
+
 '''
 A "store" is the name chosen for this application to represent
 data structures that own collections for many components of different yet related types.
@@ -11,11 +16,9 @@ since in order to make it easier to use code outside the code base,
 a system should only operate on the fewest component collections needed to do its job. 
 '''
 
-EntityId: TypeAlias = str | int
-
 @dataclass(frozen=True)
 class InstanceComponentStores:
     positionables: dict[EntityId, glm.vec3] = field(default_factory=dict)
     archetyped: dict[EntityId, ArchetypeId] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
-    characters: dict[EntityId, CharacterState] = field(default_factory=dict)
+    characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)

@@ -86,6 +86,5 @@ Message: TypeAlias = (
     | WindowResizeMessage
     | QuitMessage
     | TickMessage
-    | SaveCompletedMessage
+    | FocusLostMessage
 )
-

@@ -7,11 +7,9 @@ systems/updaters replace them, never mutate their coordinates in place.
 """
 
 from dataclasses import dataclass, field
-from typing import TypeAlias
-
 from pyglm import glm
 
-EntityId: TypeAlias = str | int | tuple[...]
+from ..identifiers import ArchetypeId, EntityId
 
 # COMPONENTS
 
