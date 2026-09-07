@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from pyglm import glm
+
 
 class TileView:
     def __init__(self, program):
@@ -8,28 +10,25 @@ class TileView:
         self.batches = {}
 
     def _build(self, map_):
-        batches = defaultdict(lambda: ([], [], [], [], []))
+        batches = defaultdict(lambda: ([], []))
 
-        def heights(coordinate):
+        def height_matrix(coordinate):
             x, y = coordinate
             min_height = map_.min_height(coordinate)
-            return tuple(
+            southwest, southeast, northwest, northeast = tuple(
                 map_.corner_height((xi, yi), min_height)
                 for yi in (y, y + 1)
                 for xi in (x, x + 1)
             )
+            return glm.mat2(southwest, northwest, southeast, northeast)
 
         for y in range(map_.dimensions.y):
             for x in range(map_.dimensions.x):
                 coordinate = x, y
                 tile = map_.archetype(coordinate)
-                coordinates, southwest, southeast, northwest, northeast = batches[tile.texture]
+                coordinates, heights = batches[tile.texture]
                 coordinates.append(coordinate)
-                sw, se, nw, ne = heights(coordinate)
-                southwest.append(sw)
-                southeast.append(se)
-                northwest.append(nw)
-                northeast.append(ne)
+                heights.append(height_matrix(coordinate))
         return {texture: tuple(tuple(values) for values in arrays) for texture, arrays in batches.items()}
 
     def draw(self, model, view):

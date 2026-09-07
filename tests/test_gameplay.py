@@ -39,14 +39,15 @@ class TerrainTests(unittest.TestCase):
         from babbling_brook.view.views.TileView import TileView
         tiles = {'e': TileArchetype('grass.png', max_erosion=1)}
         map_ = terrain(2, 2, [3, 2, 1, 4], ['e'] * 4, tiles)
-        coordinates, southwest, southeast, northwest, northeast = TileView(None)._build(map_)['grass.png']
+        coordinates, heights = TileView(None)._build(map_)['grass.png']
         self.assertEqual(len(coordinates), 4)
-        for coordinate, sw, se, nw, ne in zip(
-                coordinates, southwest, southeast, northwest, northeast):
+        for coordinate, height in zip(coordinates, heights):
             x, y = coordinate
             corners = (
-                glm.vec3(x, y, sw), glm.vec3(x + 1, y, se),
-                glm.vec3(x, y + 1, nw), glm.vec3(x + 1, y + 1, ne),
+                glm.vec3(x, y, height[0][0]),
+                glm.vec3(x + 1, y, height[1][0]),
+                glm.vec3(x, y + 1, height[0][1]),
+                glm.vec3(x + 1, y + 1, height[1][1]),
             )
             for indices in ((0, 1, 3), (0, 3, 2)):
                 center = sum((corners[index] for index in indices), glm.vec3(0)) / 3
