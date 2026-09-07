@@ -1,3 +1,4 @@
+from itertools import groupby
 from math import cos, sin
 from pyglm import glm
 
@@ -11,7 +12,7 @@ class BillboardView:
         objects = [(entity, model.instances.archetyped[entity], position) for entity, position in model.instances.positionables.items()]
         objects += [(entity, placement.archetype, placement.position) for entity, placement in model.map.static_objects.items()]
         objects.sort(key=lambda item: glm.dot(glm.vec2(item[2]), toward_camera))
-        textures, origins, sizes, rectangles, mirrors = [], [], [], [], []
+        primitives = []
         for entity, key, position in objects:
             definition = model.archetypes.objects[key]
             texture, mirrored = definition.texture, False
@@ -23,12 +24,22 @@ class BillboardView:
                 frame = int(state.elapsed / animation.seconds_per_frame) % 2
                 texture = animation.directions[direction].textures[frame]
                 mirrored = glm.dot(glm.vec3(state.facing, 0), view.camera_right) > 0
-            textures.append(texture)
-            origins.append(position)
-            sizes.append(glm.vec2(definition.width, definition.height))
-            rectangles.append(glm.vec4(0, 0, 1, 1))
-            mirrors.append(mirrored)
-        self.program.draw(tuple(textures), tuple(origins), tuple(sizes), tuple(rectangles), tuple(mirrors), view)
+            primitives.append((
+                texture,
+                position,
+                glm.vec2(definition.width, definition.height),
+                glm.vec4(0, 0, 1, 1),
+                mirrored,
+            ))
+
+        # Batch consecutive textures without disturbing back-to-front order.
+        for texture, batch in groupby(primitives, key=lambda primitive: primitive[0]):
+            batch = tuple(batch)
+            origins = tuple(primitive[1] for primitive in batch)
+            sizes = tuple(primitive[2] for primitive in batch)
+            uv_rects = tuple(primitive[3] for primitive in batch)
+            mirrored = tuple(primitive[4] for primitive in batch)
+            self.program.draw(texture, origins, sizes, uv_rects, mirrored, view)
 
     def release(self):
         self.program.release()

@@ -9,7 +9,7 @@ class PygameUiView:
         self.font = pygame.font.Font(None, 23)
         self.title = pygame.font.Font(None, 32)
         self.cache_key = None
-        self.panels = None
+        self.batch = None
 
     def _panel(self, width, lines, title):
         surface = pygame.Surface((width, 56 + 26 * len(lines)), pygame.SRCALPHA)
@@ -42,10 +42,33 @@ class PygameUiView:
                 items = [f'{item}: {quantity}' for item, quantity in sorted(model.inventory.items())] or ['Your pockets are empty.']
                 panels.append(('inventory', 16, panels[0][3].get_height() + 28,
                     self._panel(min(300, width), items, 'Inventory')))
-            self.panels = tuple((name, glm.vec4(x, y, *surface.get_size()), surface.get_size(), pygame.image.tobytes(surface, 'RGBA', True))
-                for name, x, y, surface in panels)
+            atlas_width = max(surface.get_width() for _, _, _, surface in panels)
+            atlas_height = sum(surface.get_height() for _, _, _, surface in panels)
+            atlas = pygame.Surface((atlas_width, atlas_height), pygame.SRCALPHA)
+            atlas.fill((0, 0, 0, 0))
+            rects = []
+            uv_rects = []
+            atlas_y = 0
+            for _, x, y, surface in panels:
+                width, height = surface.get_size()
+                atlas.blit(surface, (0, atlas_y))
+                rects.append(glm.vec4(x, y, width, height))
+                uv_rects.append(glm.vec4(
+                    0.5 / atlas_width,
+                    1.0 - (atlas_y + height - 0.5) / atlas_height,
+                    (width - 0.5) / atlas_width,
+                    1.0 - (atlas_y + 0.5) / atlas_height,
+                ))
+                atlas_y += height
+            self.batch = (
+                'panels',
+                atlas.get_size(),
+                pygame.image.tobytes(atlas, 'RGBA', True),
+                tuple(rects),
+                tuple(uv_rects),
+            )
             self.cache_key = key
-        self.program.draw(model.viewport, *(tuple(panel[i] for panel in self.panels) for i in range(4)))
+        self.program.draw(model.viewport, *self.batch)
 
     def release(self):
         self.program.release()
