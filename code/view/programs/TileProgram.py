@@ -43,25 +43,28 @@ class TileProgram:
         (0, 1), (1, 0), (0, 0),
         (0, 1), (1, 1), (1, 0),
     )
-    # 0/1 are the two sloped top triangles; 2–5 are west/east/south/north.
-    ELEMENT_FACES = (
-        0, 0, 0, 1, 1, 1,
-        2, 2, 2, 2, 2, 2,
-        3, 3, 3, 3, 3, 3,
-        4, 4, 4, 4, 4, 4,
-        5, 5, 5, 5, 5, 5,
+    ELEMENT_NORMALS = tuple(
+        vertex_normal
+        for side_normal in (
+            (0, 0, 1),
+            (-1, 0, 0),
+            (1, 0, 0),
+            (0, -1, 0),
+            (0, 1, 0),
+        )
+        for vertex_normal in (side_normal,)*6
     )
 
     VERTEX_SHADER = """#version 330 core
 uniform mat4 clip_from_world;
 in ivec3 element_position;
 in vec2 element_uv;
-in int element_face;
+in ivec3 element_normal;
 in vec2 coordinate;
 in mat2 heights;
 out vec2 uv;
 out float lighting;
-flat out int is_top;
+flat out int fragment_is_top;
 
 void main() {
     float height = element_position.z == 0
@@ -73,24 +76,15 @@ void main() {
     vec3 northwest = vec3(0, 1, heights[0][1]);
     vec3 southeast = vec3(1, 0, heights[1][0]);
     vec3 northeast = vec3(1, 1, heights[1][1]);
-    vec3 normal;
-    if (element_position.z == 1) {
-        normal = element_position.x < element_position.y?
+    fragment_is_top = element_normal.z;
+    vec3 normal = fragment_is_top<0.? vec3(element_normal)
+      : element_position.x > element_position.y?
             cross(southeast - southwest, northeast - southwest)
           : cross(northeast - southwest, northwest - southwest);
-    } else if (element_face == 1) {
-    } else {
-        vec3 side_normals[4] = vec3[4](
-            vec3(-1, 0, 0), vec3(1, 0, 0),
-            vec3(0, -1, 0), vec3(0, 1, 0)
-        );
-        normal = side_normals[element_face - 2];
-    }
 
     gl_Position = clip_from_world * vec4(position, 1.0);
     lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(vec3(-0.5, -0.7, 1.0))), 0.0);
     uv = element_uv;
-    is_top = element_position.z;
 }
 """
 
@@ -99,11 +93,11 @@ uniform sampler2D top_image;
 uniform sampler2D side_image;
 in vec2 uv;
 in float lighting;
-flat in int is_top;
+flat in int fragment_is_top;
 out vec4 color;
 void main() {
     vec3 texture_color;
-    if (is_top == 1) {
+    if (fragment_is_top == 1) {
         texture_color = texture(top_image, uv).rgb;
     } else {
         texture_color = texture(side_image, uv).rgb;
@@ -127,15 +121,16 @@ void main() {
             f"{2 * len(self.ELEMENT_UVS)}f",
             *(value for uv in self.ELEMENT_UVS for value in uv)
         ))
-        self.element_face_buffer = gl.buffer(pack(
-            f"{len(self.ELEMENT_FACES)}i", *self.ELEMENT_FACES
+        self.element_normal_buffer = gl.buffer(pack(
+            f"{3 * len(self.ELEMENT_NORMALS)}i",
+            *(value for normal in self.ELEMENT_NORMALS for value in normal)
         ))
         self.coordinate_buffer = gl.buffer(reserve=16)
         self.height_buffer = gl.buffer(reserve=16)
         self.vao = gl.vertex_array(self.program, [
             (self.element_position_buffer, "3i", "element_position"),
             (self.element_uv_buffer, "2f", "element_uv"),
-            (self.element_face_buffer, "1i", "element_face"),
+            (self.element_normal_buffer, "3i", "element_normal"),
             (self.coordinate_buffer, "2f /i", "coordinate"),
             (self.height_buffer, "4f /i", "heights"),
         ])
@@ -190,7 +185,8 @@ void main() {
         self.vao.release()
         self.element_position_buffer.release()
         self.element_uv_buffer.release()
-        self.element_face_buffer.release()
+        self.is_top_buffer.release()
+        self.element_normal_buffer.release()
         self.coordinate_buffer.release()
         self.height_buffer.release()
         self.program.release()
