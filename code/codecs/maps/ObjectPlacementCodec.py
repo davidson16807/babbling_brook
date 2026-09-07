@@ -25,6 +25,6 @@ class ObjectPlacementCodec:
             coordinate = i % image.width, i // image.width
             position = glm.vec2(*coordinate) + glm.vec2(0.5)
             placements.append(ObjectPlacement(
-                coordinate, archetype, glm.vec3(position, self.map.height(position))
+                str(coordinate), archetype, glm.vec3(position, self.map.height(position))
             ))
         return placements
