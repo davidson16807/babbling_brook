@@ -5,7 +5,8 @@ from pathlib import Path
 from pyglm import glm
 import moderngl as gl
 
-from ViewState import ViewState
+from .ViewState import ViewState
+from ..Textures import Textures
 
 
 """

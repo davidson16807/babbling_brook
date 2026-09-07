@@ -1,6 +1,7 @@
 # HUMAN WRITTEN
 
 from typing import TypeVar, Generic
+from pyglm import glm
 
 from .identifiers import Coordinate
 
@@ -15,14 +16,13 @@ If ever we introduce procedural fields, this will be renamed `RasterField`.
 '''
 
 class Field(Generic[T]):
-	def __init__(self, 
-        dimensions: glm.ivec2,
-        contents: tuple[T],
-	):
+    def __init__(self, dimensions: glm.ivec2, contents: tuple[T, ...]):
         self.dimensions = glm.ivec2(dimensions)
         if self.dimensions.x <= 0 or self.dimensions.y <= 0:
             raise ValueError("Map dimensions must be positive")
         self.contents = tuple(contents)
+        if len(self.contents) != self.dimensions.x * self.dimensions.y:
+            raise ValueError("Field contents must match dimensions")
 
     def _coordinate(self, position: glm.vec2) -> Coordinate:
         cell = glm.floor(position)
@@ -38,12 +38,8 @@ class Field(Generic[T]):
         x, y = position
         return 0 <= x < self.dimensions.x and 0 <= y < self.dimensions.y
 
-    def __getitem__(self, coordinate: Coordinate) -> TileArchetype:
-        if position not in self:
-            raise IndexError(f"Position outside map: {position}")
+    def __getitem__(self, coordinate: Coordinate) -> T:
         return self.contents[self._index(coordinate)]
 
-    def __call__(self, position: glm.vec2) -> TileArchetype:
-        if position not in self:
-            raise IndexError(f"Position outside map: {position}")
-        return self.contents[self._index(self._coordinate(position))]
+    def __call__(self, position: glm.vec2) -> T:
+        return self[self._coordinate(position)]

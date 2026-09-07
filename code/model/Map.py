@@ -20,6 +20,7 @@ from math import isfinite
 
 from pyglm import glm
 
+from .Field import Field
 from .components.archetypes import TileArchetype
 from .components.instances import ObjectPlacement
 from .identifiers import ArchetypeId, Coordinate
@@ -29,25 +30,35 @@ class Map:
     def __init__(
         self,
         dimensions: glm.ivec2,
-        max_heights: Field[float, ...],
-        tile_archetype_ids: Field[ArchetypeId, ...],
+        max_heights: Field[float],
+        tile_archetype_ids: Field[ArchetypeId],
         tile_archetypes: dict[ArchetypeId, TileArchetype],
     ):
+        self.dimensions = glm.ivec2(dimensions)
+        if tuple(max_heights.dimensions) != tuple(dimensions) or tuple(tile_archetype_ids.dimensions) != tuple(dimensions):
+            raise ValueError("Map fields must have matching dimensions")
+        self.static_objects: dict = {}
         self._max_heights = max_heights
         self._tile_archetype_ids = tile_archetype_ids
         self._tile_archetypes = tile_archetypes
 
+    def _coordinate(self, position: glm.vec2) -> Coordinate:
+        cell = glm.floor(position)
+        return int(cell.x), int(cell.y)
+
     def __contains__(self, position: glm.vec2) -> bool:
-        return position in max_heights
+        return position in self._max_heights
 
     def archetype(self, coordinate: Coordinate) -> TileArchetype:
-        if position not in self:
-            raise IndexError(f"Position outside map: {position}")
-        return self._tile_archetypes[self._type_archetype_ids(coordinate)]
+        return self._tile_archetypes[self._tile_archetype_ids[coordinate]]
+
+    def min_height(self, coordinate: Coordinate) -> float:
+        return self._max_heights[coordinate] - self.archetype(coordinate).max_erosion
 
     def corner_height(self, coordinate: Coordinate, min_height: float) -> float:
         x,y = coordinate
-        return max(
+        return (
+            max(
                 min(
                     self._max_heights[(xj, yj)]
                     for xj in (x-1, x)
@@ -56,22 +67,19 @@ class Map:
                 ), 
                 min_height
             )
+        )
 
     def height(self, position: glm.vec2) -> float | None:
-        if position not in self.max_heights:
+        if position not in self:
             return None
-
-        height = self._max_heights[coordinate]
-        archetype = self._tile_archetypes[self._type_archetype_ids[coordinate]]
-        if archetype.max_erosion <= 0:
-            return height, height, height, height
-
-        min_height = height - archetype.max_erosion
         coordinate = self._coordinate(position)
-        h00, h01, h10, h11 = (
-            self.corner_height(coordinate, min_height)
-            for y in (y,y+1)
-            for x in (x,x+1)
+
+        x, y = coordinate
+        min_height = self.min_height(coordinate)
+        h00, h10, h01, h11 = tuple(
+            self.corner_height((xj, yj), min_height)
+            for yj in (y, y + 1) 
+            for xj in (x, x + 1)
         )
 
         local = position - glm.vec2(*coordinate)

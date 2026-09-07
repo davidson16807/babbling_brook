@@ -5,9 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "babbling-brook"
 version = "0.1.0"
-description = "Babbling Brook model and data foundation"
+description = "Babbling Brook playable MVP"
 requires-python = ">=3.10"
 dependencies = ["PyGLM>=2.8.3"]
+
+[project.scripts]
+babbling-brook = "babbling_brook.app:main"
 
 [project.optional-dependencies]
 render = ["moderngl", "pygame-ce"]

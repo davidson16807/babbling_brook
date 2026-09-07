@@ -6,14 +6,13 @@ from dataclasses import dataclass, field
 from .CameraState import CameraState
 from .ControlState import ControlState
 from .Map import Map
-from .UiState import UiState
 from .stores import ArchetypeComponentStores, InstanceComponentStores
 
 
 @dataclass(frozen=True)
 class GameState:
     map: Map
-    globals: Dict[str, NoneType|bool|int|float|str] # globals for e.g. quest state
+    globals: dict[str, None|bool|int|float|str] # globals for e.g. quest state
     archetypes: ArchetypeComponentStores
     instances: InstanceComponentStores = field(default_factory=InstanceComponentStores)
 
