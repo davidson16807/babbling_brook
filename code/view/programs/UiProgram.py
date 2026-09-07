@@ -1,7 +1,5 @@
 # HUMAN VETTED
 
-from pathlib import Path
-
 from collections.abc import Sequence
 
 from pyglm import glm
@@ -16,11 +14,32 @@ required depth/blend state. release() is explicit resource lifecycle management.
 """
 
 class UiProgram:
-    def __init__(self, gl, shader_directory: Path):
+    VERTEX_SHADER = """#version 330 core
+uniform vec2 viewport;
+uniform vec4 rect;
+in vec2 in_corner;
+out vec2 uv;
+void main() {
+    vec2 pixel = rect.xy + in_corner * rect.zw;
+    gl_Position = vec4(pixel.x / viewport.x * 2.0 - 1.0, 1.0 - pixel.y / viewport.y * 2.0, 0.0, 1.0);
+    uv = vec2(in_corner.x, 1.0 - in_corner.y);
+}
+"""
+
+    FRAGMENT_SHADER = """#version 330 core
+uniform sampler2D image;
+in vec2 uv;
+out vec4 color;
+void main() {
+    color = texture(image, uv);
+}
+"""
+
+    def __init__(self, gl):
         self.gl = gl
         self.program = gl.program(
-            vertex_shader=(shader_directory / "ui.vert").read_text(),
-            fragment_shader=(shader_directory / "ui.frag").read_text()
+            vertex_shader=self.VERTEX_SHADER,
+            fragment_shader=self.FRAGMENT_SHADER
         )
         self.quad = gl.buffer(b"".join(value.to_bytes() for value in
             [glm.vec2(0, 0), glm.vec2(1, 0), glm.vec2(1, 1),

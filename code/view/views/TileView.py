@@ -8,7 +8,7 @@ class TileView:
         self.batches = {}
 
     def _build(self, map_):
-        batches = defaultdict(lambda: ([], [], [], [], [], []))
+        batches = defaultdict(lambda: ([], [], [], [], []))
 
         def heights(coordinate):
             x, y = coordinate
@@ -23,15 +23,13 @@ class TileView:
             for x in range(map_.dimensions.x):
                 coordinate = x, y
                 tile = map_.archetype(coordinate)
-                (coordinates, southwest, southeast, northwest, northeast,
-                 exposed_sides) = batches[tile.texture]
+                coordinates, southwest, southeast, northwest, northeast = batches[tile.texture]
                 coordinates.append(coordinate)
                 sw, se, nw, ne = heights(coordinate)
                 southwest.append(sw)
                 southeast.append(se)
                 northwest.append(nw)
                 northeast.append(ne)
-                exposed_sides.append(tile.show_exposed_sides)
         return {texture: tuple(tuple(values) for values in arrays) for texture, arrays in batches.items()}
 
     def draw(self, model, view):

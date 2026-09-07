@@ -1,6 +1,5 @@
 # HUMAN VETTED
 
-from pathlib import Path
 from struct import pack
 
 from pyglm import glm
@@ -14,11 +13,39 @@ from .ViewState import ViewState
 """
 
 class BillboardProgram:
-    def __init__(self, gl, textures: Textures, shader_directory: Path):
+    VERTEX_SHADER = """#version 330 core
+uniform mat4 clip_from_world;
+uniform vec3 camera_right;
+in vec2 in_corner;
+in vec3 in_origin;
+in vec2 in_size;
+in vec4 in_uv_rect;
+in float in_mirror;
+out vec2 uv;
+void main() {
+    vec3 position = in_origin + camera_right * ((in_corner.x - 0.5) * in_size.x)
+                              + vec3(0.0, 0.0, in_corner.y * in_size.y);
+    gl_Position = clip_from_world * vec4(position, 1.0);
+    float u = mix(in_corner.x, 1.0 - in_corner.x, in_mirror);
+    uv = mix(in_uv_rect.xy, in_uv_rect.zw, vec2(u, in_corner.y));
+}
+"""
+
+    FRAGMENT_SHADER = """#version 330 core
+uniform sampler2D image;
+in vec2 uv;
+out vec4 color;
+void main() {
+    color = texture(image, uv);
+    if (color.a < 0.5) discard;
+}
+"""
+
+    def __init__(self, gl, textures: Textures):
         self.gl = gl
         self.program = gl.program(
-            vertex_shader=(shader_directory / "billboard.vert").read_text(),
-            fragment_shader=(shader_directory / "billboard.frag").read_text()
+            vertex_shader=self.VERTEX_SHADER,
+            fragment_shader=self.FRAGMENT_SHADER
         )
         self.textures = textures
         self.quad = gl.buffer(b"".join(value.to_bytes() for value in [glm.vec2(0, 0), glm.vec2(1, 0), glm.vec2(1, 1),

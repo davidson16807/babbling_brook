@@ -71,9 +71,9 @@ def check_sections(sections, allowed):
 
 
 def definitions(sections):
-    tiles = unique((identifier.decode(key), TileArchetype(texture, boolean(sides), float(erosion), boolean(solid)))
-        for key, texture, sides, erosion, solid in rows(sections, 'tile_archetypes',
-            'archetype texture show_exposed_sides max_erosion is_collidable', True))
+    tiles = unique((identifier.decode(key), TileArchetype(texture, float(erosion), boolean(solid)))
+        for key, texture, erosion, solid in rows(sections, 'tile_archetypes',
+            'archetype texture max_erosion is_collidable', True))
     objects = {}
     for key, texture, static, solid, radius, height, width, gravity, action, label in rows(
             sections, 'object_archetypes',

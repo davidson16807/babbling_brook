@@ -37,14 +37,20 @@ class TerrainTests(unittest.TestCase):
 
     def test_rendered_triangles_match_collision(self):
         from babbling_brook.view.views.TileView import TileView
-        tiles = {'e': TileArchetype('grass.png', show_exposed_sides=False, max_erosion=1)}
+        tiles = {'e': TileArchetype('grass.png', max_erosion=1)}
         map_ = terrain(2, 2, [3, 2, 1, 4], ['e'] * 4, tiles)
-        positions, normals, uvs = TileView(None)._build(map_)['grass.png']
-        self.assertEqual(len(positions), 4 * 6)
-        for i in range(0, len(positions), 3):
-            triangle = positions[i:i+3]
-            center = sum(triangle, glm.vec3(0)) / 3
-            self.assertAlmostEqual(map_.height(glm.vec2(center)), center.z, places=5)
+        coordinates, southwest, southeast, northwest, northeast = TileView(None)._build(map_)['grass.png']
+        self.assertEqual(len(coordinates), 4)
+        for coordinate, sw, se, nw, ne in zip(
+                coordinates, southwest, southeast, northwest, northeast):
+            x, y = coordinate
+            corners = (
+                glm.vec3(x, y, sw), glm.vec3(x + 1, y, se),
+                glm.vec3(x, y + 1, nw), glm.vec3(x + 1, y + 1, ne),
+            )
+            for indices in ((0, 1, 3), (0, 3, 2)):
+                center = sum((corners[index] for index in indices), glm.vec3(0)) / 3
+                self.assertAlmostEqual(map_.height(glm.vec2(center)), center.z, places=5)
 
     def test_field_rejects_wrong_size(self):
         with self.assertRaises(ValueError):

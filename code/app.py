@@ -59,7 +59,6 @@ def main():
             gl = moderngl.create_context(require=330)
             gl.screen.use()
             queue = PygameMessageQueue()
-        shaders = Path(__file__).parent / 'view' / 'shaders'
         textures = Textures(gl, PygameImages(args.data / 'textures'))
         # Validate and create the finite texture set before entering the render loop.
         names = {item.texture for item in model.archetypes.tiles.values()} | {item.texture for item in model.archetypes.objects.values()}
@@ -69,8 +68,8 @@ def main():
                     names.update(texture for direction in animation.directions for texture in direction.textures)
         for name in sorted(names):
             textures.get(name)
-        view = GameView(TileView(TileProgram(gl, textures, shaders)),
-                        BillboardView(BillboardProgram(gl, textures, shaders)), PygameUiView(UiProgram(gl, shaders)))
+        view = GameView(TileView(TileProgram(gl, textures)),
+                        BillboardView(BillboardProgram(gl, textures)), PygameUiView(UiProgram(gl)))
         updater, clock, accumulator, frames = default_updater(), pygame.time.Clock(), 0.0, 0
         while model.running and (args.frames is None or frames < args.frames):
             elapsed = 1 / 60 if args.headless else min(clock.tick(60) / 1000.0, .25)

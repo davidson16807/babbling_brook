@@ -44,9 +44,8 @@ class RenderingTests(unittest.TestCase):
         framebuffer = gl.simple_framebuffer((640, 480))
         framebuffer.use()
         textures = Textures(gl, PygameImages(ROOT / 'data/textures'))
-        shaders = ROOT / 'code/view/shaders'
-        view = GameView(TileView(TileProgram(gl, textures, shaders)),
-                       BillboardView(BillboardProgram(gl, textures, shaders)), PygameUiView(UiProgram(gl, shaders)))
+        view = GameView(TileView(TileProgram(gl, textures)),
+                       BillboardView(BillboardProgram(gl, textures)), PygameUiView(UiProgram(gl)))
         try:
             model = replace(load_game(ROOT / 'data'), viewport=(640,480))
             gl.clear(0,0,0,1, depth=1)
