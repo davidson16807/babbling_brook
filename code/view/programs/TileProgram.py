@@ -30,10 +30,6 @@ class TileProgram:
         self.southeast_buffer = gl.buffer(reserve=16)
         self.northwest_buffer = gl.buffer(reserve=16)
         self.northeast_buffer = gl.buffer(reserve=16)
-        self.west_lower_buffer = gl.buffer(reserve=16)
-        self.east_lower_buffer = gl.buffer(reserve=16)
-        self.south_lower_buffer = gl.buffer(reserve=16)
-        self.north_lower_buffer = gl.buffer(reserve=16)
         self.exposed_sides_buffer = gl.buffer(reserve=16)
         self.vao = gl.vertex_array(self.program, [
             (self.coordinate_buffer, "2f /i", "in_coordinate"),
@@ -41,10 +37,6 @@ class TileProgram:
             (self.southeast_buffer, "1f /i", "in_southeast"),
             (self.northwest_buffer, "1f /i", "in_northwest"),
             (self.northeast_buffer, "1f /i", "in_northeast"),
-            (self.west_lower_buffer, "2f /i", "in_west_lower"),
-            (self.east_lower_buffer, "2f /i", "in_east_lower"),
-            (self.south_lower_buffer, "2f /i", "in_south_lower"),
-            (self.north_lower_buffer, "2f /i", "in_north_lower"),
             (self.exposed_sides_buffer, "1f /i", "in_exposed_sides")])
         self.released = False
 
@@ -55,25 +47,18 @@ class TileProgram:
         southeast: tuple[float, ...],
         northwest: tuple[float, ...],
         northeast: tuple[float, ...],
-        west_lower: tuple[tuple[float, float], ...],
-        east_lower: tuple[tuple[float, float], ...],
-        south_lower: tuple[tuple[float, float], ...],
-        north_lower: tuple[tuple[float, float], ...],
         exposed_sides: tuple[bool, ...],
         view: ViewState
     ) -> None:
         """Draw unit tiles from parallel per-tile collections.
 
         Each named corner supplies one height per tile; north is +y.
-        Each side supplies two lower endpoint heights: west/east run south
-        to north; south/north run west to east. The caller chooses boundary
-        heights (for example, two zeros).
+        Exposed sides extend from their top edge to the fixed bottom height
+        used by the shader.
         Top triangles share the southwest–northeast diagonal. Texture names are resolved
         through Textures, as for the other programs.
         """
         if self.released: return
-        attributes = (coordinates, southwest, southeast, northwest, northeast,
-                      west_lower, east_lower, south_lower, north_lower, exposed_sides)
         self.gl.enable_only(gl.DEPTH_TEST)
         self.gl.fbo.depth_mask = True
         self.gl.depth_func = "<="
@@ -107,26 +92,6 @@ class TileProgram:
             self.northeast_buffer.orphan(len(northeast_data))
         self.northeast_buffer.write(northeast_data)
 
-        west_lower_data = pack(f"{2 * len(west_lower)}f", *(value for pair in west_lower for value in pair))
-        if self.west_lower_buffer.size < len(west_lower_data):
-            self.west_lower_buffer.orphan(len(west_lower_data))
-        self.west_lower_buffer.write(west_lower_data)
-
-        east_lower_data = pack(f"{2 * len(east_lower)}f", *(value for pair in east_lower for value in pair))
-        if self.east_lower_buffer.size < len(east_lower_data):
-            self.east_lower_buffer.orphan(len(east_lower_data))
-        self.east_lower_buffer.write(east_lower_data)
-
-        south_lower_data = pack(f"{2 * len(south_lower)}f", *(value for pair in south_lower for value in pair))
-        if self.south_lower_buffer.size < len(south_lower_data):
-            self.south_lower_buffer.orphan(len(south_lower_data))
-        self.south_lower_buffer.write(south_lower_data)
-
-        north_lower_data = pack(f"{2 * len(north_lower)}f", *(value for pair in north_lower for value in pair))
-        if self.north_lower_buffer.size < len(north_lower_data):
-            self.north_lower_buffer.orphan(len(north_lower_data))
-        self.north_lower_buffer.write(north_lower_data)
-
         exposed_sides_data = pack(f"{len(exposed_sides)}f", *exposed_sides)
         if self.exposed_sides_buffer.size < len(exposed_sides_data):
             self.exposed_sides_buffer.orphan(len(exposed_sides_data))
@@ -143,9 +108,5 @@ class TileProgram:
         self.southeast_buffer.release()
         self.northwest_buffer.release()
         self.northeast_buffer.release()
-        self.west_lower_buffer.release()
-        self.east_lower_buffer.release()
-        self.south_lower_buffer.release()
-        self.north_lower_buffer.release()
         self.exposed_sides_buffer.release()
         self.program.release()

@@ -5,15 +5,12 @@ in float in_southwest;
 in float in_southeast;
 in float in_northwest;
 in float in_northeast;
-in vec2 in_west_lower;
-in vec2 in_east_lower;
-in vec2 in_south_lower;
-in vec2 in_north_lower;
 in float in_exposed_sides;
 out vec2 uv;
 out float lighting;
 
 void main() {
+    const float bottom_height = 0.0;
     vec3 corners[4] = vec3[4](
         vec3(in_coordinate, in_southwest),
         vec3(in_coordinate + vec2(1, 0), in_southeast),
@@ -29,26 +26,13 @@ void main() {
         // Outward-wound edges: west, east, south, north.
         int starts[4] = int[4](0, 3, 1, 2);
         int ends[4] = int[4](2, 1, 0, 3);
-        vec2 lower[4] = vec2[4](in_west_lower, in_east_lower.yx, in_south_lower.yx, in_north_lower);
         int edge = face - 1;
         vec3 p = corners[starts[edge]];
         vec3 q = corners[ends[edge]];
-        vec2 low = lower[edge];
-        vec2 difference = vec2(p.z, q.z) - low;
-        if (in_exposed_sides < 0.5 || (difference.x <= 0.0 && difference.y <= 0.0)) {
+        vec2 low = vec2(bottom_height);
+        if (in_exposed_sides < 0.5) {
             q = p;
             low = vec2(p.z);
-        } else if (difference.x < 0.0 || difference.y < 0.0) {
-            // Clip crossing edges to the portion exposed above the neighbor.
-            float t = difference.x / (difference.x - difference.y);
-            vec3 crossing = mix(p, q, t);
-            if (difference.x < 0.0) {
-                p = crossing;
-                low.x = crossing.z;
-            } else {
-                q = crossing;
-                low.y = crossing.z;
-            }
         }
         corners = vec3[4](vec3(p.xy, low.x), vec3(q.xy, low.y), p, q);
         indices = int[6](2, 1, 0, 2, 3, 1);
