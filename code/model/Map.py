@@ -20,6 +20,7 @@ from math import isfinite
 
 from pyglm import glm
 
+from .Field import Field
 from .components.archetypes import TileArchetype
 from .components.instances import ObjectPlacement
 from .identifiers import ArchetypeId, Coordinate
@@ -29,21 +30,23 @@ class Map:
     def __init__(
         self,
         dimensions: glm.ivec2,
-        max_heights: Field[float, ...],
-        tile_archetype_ids: Field[ArchetypeId, ...],
+        max_heights: Field[float],
+        tile_archetype_ids: Field[ArchetypeId],
         tile_archetypes: dict[ArchetypeId, TileArchetype],
     ):
+        self.dimensions = glm.ivec2(dimensions)
+        if tuple(max_heights.dimensions) != tuple(dimensions) or tuple(tile_archetype_ids.dimensions) != tuple(dimensions):
+            raise ValueError("Map fields must have matching dimensions")
+        self.static_objects: dict = {}
         self._max_heights = max_heights
         self._tile_archetype_ids = tile_archetype_ids
         self._tile_archetypes = tile_archetypes
 
     def __contains__(self, position: glm.vec2) -> bool:
-        return position in max_heights
+        return position in self._max_heights
 
     def archetype(self, coordinate: Coordinate) -> TileArchetype:
-        if position not in self:
-            raise IndexError(f"Position outside map: {position}")
-        return self._tile_archetypes[self._type_archetype_ids(coordinate)]
+        return self._tile_archetypes[self._tile_archetype_ids[coordinate]]
 
     def corner_height(self, coordinate: Coordinate, min_height: float) -> float:
         x,y = coordinate

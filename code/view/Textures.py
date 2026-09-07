@@ -1,5 +1,7 @@
 # HUMAN VETTED
 
+import moderngl
+
 class Textures:
     def __init__(self, gl, files):
         self.gl, self.files, self.cache = gl, files, {}

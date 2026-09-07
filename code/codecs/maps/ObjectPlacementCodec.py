@@ -1,7 +1,9 @@
+# HUMAN VETTED
+
 from pyglm import glm
 
 from ...model.Map import Map
-from ...model.PpmImage import PpmImage
+from .PpmImageCodec import PpmImage
 from ...model.components.instances import ObjectPlacement
 from ...model.identifiers import ArchetypeId
 

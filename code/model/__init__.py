@@ -1,1 +1,1 @@
-from .Model import Model
+from .GameState import GameState

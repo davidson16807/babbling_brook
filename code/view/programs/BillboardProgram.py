@@ -1,12 +1,13 @@
 # HUMAN VETTED
 
 from pathlib import Path
+from struct import pack
 
 from pyglm import glm
 import moderngl as gl
 
-from Textures import Textures
-from ViewState import ViewState
+from ..Textures import Textures
+from .ViewState import ViewState
 
 """
 `BillboardProgram` renders a swarm of textured cylindrical billboards represented through primitives
@@ -15,9 +16,9 @@ from ViewState import ViewState
 class BillboardProgram:
     def __init__(self, gl, textures: Textures, shader_directory: Path):
         self.gl = gl
-        self.program = ctx.program(
-            vertex_shader=(shader_directory / "tile.vert").read_text(),
-            fragment_shader=(shader_directory / "tile.frag").read_text()
+        self.program = gl.program(
+            vertex_shader=(shader_directory / "billboard.vert").read_text(),
+            fragment_shader=(shader_directory / "billboard.frag").read_text()
         )
         self.textures = textures
         self.quad = gl.buffer(memoryview(glm.array([glm.vec2(0, 0), glm.vec2(1, 0), glm.vec2(1, 1),
@@ -28,11 +29,11 @@ class BillboardProgram:
             (self.buffers[2], "4f /i", "in_uv_rect"), (self.buffers[3], "1f /i", "in_mirror")])
 
     def draw(self, 
-        textures: tuple(int),
-        origin: tuple(glm.vec3),
-        size: tuple(glm.vec2),
-        uv_rect: tuple(glm.vec4),
-        mirrored: tuple(bool = False),
+        textures: tuple[str, ...],
+        origin: tuple[glm.vec3, ...],
+        size: tuple[glm.vec2, ...],
+        uv_rect: tuple[glm.vec4, ...],
+        mirrored: tuple[bool, ...],
         view: ViewState
     ) -> None:
         self.gl.enable_only(gl.DEPTH_TEST | gl.BLEND)

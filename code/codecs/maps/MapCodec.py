@@ -3,7 +3,8 @@ from math import isfinite
 from pyglm import glm
 
 from ...model.Map import Map
-from ...model.PpmImage import PpmImage
+from .PpmImageCodec import PpmImage
+from ...model.Field import Field
 from ...model.components.archetypes import TileArchetype
 from ...model.identifiers import ArchetypeId
 
@@ -25,7 +26,7 @@ class MapCodec:
             raise ValueError(f"Unknown tile palette index: {error.args[0]}") from error
         return Map(
             glm.ivec2(image.width, image.height),
-            tuple(r * self.height_scale for r, _, _ in image.pixels),
-            tile_ids,
+            Field(glm.ivec2(image.width, image.height), tuple(r * self.height_scale for r, _, _ in image.pixels)),
+            Field(glm.ivec2(image.width, image.height), tile_ids),
             self.tile_archetypes,
         )
