@@ -3,10 +3,10 @@ key	value
 version	1
 
 # tile_archetypes
-archetype	texture	max_erosion	is_collidable
-"grass"	grass.png	0.5	true
-"path"	path.png	0	true
-"stone"	stone.png	0	true
+archetype	top_texture	side_texture	max_erosion	is_collidable
+"grass"	grass.png	stone.png	0.5	true
+"path"	path.png	stone.png	0	true
+"stone"	stone.png	stone.png	0	true
 
 # object_archetypes
 archetype	texture	is_static	is_collidable	radius	height	width	has_gravity	action	label

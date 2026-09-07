@@ -61,7 +61,11 @@ def main():
             queue = PygameMessageQueue()
         textures = Textures(gl, PygameImages(args.data / 'textures'))
         # Validate and create the finite texture set before entering the render loop.
-        names = {item.texture for item in model.archetypes.tiles.values()} | {item.texture for item in model.archetypes.objects.values()}
+        names = {
+            texture
+            for item in model.archetypes.tiles.values()
+            for texture in (item.top_texture, item.side_texture)
+        } | {item.texture for item in model.archetypes.objects.values()}
         for character in model.archetypes.characters.values():
             for animation in (character.standing, character.walking, character.running):
                 if animation:

@@ -61,10 +61,12 @@ in vec2 coordinate;
 in mat2 heights;
 out vec2 uv;
 out float lighting;
+flat out int is_top;
 
 void main() {
-    float height = element_position.z == 0? 0.0 : 
-        heights[element_position.x][element_position.y];
+    float height = element_position.z == 0
+        ? 0.0
+        : heights[element_position.x][element_position.y];
     vec3 position = vec3(coordinate + vec2(element_position.xy), height);
 
     vec3 southwest = vec3(0, 0, heights[0][0]);
@@ -72,10 +74,11 @@ void main() {
     vec3 southeast = vec3(1, 0, heights[1][0]);
     vec3 northeast = vec3(1, 1, heights[1][1]);
     vec3 normal;
-    if (element_face == 0) {
-        normal = cross(southeast - southwest, northeast - southwest);
+    if (element_position.z == 1) {
+        normal = element_position.x < element_position.y?
+            cross(southeast - southwest, northeast - southwest)
+          : cross(northeast - southwest, northwest - southwest);
     } else if (element_face == 1) {
-        normal = cross(northeast - southwest, northwest - southwest);
     } else {
         vec3 side_normals[4] = vec3[4](
             vec3(-1, 0, 0), vec3(1, 0, 0),
@@ -87,16 +90,25 @@ void main() {
     gl_Position = clip_from_world * vec4(position, 1.0);
     lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(vec3(-0.5, -0.7, 1.0))), 0.0);
     uv = element_uv;
+    is_top = element_position.z;
 }
 """
 
     FRAGMENT_SHADER = """#version 330 core
-uniform sampler2D image;
+uniform sampler2D top_image;
+uniform sampler2D side_image;
 in vec2 uv;
 in float lighting;
+flat in int is_top;
 out vec4 color;
 void main() {
-    color = vec4(texture(image, uv).rgb * lighting, 1.0);
+    vec3 texture_color;
+    if (is_top == 1) {
+        texture_color = texture(top_image, uv).rgb;
+    } else {
+        texture_color = texture(side_image, uv).rgb;
+    }
+    color = vec4(texture_color * lighting, 1.0);
 }
 """
 
@@ -130,7 +142,8 @@ void main() {
         self.released = False
 
     def draw(self,
-        texture: str,
+        top_texture: str,
+        side_texture: str,
         coordinates: tuple[tuple[int, int], ...],
         heights: tuple[glm.mat2, ...],
         view: ViewState
@@ -141,14 +154,23 @@ void main() {
         Sides extend from their top edge to the shader's fixed bottom height.
         Top triangles share the southwest–northeast diagonal.
         """
-        if self.released: return
-        self.gl.enable_only(gl.DEPTH_TEST)
+        if self.released:
+            return
+        if len(coordinates) != len(heights):
+            raise ValueError("Tile coordinates and heights must have equal lengths")
+        if not coordinates:
+            return
+        self.gl.enable_only(gl.DEPTH_TEST | gl.CULL_FACE)
+        self.gl.front_face = "ccw"
+        self.gl.cull_face = "back"
         self.gl.fbo.depth_mask = True
         self.gl.depth_func = "<="
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
-        self.program["image"].value = 0
+        self.program["top_image"].value = 0
+        self.program["side_image"].value = 1
 
-        self.textures.get(texture).use(0)
+        self.textures.get(top_texture).use(0)
+        self.textures.get(side_texture).use(1)
         coordinate_data = pack(f"{2 * len(coordinates)}f", *(value for pair in coordinates for value in pair))
         if self.coordinate_buffer.size < len(coordinate_data):
             self.coordinate_buffer.orphan(len(coordinate_data))

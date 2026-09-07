@@ -26,18 +26,18 @@ class TileView:
             for x in range(map_.dimensions.x):
                 coordinate = x, y
                 tile = map_.archetype(coordinate)
-                coordinates, heights = batches[tile.texture]
+                coordinates, heights = batches[tile.top_texture, tile.side_texture]
                 coordinates.append(coordinate)
                 heights.append(height_matrix(coordinate))
-        return {texture: tuple(tuple(values) for values in arrays) for texture, arrays in batches.items()}
+        return {textures: tuple(tuple(values) for values in arrays) for textures, arrays in batches.items()}
 
     def draw(self, model, view):
         # Object collection changes copy Map but share the immutable tile fields.
         key = (model.map._max_heights, model.map._tile_archetype_ids)
         if self.map != key:
             self.map, self.batches = key, self._build(model.map)
-        for texture, arrays in self.batches.items():
-            self.program.draw(texture, *arrays, view)
+        for (top_texture, side_texture), arrays in self.batches.items():
+            self.program.draw(top_texture, side_texture, *arrays, view)
 
     def release(self):
         self.program.release()

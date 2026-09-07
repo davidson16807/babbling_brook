@@ -26,7 +26,7 @@ from babbling_brook.messages import (KeyboardMessage, KeyboardAction, TickMessag
 def terrain(width, height, heights, ids=None, tiles=None):
     dimensions = glm.ivec2(width, height)
     return Map(dimensions, Field(dimensions, tuple(heights)), Field(dimensions, tuple(ids or ['flat'] * (width * height))),
-               tiles or {'flat': TileArchetype('stone.png')})
+               tiles or {'flat': TileArchetype('stone.png', 'stone.png')})
 
 
 def press(key):
@@ -37,9 +37,9 @@ class TerrainTests(unittest.TestCase):
 
     def test_rendered_triangles_match_collision(self):
         from babbling_brook.view.views.TileView import TileView
-        tiles = {'e': TileArchetype('grass.png', max_erosion=1)}
+        tiles = {'e': TileArchetype('grass.png', 'stone.png', max_erosion=1)}
         map_ = terrain(2, 2, [3, 2, 1, 4], ['e'] * 4, tiles)
-        coordinates, heights = TileView(None)._build(map_)['grass.png']
+        coordinates, heights = TileView(None)._build(map_)['grass.png', 'stone.png']
         self.assertEqual(len(coordinates), 4)
         for coordinate, height in zip(coordinates, heights):
             x, y = coordinate
