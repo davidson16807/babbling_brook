@@ -1,0 +1,69 @@
+# format
+key	value
+version	1
+
+# tile_archetypes
+archetype	texture	show_exposed_sides	max_erosion	is_collidable
+"grass"	grass.png	true	0.5	true
+"path"	path.png	true	0	true
+"stone"	stone.png	true	0	true
+
+# object_archetypes
+archetype	texture	is_static	is_collidable	radius	height	width	has_gravity	action	label
+"tree"	tree.png	true	true	0.35	2.0	1.0	false		Tree
+"apple"	apple.png	false	false	0.15	0.32	0.32	true	collect_apple	Apple
+"crate"	crate.png	true	true	0.45	0.9	0.9	false		Crate
+"villager"	villager-front-0.png	false	true	0.28	1.3	0.7	false	greet	Villager
+"stick"	stick.png	false	false	0.12	0.28	0.55	true	collect_stick	Stick
+"child"	child-front-0.png	false	true	0.24	1.1	0.65	true		Player
+
+# character_animation_frames
+archetype	animation	direction	frame	texture	seconds_per_frame
+"child"	standing	0	0	child-front-0.png	0.45
+"child"	standing	0	1	child-front-1.png	0.45
+"child"	standing	1	0	child-back-0.png	0.45
+"child"	standing	1	1	child-back-1.png	0.45
+"child"	walking	0	0	child-front-0.png	0.18
+"child"	walking	0	1	child-front-1.png	0.18
+"child"	walking	1	0	child-back-0.png	0.18
+"child"	walking	1	1	child-back-1.png	0.18
+"child"	running	0	0	child-front-0.png	0.12
+"child"	running	0	1	child-front-1.png	0.12
+"child"	running	1	0	child-back-0.png	0.12
+"child"	running	1	1	child-back-1.png	0.12
+"villager"	standing	0	0	villager-front-0.png	0.45
+"villager"	standing	0	1	villager-front-1.png	0.45
+"villager"	standing	1	0	villager-back-0.png	0.45
+"villager"	standing	1	1	villager-back-1.png	0.45
+"villager"	walking	0	0	villager-front-0.png	0.18
+"villager"	walking	0	1	villager-front-1.png	0.18
+"villager"	walking	1	0	villager-back-0.png	0.18
+"villager"	walking	1	1	villager-back-1.png	0.18
+"villager"	running	0	0	villager-front-0.png	0.12
+"villager"	running	0	1	villager-front-1.png	0.12
+"villager"	running	1	0	villager-back-0.png	0.12
+"villager"	running	1	1	villager-back-1.png	0.12
+
+# tile_palette
+index	archetype
+1	"grass"
+2	"path"
+3	"stone"
+
+# object_palette
+index	archetype
+1	"tree"
+2	"apple"
+3	"crate"
+4	"villager"
+5	"stick"
+
+# objects
+entity	archetype	x	y	z
+"player"	"child"	8.5	8.5	0.5
+
+# inventory
+item	quantity
+
+# globals
+key	value
