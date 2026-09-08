@@ -3,5 +3,5 @@
 from typing import TypeAlias
 
 Coordinate: TypeAlias = tuple[int, int]
-EntityId: TypeAlias = str | int
-ArchetypeId: TypeAlias = str | int
+EntityId: TypeAlias = str
+ArchetypeId: TypeAlias = str

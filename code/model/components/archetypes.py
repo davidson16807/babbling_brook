@@ -50,7 +50,6 @@ class TileArchetype:
 @dataclass(frozen=True)
 class ObjectArchetype:
     texture: str
-    is_static: bool = False
     is_collidable: bool = True
     radius: float = 0.3
     height: float = 1.0

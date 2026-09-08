@@ -82,7 +82,6 @@ class Map:
         except KeyError as error:
             raise ValueError(f"Unknown tile archetype: {error.args[0]!r}") from error
         self._tiles = tiles
-        self.static_objects: dict = {}
 
     def _coordinate(self, position: glm.vec2) -> Coordinate:
         cell = glm.floor(position)
