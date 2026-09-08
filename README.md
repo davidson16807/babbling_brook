@@ -67,8 +67,8 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
   they need, rather than entire stores.
 - Erosion uses the supplied capped-minimum rule, including the current tile.
   Each tile top has exactly two triangles along the h00–h11 diagonal. Height
-  queries interpolate those same triangles. Exposed sides bridge neighboring
-  capped corners where the tile archetype requests them.
+  queries interpolate those same triangles. Exposed sides extend to the fixed
+  bottom elevation at zero; overlapping neighboring sides are depth-tested.
 - `PygameMessageQueue` remains the event boundary. The loop consumes its internal
   messages and fixed 1/120-second ticks. Updaters map model/message to model;
   systems handle component collections. No Pygame polling is used in game logic.

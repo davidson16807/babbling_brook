@@ -26,5 +26,4 @@ packages = [
 ]
 
 [tool.setuptools.package-data]
-"babbling_brook.view" = ["shaders/*"]
 "babbling_brook.view.programs" = ["README.md"]
