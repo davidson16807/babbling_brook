@@ -1,4 +1,5 @@
 from collections import defaultdict
+from ..programs.ViewState import ViewState
 
 
 class TileView:
@@ -20,13 +21,12 @@ class TileView:
         return {textures: tuple(tuple(values) for values in arrays) 
             for textures, arrays in batches.items()}
 
-    def draw(self, model, view):
-        # Object collection changes copy Map but share the immutable tile fields.
-        key = (model.map._corner_heights, model.map._tiles)
+    def draw(self, map_, view_state: ViewState):
+        key = (map_._corner_heights, map_._tiles)
         if self.map != key:
-            self.map, self.batches = key, self._build(model.map)
+            self.map, self.batches = key, self._build(map_)
         for (top_texture, side_texture), arrays in self.batches.items():
-            self.program.draw(top_texture, side_texture, *arrays, view)
+            self.program.draw(top_texture, side_texture, *arrays, view_state)
 
     def release(self):
         self.program.release()
