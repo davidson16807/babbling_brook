@@ -4,7 +4,7 @@ from pyglm import glm
 
 from ...model.Map import Map
 from .PpmImageCodec import PpmImage
-from ...model.Field import Field
+from ...model.fields import IndexedField, RasterField
 from ...model.components.archetypes import TileArchetype
 from ...model.identifiers import ArchetypeId
 
@@ -24,9 +24,11 @@ class MapCodec:
             tile_ids = tuple(self.tile_palette[g] for _, g, _ in image.pixels)
         except KeyError as error:
             raise ValueError(f"Unknown tile palette index: {error.args[0]}") from error
-        return Map(
-            glm.ivec2(image.width, image.height),
-            Field(glm.ivec2(image.width, image.height), tuple(r * self.height_scale for r, _, _ in image.pixels)),
-            Field(glm.ivec2(image.width, image.height), tile_ids),
-            self.tile_archetypes,
+        dimensions = glm.ivec2(image.width, image.height)
+        max_heights = RasterField(
+            dimensions,
+            tuple(red * self.height_scale for red, _, _ in image.pixels),
         )
+        tile_archetype_ids = RasterField(dimensions, tile_ids)
+        tiles = IndexedField(self.tile_archetypes, tile_archetype_ids)
+        return Map(dimensions, max_heights, tiles)

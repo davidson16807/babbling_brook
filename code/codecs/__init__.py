@@ -1,4 +1,3 @@
-from .ComponentsCodec import ComponentsCodec
 from .ComposedCodec import ComposedCodec
 from .DelimitedStringsCodec import DelimitedStringsCodec
 from .EscapedTextCodec import EscapedTextCodec

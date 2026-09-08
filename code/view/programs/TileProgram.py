@@ -77,7 +77,7 @@ void main() {
     vec3 southeast = vec3(1, 0, heights[1][0]);
     vec3 northeast = vec3(1, 1, heights[1][1]);
     fragment_is_top = element_normal.z;
-    vec3 normal = fragment_is_top<0.? vec3(element_normal)
+    vec3 normal = fragment_is_top == 0 ? vec3(element_normal)
       : element_position.x > element_position.y?
             cross(southeast - southwest, northeast - southwest)
           : cross(northeast - southwest, northwest - southwest);
@@ -185,7 +185,6 @@ void main() {
         self.vao.release()
         self.element_position_buffer.release()
         self.element_uv_buffer.release()
-        self.is_top_buffer.release()
         self.element_normal_buffer.release()
         self.coordinate_buffer.release()
         self.height_buffer.release()

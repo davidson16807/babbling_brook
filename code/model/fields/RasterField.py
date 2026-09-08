@@ -3,26 +3,28 @@
 from typing import TypeVar, Generic
 from pyglm import glm
 
-from .identifiers import Coordinate
+from ..identifiers import Coordinate
 
 T = TypeVar('T')
 
+
+
 '''
-`Field` represents a 2d field in the mathematical sense, ℝ²→T,
+`RasterField` represents a 2d field in the mathematical sense, ℝ²→T,
 where each point in 2d space is mapped to a value of type T.
 This is done by discretizing the field into cells within a raster.
 
 If ever we introduce procedural fields, this will be renamed `RasterField`.
 '''
 
-class Field(Generic[T]):
+class RasterField(Generic[T]):
     def __init__(self, dimensions: glm.ivec2, contents: tuple[T, ...]):
         self.dimensions = glm.ivec2(dimensions)
         if self.dimensions.x <= 0 or self.dimensions.y <= 0:
             raise ValueError("Map dimensions must be positive")
         self.contents = tuple(contents)
         if len(self.contents) != self.dimensions.x * self.dimensions.y:
-            raise ValueError("Field contents must match dimensions")
+            raise ValueError("RasterField contents must match dimensions")
 
     def _coordinate(self, position: glm.vec2) -> Coordinate:
         cell = glm.floor(position)
