@@ -93,10 +93,9 @@ void main() {
             return
         if len({len(values) for values in (origins, sizes, uv_rects, mirrored)}) != 1:
             raise ValueError("Billboard attributes must have equal lengths")
-        self.gl.enable_only(gl.DEPTH_TEST | gl.BLEND)
+        self.gl.enable_only(gl.DEPTH_TEST)
         self.gl.fbo.depth_mask = True
         self.gl.depth_func = "<="
-        self.gl.blend_func = gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
         self.program["camera_right"].value = tuple(view.camera_right)
         self.program["image"].value = 0
