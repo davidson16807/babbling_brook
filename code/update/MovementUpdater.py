@@ -1,17 +1,14 @@
-# HUMAN REVIEWED
+# HUMAN VETTED
 
 from dataclasses import replace
 from math import cos, sin
 from pyglm import glm
 
-from ..messages import TickMessage
-
 class MovementUpdater:
     def __init__(self, collisions):
         self.collisions = collisions
 
-    def update(self, game, message):
-        if not isinstance(message, TickMessage): return game
+    def update(self, game, seconds):
         positions = game.instances.positionables
         archetyped = game.instances.archetyped
         characters = game.instances.characters
@@ -27,8 +24,8 @@ class MovementUpdater:
         tries_running = 'shift' in keys or 'right shift' in keys
         before = positions['player']
         after = self.collisions.move(
-            'player', before, direction * (4.0 if tries_running else 2.5) * message.seconds,
-            positions, archetyped, objects, map_) # TODO: fuck this slop, this needs to be handled with regular system updates
+            'player', before, direction * (4.0 if tries_running else 2.5) * seconds,
+            positions, archetyped, objects, map_) 
         is_moving = glm.distance(glm.vec2(before), glm.vec2(after)) > 1e-6
         player = characters['player']
         animation = 'standing' if not is_moving else 'running' if tries_running else 'walking'

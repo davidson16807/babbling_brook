@@ -73,11 +73,6 @@ class QuitMessage:
     pass
 
 
-@dataclass(frozen=True, slots=True)
-class TickMessage:
-    seconds: float
-
-
 Message: TypeAlias = (
     MouseMotionMessage
     | MouseButtonMessage
@@ -85,6 +80,5 @@ Message: TypeAlias = (
     | KeyboardMessage
     | WindowResizeMessage
     | QuitMessage
-    | TickMessage
     | FocusLostMessage
 )
