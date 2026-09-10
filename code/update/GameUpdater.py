@@ -37,6 +37,6 @@ class GameUpdater:
                     game.instances.positionables, game.instances.archetyped, game.archetypes.objects)
                 if target is None:
                     return replace(game, message="Nothing to interact with nearby.")
-                entity, key = target
-                return self.actions.apply(game.archetypes.objects[key].action, game, entity)
+                entity, archetype = target
+                return self.actions.apply(archetype.action, game, entity)
         return game
