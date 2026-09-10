@@ -27,3 +27,7 @@ class CameraState:
     def right(self):
         look_azimuth = self.look_azimuth()
         return glm.vec3(-sin(look_azimuth), cos(look_azimuth), 0)
+
+    def forward(self):
+        look_azimuth = self.look_azimuth()
+        return glm.vec2(-cos(azimuth), -sin(azimuth))
