@@ -9,7 +9,7 @@ class BillboardView:
         self.program = program
 
     def draw(self, camera, instances, archetypes, view_state: ViewState):
-        toward_camera = glm.normalize(camera.direction_to().xy)
+        toward_camera = glm.normalize(-camera.forward().xy)
         objects = [(entity, instances.archetyped[entity], position) for entity, position in instances.positionables.items()]
         batches = defaultdict(lambda: ([], [], [], []))
         for entity, key, position in objects:

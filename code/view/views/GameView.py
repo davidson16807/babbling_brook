@@ -17,7 +17,7 @@ class GameView:
         scale = camera.orthographic_scale / 2
         projection = glm.ortho(-scale * aspect, scale * aspect, -scale, scale, .1, 100.0)
         view = ViewState(
-            projection * glm.lookAt(target + camera.direction_to() * 30, target, glm.vec3(0, 0, 1)), 
+            projection * glm.lookAt(target + -camera.forward() * 30, target, glm.vec3(0, 0, 1)), 
             camera.right()
         )
         self.tiles.draw(game.map, view)
