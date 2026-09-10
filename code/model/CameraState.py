@@ -17,17 +17,16 @@ class CameraState:
         )
 
     def direction_to(self):
-        look_azimuth = self.look_azimuth()
+        azimuth = self.look_azimuth()
         return glm.vec3(
-            cos(self.elevation) * cos(look_azimuth),
-            cos(self.elevation) * sin(look_azimuth), 
+            cos(self.elevation) * cos(azimuth),
+            cos(self.elevation) * sin(azimuth), 
             sin(self.elevation)
         )
 
     def right(self):
-        look_azimuth = self.look_azimuth()
-        return glm.vec3(-sin(look_azimuth), cos(look_azimuth), 0)
+        azimuth = self.look_azimuth()
+        return glm.vec3(-sin(azimuth), cos(azimuth), 0)
 
     def forward(self):
-        look_azimuth = self.look_azimuth()
-        return glm.vec2(-cos(azimuth), -sin(azimuth))
+        return -self.direction_to()
