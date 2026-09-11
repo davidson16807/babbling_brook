@@ -1,6 +1,6 @@
 class ComposedCodec:
-    def __init__(self, *codecs):
-        self.encoder_sequence = codecs
+    def __init__(self, *encoder_sequence):
+        self.encoder_sequence = encoder_sequence
 
     def encode(self, content):
         for codec in self.encoder_sequence:
