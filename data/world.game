@@ -4,8 +4,8 @@ version	1
 
 # tile_archetypes
 archetype	top_texture	side_texture	max_erosion	is_collidable
-grass	grass.svg	stone.svg	0.5	true
-path	path.svg	stone.svg	0	true
+grass	grass.svg	ground.svg	0.5	true
+path	path.svg	ground.svg	0	true
 stone	stone.svg	stone.svg	0	true
 
 # object_archetypes

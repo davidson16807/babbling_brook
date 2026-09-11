@@ -1,9 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48" viewBox="0 0 32 48" shape-rendering="crispEdges">
-  <!-- Geometry and paint order from make_placeholder_textures.py; inclusive pixel bounds mapped to SVG edges. -->
-  <rect x="1" y="3" width="30" height="45" fill="#4d402d"/>
-  <rect x="3" y="5" width="26" height="41" fill="#795a3b"/>
-  <rect x="5" y="7" width="22" height="37" fill="#ab8153"/>
-  <polyline points="5.5,7.5 26.5,43.5" fill="none" stroke="#d2a974" stroke-width="4" stroke-linecap="butt"/>
-  <polyline points="26.5,7.5 5.5,43.5" fill="none" stroke="#d2a974" stroke-width="4" stroke-linecap="butt"/>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="32" height="48" viewBox="0 0 32 48"
+     shape-rendering="crispEdges">
+  <!-- Orthographic isometric cube: azimuth 45°, elevation 35.2643897°.
+       Each projected unit edge has length 16. -->
+
+  <!-- Top -->
+  <g transform="matrix(13.85640646 8 -13.85640646 8 16 15)">
+    <rect width="1" height="1" fill="#4d402d"/>
+    <rect x=".06" y=".06" width=".88" height=".88" fill="#d2a974"/>
+    <rect x=".14" y=".14" width=".72" height=".72" fill="#ab8153"/>
+    <path d="M.38 .14V.86M.62 .14V.86"
+          fill="none" stroke="#795a3b" stroke-width=".035"/>
+  </g>
+
+  <!-- Left face -->
+  <g transform="matrix(13.85640646 8 0 16 2.14359354 23)">
+    <rect width="1" height="1" fill="#4d402d"/>
+    <rect x=".06" y=".06" width=".88" height=".88" fill="#ab8153"/>
+    <rect x=".14" y=".14" width=".72" height=".72" fill="#795a3b"/>
+    <path d="M.38 .14V.86M.62 .14V.86"
+          fill="none" stroke="#4d402d" stroke-width=".025"/>
+    <path d="M.18 .18L.82 .82M.82 .18L.18 .82"
+          fill="none" stroke="#d2a974" stroke-width=".12"/>
+  </g>
+
+  <!-- Right face -->
+  <g transform="matrix(-13.85640646 8 0 16 29.85640646 23)">
+    <rect width="1" height="1" fill="#4d402d"/>
+    <rect x=".06" y=".06" width=".88" height=".88" fill="#795a3b"/>
+    <rect x=".14" y=".14" width=".72" height=".72" fill="#4d402d"/>
+    <path d="M.38 .14V.86M.62 .14V.86"
+          fill="none" stroke="#795a3b" stroke-width=".025"/>
+    <path d="M.18 .18L.82 .82M.82 .18L.18 .82"
+          fill="none" stroke="#ab8153" stroke-width=".12"/>
+  </g>
 </svg>
