@@ -90,7 +90,7 @@ class Map:
     def __contains__(self, position: glm.vec2) -> bool:
         return position in self._corner_heights
 
-    def archetype(self, coordinate: Coordinate) -> TileArchetype:
+    def tile(self, coordinate: Coordinate) -> TileArchetype:
         return self._tiles[coordinate]
 
     def corner_heights(self, coordinate: Coordinate) -> glm.mat2:

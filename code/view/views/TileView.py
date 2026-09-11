@@ -14,7 +14,7 @@ class TileView:
         for y in range(map_.dimensions.y):
             for x in range(map_.dimensions.x):
                 coordinate = x, y
-                tile = map_.archetype(coordinate)
+                tile = map_.tile(coordinate)
                 coordinates, heights = batches[tile.top_texture, tile.side_texture]
                 coordinates.append(coordinate)
                 heights.append(map_.corner_heights(coordinate))

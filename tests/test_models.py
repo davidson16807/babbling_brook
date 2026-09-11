@@ -100,7 +100,7 @@ class TerrainTests(unittest.TestCase):
                 self.assertNotIn(position, map_)
                 self.assertIsNone(map_.height(position))
                 with self.assertRaises(IndexError):
-                    map_.archetype(position)
+                    map_.tile(position)
         with self.assertRaises(IndexError):
             map_.corner_heights((3, 0))
 
