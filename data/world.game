@@ -2,6 +2,12 @@
 key	value
 version	1
 
+# globals
+key	value
+
+# inventory
+item	quantity
+
 # tile_archetypes
 archetype	top_texture	side_texture	max_erosion	is_collidable
 grass	grass.svg	ground.svg	0.5	true
@@ -59,11 +65,11 @@ index	archetype
 5	stick
 
 # objects
-entity	archetype	x	y	z
-player	child	8.5	8.5	0.5
+entity	archetype	position
+player	child	8.5,8.5,0.5
 
-# inventory
-item	quantity
+# physics
+entity	vertical_velocity	is_grounded
 
-# globals
-key	value
+# character_states
+entity	facing_x	facing_y	animation	elapsed

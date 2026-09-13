@@ -24,8 +24,8 @@ class CollisionQuery:
             if   (map_.tile((floor(step.x), floor(step.y))).is_collidable 
               and bottom < map_.height(step2) - height_precision) : continue
             neighbors = [
-                (key, objects[archetyped[key]], position) 
-                for key, position in positions.items() if key != entity
+                (key, objects[archetyped[key]], occupied) 
+                for key, occupied in positions.items() if key != entity
             ]
             collisions = [
                 (key, occupant, occupied)
