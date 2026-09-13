@@ -29,15 +29,6 @@ def _tuple_codec(*codecs):
 	return _codec(codec.encode, lambda code: tuple(codec.decode(code)),
 		sum(codec.item_count for codec in codecs))
 
-
-def _vector_codec(Container, item_count):
-	codec = ContainerListCodec(Container, float, item_count)
-	# The supplied ContainerListCodec.decode references undefined names.
-	# Keep that dependency unchanged and supply the vector conversion here.
-	return _codec(codec.encode,
-		lambda code: Container([float(value) for value in code[:item_count]]), item_count)
-
-
 def _cell_codec(encode, decode):
 	return _codec(lambda content: [encode(content)], lambda code: decode(code[0]))
 
@@ -80,7 +71,7 @@ def GameTablesCodec(*table_codecs,
 
 def GameStateCodec():
 	position = ComposedCodec(
-		_vector_codec(glm.vec3, 3), DelimitedStringsCodec(','), PrimitiveListCodec(str))
+		ContainerListCodec(glm.vec3, float, 3), DelimitedStringsCodec(','), PrimitiveListCodec(str))
 	return GameTablesCodec(
 		GameTableCodec(
 			'# format\n'+'\t'.join('key value'.split()),
@@ -153,7 +144,7 @@ def GameStateCodec():
 				('is_grounded', boolean))),
 		GameTableCodec('# character_states\nentity\tfacing_x\tfacing_y\tanimation\telapsed', PrimitiveListCodec(str),
 			ObjectListCodec(CharacterAnimationState,
-				('facing', _vector_codec(glm.vec2, 2)),
+				('facing', ContainerListCodec(glm.vec2, float, 2)),
 				('animation', PrimitiveListCodec(str)),
 				('elapsed', PrimitiveListCodec(float)))),
 	)
