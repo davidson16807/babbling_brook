@@ -1,0 +1,78 @@
+# HUMAN VETTED
+
+from collections.abc import Iterator, Sequence
+from dataclasses import dataclass, field
+from typing import ClassVar, overload
+
+from .components.archetypes import ObjectArchetype, TileArchetype
+from .components.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from .identifiers import ArchetypeId, EntityId
+
+AnimationFrameId = tuple[ArchetypeId, str, int, int]
+AnimationFrame = tuple[str, float]
+
+"""
+A `Plugin` represents all of `GameState` that cannot be represented within `Map`s.
+This is effectively all dictionaries for storing ECS components 
+and values for things like global variables and map palettes.
+`Plugin`s have interesting structure in that there is an `update` function
+such that one plugin can be updated with the contents of another.
+This allows plugins to serve several roles: they represent file contents for
+game data, mods, and save states. This is why the `Plugin` is chosen. 
+See `PluginOps` for operations you can perform on `Plugin`s like `update`.
+"""
+
+@dataclass(frozen=True)
+class Plugin(Sequence[dict]):
+
+    format: dict[str, int] = field(default_factory=dict)
+    globals: dict[str, float] = field(default_factory=dict)
+    inventory: dict[str, int] = field(default_factory=dict)
+    tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
+    objects: dict[ArchetypeId, ObjectArchetype] = field(default_factory=dict)
+    animation_frames: dict[AnimationFrameId, AnimationFrame] = field(default_factory=dict)
+    tile_palette: dict[int, ArchetypeId] = field(default_factory=dict)
+    object_palette: dict[int, ArchetypeId] = field(default_factory=dict)
+    placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
+    physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
+    characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
+
+    table_fields: ClassVar[tuple[str, ...]] = (
+        'format',
+        'globals',
+        'inventory',
+        'tiles',
+        'objects',
+        'animation_frames',
+        'tile_palette',
+        'object_palette',
+        'placements',
+        'physics',
+        'characters',
+    )
+
+    @classmethod
+    def from_tables(cls, tables: Sequence[dict]) -> 'Plugin':
+        if len(tables) != len(cls.table_fields):
+            raise ValueError(
+                f"A plugin must contain {len(cls.table_fields)} tables; got {len(tables)}"
+            )
+        return cls(*(dict(table) for table in tables))
+
+    def to_tables(self) -> list[dict]:
+        return [getattr(self, name) for name in self.table_fields]
+
+    def __len__(self) -> int:
+        return len(self.table_fields)
+
+    @overload
+    def __getitem__(self, index: int) -> dict: ...
+
+    @overload
+    def __getitem__(self, index: slice) -> list[dict]: ...
+
+    def __getitem__(self, index: int | slice) -> dict | list[dict]:
+        return self.to_tables()[index]
+
+    def __iter__(self) -> Iterator[dict]:
+        return iter(self.to_tables())
