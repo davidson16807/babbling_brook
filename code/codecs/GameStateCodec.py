@@ -109,15 +109,12 @@ def GameStateCodec():
 			PrimitiveListCodec(str),
 		),
 		GameTableCodec(
-			'# objects\n #'+'\t'.join('entity archetype position'.split()),
+			'# objects\n #'+'\t'.join('entity archetype x y z'.split()),
 			PrimitiveListCodec(str),
 			ObjectListCodec(ObjectPlacement,
 				('archetype', PrimitiveListCodec(str)),
-				('position', ComposedCodec(
-					ContainerListCodec(glm.vec3, float, 3), 
-					DelimitedStringsCodec(','),
-					_codec(lambda value: [value], lambda cells: cells[0]),
-				))),
+				('position', ContainerListCodec(glm.vec3, float, 3)),
+			),
 		),
 		GameTableCodec('# physics\n #'+'\t'.join('entity vertical_velocity is_grounded'.split()), 
 			PrimitiveListCodec(str),

@@ -65,8 +65,8 @@ villager	running	1	1	villager-back-1.svg	0.12
 5	stick
 
 # objects
-# entity	archetype	position
-player	child	8.5,8.5,0.5
+# entity	archetype	x	y	z
+player	child	8.5	8.5	0.5
 
 # physics
 # entity	vertical_velocity	is_grounded
