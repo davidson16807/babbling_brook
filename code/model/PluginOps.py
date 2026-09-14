@@ -14,10 +14,9 @@ from .components.instances import CharacterAnimationState, VerticalPhysics
 from .stores import ArchetypeComponentStores, InstanceComponentStores
 
 class PluginOps:
-    """Stateless operations for composing and finalizing decoded plugins."""
+    """Operations for composing plugins and converting game state."""
 
-    @staticmethod
-    def update(plugins: Iterable[Plugin]) -> Plugin:
+    def update(self, plugins: Iterable[Plugin]) -> Plugin:
         combined = Plugin()
         for plugin in plugins:
             combined = Plugin(**{
@@ -26,8 +25,7 @@ class PluginOps:
             })
         return combined
 
-    @staticmethod
-    def load(map_: Map, plugin: Plugin) -> GameState:
+    def load(self, map_: Map, plugin: Plugin) -> GameState:
 
         animations = {}
         for (key, animation, direction, frame), (texture, seconds) in plugin.animation_frames.items():
@@ -79,4 +77,29 @@ class PluginOps:
             archetypes,
             instances,
             defaultdict(int, plugin.inventory),
+        )
+
+    def save(self, state: GameState) -> Plugin:
+        frames = {}
+        for key, character in state.archetypes.characters.items():
+            for animation_name in ('standing', 'walking', 'running'):
+                animation = getattr(character, animation_name)
+                if animation is None:
+                    continue
+                for direction, direction_frames in enumerate(animation.directions):
+                    for frame, texture in enumerate(direction_frames.textures):
+                        frames[key, animation_name, direction, frame] = (
+                            texture,
+                            animation.seconds_per_frame,
+                        )
+        return Plugin(
+            format={'version': 1},
+            globals=dict(state.globals),
+            inventory=dict(state.inventory),
+            tiles=dict(state.archetypes.tiles),
+            objects=dict(state.archetypes.objects),
+            animation_frames=frames,
+            placements=dict(state.instances.placements),
+            physics=dict(state.instances.physics),
+            characters=dict(state.instances.characters),
         )

@@ -11,7 +11,7 @@ from babbling_brook.codecs import (
 )
 from babbling_brook.codecs.GameFileCodec import GameFileCodec
 from babbling_brook.codecs.GameStateCodec import (
-    GameStateCodec, GameStateListCodec, GameTableCodec, _codec,
+    GameStateCodec, PluginListCodec, GameTableCodec, _codec,
 )
 from babbling_brook.codecs.PrimitiveListCodec import PrimitiveListCodec
 from babbling_brook.codecs.ContainerListCodec import ContainerListCodec
@@ -19,11 +19,10 @@ from babbling_brook.codecs.ObjectListCodec import ObjectListCodec
 from babbling_brook.codecs.maps.MapCodec import MapCodec
 from babbling_brook.codecs.maps.ObjectPlacementCodec import ObjectPlacementCodec
 from babbling_brook.codecs.maps.PpmImageCodec import PpmImageCodec
-from babbling_brook.model import GameState
+from babbling_brook.model import GameState, PluginOps
 from babbling_brook.model.components.archetypes import TileArchetype
 from babbling_brook.model.components.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
 from babbling_brook.model.stores import ArchetypeComponentStores, InstanceComponentStores
-from babbling_brook.game import update_game_states
 
 
 @dataclass(frozen=True)
@@ -90,8 +89,8 @@ class CodecTests(unittest.TestCase):
         )
 
         codec = GameStateCodec()
-        self.assertIsInstance(codec.encoder_sequence[0], GameStateListCodec)
-        decoded = codec.decode(codec.encode(model))
+        self.assertIsInstance(codec.encoder_sequence[0], PluginListCodec)
+        decoded = codec.decode(codec.encode(PluginOps().save(model)))
 
         self.assertEqual(decoded[1], model.globals)
         self.assertEqual(decoded[2], model.inventory)
@@ -100,24 +99,6 @@ class CodecTests(unittest.TestCase):
         self.assertEqual(decoded[8].keys(), model.instances.placements.keys())
         self.assertEqual(decoded[8]['player'].archetype, 'child')
         self.assertEqual(tuple(decoded[8]['player'].position), (.5, .5, 1))
-
-    def test_game_states_update_in_order(self):
-        base = [{'version': 1}, {'quest': 0}, {}]
-        mod = [{}, {'quest': 1, 'modded': True}, {'apple': 2}]
-        save = [{}, {'quest': 2}, {'apple': 1}]
-
-        combined = update_game_states([base, mod, save])
-
-        self.assertEqual(combined, [
-            {'version': 1},
-            {'quest': 2, 'modded': True},
-            {'apple': 1},
-        ])
-        self.assertEqual(base, [{'version': 1}, {'quest': 0}, {}])
-        with self.assertRaises(ValueError):
-            update_game_states([])
-        with self.assertRaises(ValueError):
-            update_game_states([base, [{}]])
 
     def test_composed_tables_round_trip(self):
         codec = game_tables_codec(*tables())

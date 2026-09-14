@@ -65,6 +65,9 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 - `Map` owns the tile `Field` instances. Runtime entity-indexed component
   dictionaries, including `ObjectPlacement`, stay in `InstanceComponentStores`.
   Systems receive the specific dictionaries they need, rather than entire stores.
+- `GameStateCodec.decode` returns a `Plugin`. `PluginOps.update` overlays plugin
+  tables in load order, and `PluginOps.load` combines the result with a decoded
+  `Map` to create the runtime `GameState`.
 - Erosion uses the supplied capped-minimum rule, including the current tile.
   Each tile top has exactly two triangles along the h00–h11 diagonal. Height
   queries interpolate those same triangles. Exposed sides extend to the fixed

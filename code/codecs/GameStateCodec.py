@@ -15,10 +15,18 @@ from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
 from ..model.GameState import GameState
+from ..model.Plugin import Plugin
 from ..model.components.archetypes import TileArchetype, ObjectArchetype
 from ..model.components.instances import ObjectPlacement, VerticalPhysics, CharacterAnimationState
 
 
+class PluginListCodec:
+    """Maps the ordered game-file tables to and from a ``Plugin``."""
+    item_count = 1
+    def encode(self, plugin):
+        return plugin.to_tables()
+    def decode(self, code):
+        return Plugin.from_tables(code)
 
 def _codec(encode, decode, item_count=1):
 	return SimpleNamespace(encode=encode, decode=decode, item_count=item_count)
@@ -38,12 +46,15 @@ def GameTableCodec(header, key_codec, value_codec,
 			DelimitedStringsCodec(row_delimiter),
 			CommentedStringCodec(comment_delimiter),
 			PrefixedStringCodec(header+row_delimiter),
-			_codec(lambda code: code.rstrip(row_delimiter), lambda code: code.strip(row_delimiter)+row_delimiter),
+			SimpleNamespace(
+				encode=lambda code: code.rstrip(row_delimiter), 
+				decode=lambda code: code.strip(row_delimiter)+row_delimiter, 
+				item_count=1),
 		)
-
 
 def GameStateCodec(table_delimiter='\n\n'):
 	return ComposedCodec(
+		PluginListCodec(),
 		ZippedCodec(
 			GameTableCodec(
 				'# format\n #'+'\t'.join('key value'.split()),
