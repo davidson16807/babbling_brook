@@ -2,10 +2,8 @@
 
 from dataclasses import dataclass, field
 
-from pyglm import glm
-
-from ..components.instances import CharacterAnimationState, VerticalPhysics
-from ..identifiers import ArchetypeId, EntityId
+from ..components.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from ..identifiers import EntityId
 
 '''
 A "store" is the name chosen for this application to represent
@@ -18,7 +16,6 @@ a system should only operate on the fewest component collections needed to do it
 
 @dataclass(frozen=True)
 class InstanceComponentStores:
-    positionables: dict[EntityId, glm.vec3] = field(default_factory=dict)
-    archetyped: dict[EntityId, ArchetypeId] = field(default_factory=dict)
+    placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)

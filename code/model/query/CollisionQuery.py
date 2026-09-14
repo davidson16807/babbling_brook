@@ -9,9 +9,9 @@ J = glm.vec2(0,1)
 class CollisionQuery:
     """Resolve one horizontal move against terrain and nearby one-tile objects."""
 
-    def move(self, entity, origin, offset, positions, archetyped, objects, map_):
+    def move(self, entity, origin, offset, placements, objects, map_):
         height_precision = 0.1
-        moving = objects[archetyped[entity]]
+        moving = objects[placements[entity].archetype]
         # Axis separation permits sliding along obstacles. Callers use fixed small steps.
         for axis in (I+J,I,J):
             step = origin + glm.vec3(offset*axis, 0.0)
@@ -24,8 +24,8 @@ class CollisionQuery:
             if   (map_.tile((floor(step.x), floor(step.y))).is_collidable 
               and bottom < map_.height(step2) - height_precision) : continue
             neighbors = [
-                (key, objects[archetyped[key]], occupied) 
-                for key, occupied in positions.items() if key != entity
+                (key, objects[placement.archetype], placement.position)
+                for key, placement in placements.items() if key != entity
             ]
             collisions = [
                 (key, occupant, occupied)

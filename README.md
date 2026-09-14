@@ -62,9 +62,9 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 - `data/world.game` supplies archetypes, palettes, four frames per character
   animation (two directions, two frames each), and optional additional objects.
   Identifiers are JSON scalar cells: `"player"` is a string ID, `1` an integer ID.
-- `Map` owns `Field` instances and static placements. Runtime component dictionaries
-  stay in `InstanceComponentStores`. Systems receive the specific dictionaries
-  they need, rather than entire stores.
+- `Map` owns the tile `Field` instances. Runtime entity-indexed component
+  dictionaries, including `ObjectPlacement`, stay in `InstanceComponentStores`.
+  Systems receive the specific dictionaries they need, rather than entire stores.
 - Erosion uses the supplied capped-minimum rule, including the current tile.
   Each tile top has exactly two triangles along the h00–h11 diagonal. Height
   queries interpolate those same triangles. Exposed sides extend to the fixed

@@ -12,7 +12,7 @@ class GameView:
 
     def draw(self, game):
         camera = game.camera
-        target = game.instances.positionables['player'] + glm.vec3(0, 0, .4)
+        target = game.instances.placements['player'].position + glm.vec3(0, 0, .4)
         aspect = game.viewport[0] / game.viewport[1]
         scale = camera.orthographic_scale / 2
         projection = glm.ortho(-scale * aspect, scale * aspect, -scale, scale, .1, 100.0)

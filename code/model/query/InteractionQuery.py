@@ -5,14 +5,13 @@ from pyglm import glm
 
 
 class InteractionQuery:
-    def nearest(self, origin, facing, positions, archetyped, objects):
+    def nearest(self, origin, facing, placements, objects):
         candidates = [
-            (entity, objects[archetyped[entity]], position) 
-            for entity, position in positions.items() 
+            (entity, objects[placement.archetype], placement.position)
+            for entity, placement in placements.items()
             if entity != 'player'
-            and entity in archetyped
-            and archetyped[entity] in objects
-            and objects[archetyped[entity]].action
+            and placement.archetype in objects
+            and objects[placement.archetype].action
         ]
         ranked = []
         for entity, archetype, position in candidates:

@@ -15,7 +15,7 @@ from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
 from ..model.components.archetypes import TileArchetype, ObjectArchetype
-from ..model.components.instances import VerticalPhysics, CharacterAnimationState
+from ..model.components.instances import ObjectPlacement, VerticalPhysics, CharacterAnimationState
 
 
 def _codec(encode, decode, item_count=1):
@@ -111,13 +111,13 @@ def GameStateCodec():
 		GameTableCodec(
 			'# objects\n #'+'\t'.join('entity archetype position'.split()),
 			PrimitiveListCodec(str),
-			ConcatenatedContainerCodec(tuple, 
-				PrimitiveListCodec(str), 
-				ComposedCodec(
+			ObjectListCodec(ObjectPlacement,
+				('archetype', PrimitiveListCodec(str)),
+				('position', ComposedCodec(
 					ContainerListCodec(glm.vec3, float, 3), 
 					DelimitedStringsCodec(','),
 					_codec(lambda value: [value], lambda cells: cells[0]),
-				)),
+				))),
 		),
 		GameTableCodec('# physics\n #'+'\t'.join('entity vertical_velocity is_grounded'.split()), 
 			PrimitiveListCodec(str),

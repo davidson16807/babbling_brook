@@ -12,7 +12,7 @@ from babbling_brook.model import GameState
 from babbling_brook.model.fields import RasterField, IndexedField
 from babbling_brook.model.Map import Map
 from babbling_brook.model.components.archetypes import TileArchetype
-from babbling_brook.model.components.instances import CharacterAnimationState
+from babbling_brook.model.components.instances import CharacterAnimationState, ObjectPlacement
 from babbling_brook.model.stores import ArchetypeComponentStores
 
 
@@ -139,9 +139,9 @@ class ModelTests(unittest.TestCase):
         archetypes = ArchetypeComponentStores()
         first, second = GameState(map_, {}, archetypes), GameState(map_, {}, archetypes)
         first.inventory['apple'] += 2
-        first.instances.positionables['player'] = glm.vec3(0.5, 0.5, 1)
+        first.instances.placements['player'] = ObjectPlacement('player', glm.vec3(0.5, 0.5, 1))
         self.assertEqual(second.inventory['apple'], 0)
-        self.assertEqual(second.instances.positionables, {})
+        self.assertEqual(second.instances.placements, {})
         old = CharacterAnimationState()
         new = replace(old, facing=glm.vec2(1, 0))
         self.assertEqual(tuple(old.facing), (0, 1))

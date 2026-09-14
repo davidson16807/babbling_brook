@@ -9,7 +9,7 @@ from babbling_brook.codecs import (
     MappedCodec, ZippedCodec,
 )
 from babbling_brook.codecs.GameFileCodec import GameFileCodec
-from babbling_brook.codecs.GameStateCodec import GameTableCodec, GameTablesCodec, _codec
+from babbling_brook.codecs.GameStateCodec import GameStateCodec, GameTableCodec, GameTablesCodec, _codec
 from babbling_brook.codecs.PrimitiveListCodec import PrimitiveListCodec
 from babbling_brook.codecs.ContainerListCodec import ContainerListCodec
 from babbling_brook.codecs.ObjectListCodec import ObjectListCodec
@@ -17,7 +17,7 @@ from babbling_brook.codecs.maps.MapCodec import MapCodec
 from babbling_brook.codecs.maps.ObjectPlacementCodec import ObjectPlacementCodec
 from babbling_brook.codecs.maps.PpmImageCodec import PpmImageCodec
 from babbling_brook.model.components.archetypes import TileArchetype
-from babbling_brook.model.components.instances import CharacterAnimationState, VerticalPhysics
+from babbling_brook.model.components.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
 
 
 @dataclass(frozen=True)
@@ -43,6 +43,22 @@ def tables():
 
 
 class CodecTests(unittest.TestCase):
+    def test_game_state_placements_are_components_indexed_by_entity(self):
+        codec = GameStateCodec()
+        path = Path(__file__).resolve().parents[1] / 'data/world.game'
+        state = codec.decode(path.read_text(encoding='utf-8'))
+
+        placements = state[8]
+        self.assertEqual(set(placements), {'player'})
+        self.assertIsInstance(placements['player'], ObjectPlacement)
+        self.assertEqual(placements['player'].archetype, 'child')
+        self.assertEqual(tuple(placements['player'].position), (8.5, 8.5, 0.5))
+
+        decoded = codec.decode(codec.encode(state))
+        self.assertEqual(decoded[8].keys(), placements.keys())
+        self.assertEqual(decoded[8]['player'].archetype, placements['player'].archetype)
+        self.assertEqual(tuple(decoded[8]['player'].position), tuple(placements['player'].position))
+
     def test_composed_tables_round_trip(self):
         codec = GameTablesCodec(*tables())
         content = [
@@ -108,9 +124,9 @@ class MapCodecTests(unittest.TestCase):
         self.assertAlmostEqual(map_.height(glm.vec2(1.999, 0.5)), 5.999, places=5)
         placements = ObjectPlacementCodec({7: 'tree'}, map_).decode(image)
         self.assertEqual(len(placements), 1)
-        self.assertEqual(placements[0].entity, '(1, 0)')
-        self.assertEqual(placements[0].archetype, 'tree')
-        self.assertEqual(tuple(placements[0].position), (1.5, 0.5, 5.5))
+        self.assertEqual(set(placements), {'(1, 0)'})
+        self.assertEqual(placements['(1, 0)'].archetype, 'tree')
+        self.assertEqual(tuple(placements['(1, 0)'].position), (1.5, 0.5, 5.5))
 
     def test_canonical_map_loads_all_nonzero_object_pixels(self):
         with open(Path(__file__).resolve().parents[1] / 'data/world.ppm', encoding='ascii') as file:
@@ -121,7 +137,7 @@ class MapCodecTests(unittest.TestCase):
         self.assertEqual(tuple(map_.dimensions), (18, 18))
         self.assertEqual(len(placements), sum(blue != 0 for _, _, blue in image.pixels))
         self.assertGreater(len(placements), 0)
-        for placement in placements:
+        for placement in placements.values():
             self.assertEqual(placement.position.z, map_.height(glm.vec2(placement.position)))
 
     def test_bad_ppm_and_missing_palette_entries_are_rejected(self):

@@ -33,8 +33,12 @@ class GameUpdater:
                 physics = {**game.instances.physics, 'player': VerticalPhysics(6.0, False)}
                 return replace(game, instances=replace(game.instances, physics=physics))
             if message.key == 'e':
-                target = self.interactions.nearest(game.instances.positionables['player'], game.instances.characters['player'].facing,
-                    game.instances.positionables, game.instances.archetyped, game.archetypes.objects)
+                target = self.interactions.nearest(
+                    game.instances.placements['player'].position,
+                    game.instances.characters['player'].facing,
+                    game.instances.placements,
+                    game.archetypes.objects,
+                )
                 if target is None:
                     return replace(game, message="Nothing to interact with nearby.")
                 entity, archetype = target

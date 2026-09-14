@@ -9,7 +9,7 @@ systems/updaters replace them, never mutate their coordinates in place.
 from dataclasses import dataclass, field
 from pyglm import glm
 
-from ..identifiers import ArchetypeId, EntityId
+from ..identifiers import ArchetypeId
 
 # COMPONENTS
 
@@ -20,7 +20,6 @@ class VerticalPhysics:
 
 @dataclass(frozen=True)
 class ObjectPlacement:
-    entity: EntityId
     archetype: ArchetypeId
     position: glm.vec3
 
