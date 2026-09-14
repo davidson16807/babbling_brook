@@ -1,5 +1,6 @@
+from collections import defaultdict
 import unittest
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from pyglm import glm
@@ -9,15 +10,20 @@ from babbling_brook.codecs import (
     MappedCodec, ZippedCodec,
 )
 from babbling_brook.codecs.GameFileCodec import GameFileCodec
-from babbling_brook.codecs.GameStateCodec import GameStateCodec, GameTableCodec, GameTablesCodec, _codec
+from babbling_brook.codecs.GameStateCodec import (
+    GameStateCodec, GameStateListCodec, GameTableCodec, _codec,
+)
 from babbling_brook.codecs.PrimitiveListCodec import PrimitiveListCodec
 from babbling_brook.codecs.ContainerListCodec import ContainerListCodec
 from babbling_brook.codecs.ObjectListCodec import ObjectListCodec
 from babbling_brook.codecs.maps.MapCodec import MapCodec
 from babbling_brook.codecs.maps.ObjectPlacementCodec import ObjectPlacementCodec
 from babbling_brook.codecs.maps.PpmImageCodec import PpmImageCodec
+from babbling_brook.model import GameState
 from babbling_brook.model.components.archetypes import TileArchetype
 from babbling_brook.model.components.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from babbling_brook.model.stores import ArchetypeComponentStores, InstanceComponentStores
+from babbling_brook.game import update_game_states
 
 
 @dataclass(frozen=True)
@@ -42,6 +48,13 @@ def tables():
             table('Qux', Qux, [('norf', PrimitiveListCodec(float))]))
 
 
+def game_tables_codec(*table_codecs):
+    return ComposedCodec(
+        ZippedCodec(*table_codecs),
+        DelimitedStringsCodec('\n\n', postfixed=True),
+    )
+
+
 class CodecTests(unittest.TestCase):
     def test_game_state_placements_are_components_indexed_by_entity(self):
         codec = GameStateCodec()
@@ -59,8 +72,55 @@ class CodecTests(unittest.TestCase):
         self.assertEqual(decoded[8]['player'].archetype, placements['player'].archetype)
         self.assertEqual(tuple(decoded[8]['player'].position), tuple(placements['player'].position))
 
+    def test_game_state_codec_composes_model_and_table_codecs(self):
+        image = PpmImageCodec().decode('P3\n1 1\n255\n2 1 0\n')
+        tiles = {'ground': TileArchetype('grass.png', 'ground.png')}
+        map_ = MapCodec({1: 'ground'}, tiles).decode(image)
+        archetypes = ArchetypeComponentStores(tiles=tiles)
+        base = GameState(map_, {'old': 1}, archetypes)
+        model = replace(
+            base,
+            globals={'quest': 2},
+            inventory=defaultdict(int, {'apple': 3}),
+            instances=InstanceComponentStores(
+                placements={'player': ObjectPlacement('child', glm.vec3(.5, .5, 1))},
+                physics={'player': VerticalPhysics(0, True)},
+                characters={'player': CharacterAnimationState()},
+            ),
+        )
+
+        codec = GameStateCodec()
+        self.assertIsInstance(codec.encoder_sequence[0], GameStateListCodec)
+        decoded = codec.decode(codec.encode(model))
+
+        self.assertEqual(decoded[1], model.globals)
+        self.assertEqual(decoded[2], model.inventory)
+        self.assertEqual(decoded[9], model.instances.physics)
+        self.assertEqual(decoded[10], model.instances.characters)
+        self.assertEqual(decoded[8].keys(), model.instances.placements.keys())
+        self.assertEqual(decoded[8]['player'].archetype, 'child')
+        self.assertEqual(tuple(decoded[8]['player'].position), (.5, .5, 1))
+
+    def test_game_states_update_in_order(self):
+        base = [{'version': 1}, {'quest': 0}, {}]
+        mod = [{}, {'quest': 1, 'modded': True}, {'apple': 2}]
+        save = [{}, {'quest': 2}, {'apple': 1}]
+
+        combined = update_game_states([base, mod, save])
+
+        self.assertEqual(combined, [
+            {'version': 1},
+            {'quest': 2, 'modded': True},
+            {'apple': 1},
+        ])
+        self.assertEqual(base, [{'version': 1}, {'quest': 0}, {}])
+        with self.assertRaises(ValueError):
+            update_game_states([])
+        with self.assertRaises(ValueError):
+            update_game_states([base, [{}]])
+
     def test_composed_tables_round_trip(self):
-        codec = GameTablesCodec(*tables())
+        codec = game_tables_codec(*tables())
         content = [
             {'player': Foo(3, '  literal \\n and \\t\tactual tab\n\n# hash\r  '),
              '1': Foo(1, ''), 'integer': Foo(2, 'integer'), '(2, 3)': Foo(4, 'coordinate')},
@@ -70,18 +130,18 @@ class CodecTests(unittest.TestCase):
         self.assertTrue(encoded.startswith('# Foo\n'))
         self.assertIn('\n\n# Qux\n', encoded)
         self.assertEqual(codec.decode(encoded), content)
-        self.assertEqual(GameTablesCodec(*tables()).encode(content), encoded)
-        self.assertEqual(GameTablesCodec(*tables()).decode(encoded + '\n'), content)
+        self.assertEqual(game_tables_codec(*tables()).encode(content), encoded)
+        self.assertEqual(game_tables_codec(*tables()).decode(encoded + '\n'), content)
 
     def test_empty_tables_and_comments_round_trip(self):
-        codec = GameTablesCodec(*tables())
+        codec = game_tables_codec(*tables())
         self.assertEqual(codec.decode(codec.encode([{}, {}])), [{}, {}])
         encoded = codec.encode([{'player': Foo(1, '# literal hash')}, {}])
         encoded = encoded.replace('entity\tbar\tbaz\n', 'entity\tbar\tbaz\n# a comment\n')
         self.assertEqual(codec.decode(encoded)[0]['player'].baz, '# literal hash')
 
     def test_model_components_with_booleans_and_glm_vectors_round_trip(self):
-        codec = GameTablesCodec(
+        codec = game_tables_codec(
             table('Physics', VerticalPhysics,
                   [('vertical_velocity', PrimitiveListCodec(float)), ('is_grounded', PrimitiveListCodec(bool))]),
             table('Characters', CharacterAnimationState,
@@ -93,7 +153,7 @@ class CodecTests(unittest.TestCase):
         self.assertEqual(codec.decode(codec.encode(content)), content)
 
     def test_invalid_tables_are_not_silently_truncated_or_reassigned(self):
-        codec = GameTablesCodec(*tables())
+        codec = game_tables_codec(*tables())
         encoded = codec.encode([{'player': Foo(1, 'text')}, {'qux': Qux(2)}])
         sections = encoded.split('\n\n')
         for invalid in (sections[0], encoded + '\n\n' + sections[0],
