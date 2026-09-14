@@ -1,21 +1,21 @@
 # format
-key	value
+# key	value
 version	1
 
 # globals
-key	value
+# key	value
 
 # inventory
-item	quantity
+# item	quantity
 
 # tile_archetypes
-archetype	top_texture	side_texture	max_erosion	is_collidable
+# archetype	top_texture	side_texture	max_erosion	is_collidable
 grass	grass.svg	ground.svg	0.5	x
 path	path.svg	ground.svg	0	x
 stone	stone.svg	stone.svg	0	x
 
 # object_archetypes
-archetype	texture	is_collidable	radius	height	width	has_gravity	action	label
+# archetype	texture	is_collidable	radius	height	width	has_gravity	action	label
 tree	tree.svg	x	0.35	2.0	1.0			Tree
 apple	apple.svg		0.15	0.32	0.32	x	collect_apple	Apple
 crate	crate.svg	x	0.45	0.9	0.9			Crate
@@ -24,7 +24,7 @@ stick	stick.svg		0.12	0.28	0.55	x	collect_stick	Stick
 child	child-front-0.svg	x	0.24	1.1	0.65	x		Player
 
 # character_animation_frames
-archetype	animation	direction	frame	texture	seconds_per_frame
+# archetype	animation	direction	frame	texture	seconds_per_frame
 child	standing	0	0	child-front-0.svg	0.45
 child	standing	0	1	child-front-1.svg	0.45
 child	standing	1	0	child-back-0.svg	0.45
@@ -51,13 +51,13 @@ villager	running	1	0	villager-back-0.svg	0.12
 villager	running	1	1	villager-back-1.svg	0.12
 
 # tile_palette
-index	archetype
+# index	archetype
 1	grass
 2	path
 3	stone
 
 # object_palette
-index	archetype
+# index	archetype
 1	tree
 2	apple
 3	crate
@@ -65,11 +65,12 @@ index	archetype
 5	stick
 
 # objects
-entity	archetype	position
+# entity	archetype	position
 player	child	8.5,8.5,0.5
 
 # physics
-entity	vertical_velocity	is_grounded
+# entity	vertical_velocity	is_grounded
 
 # character_states
-entity	facing_x	facing_y	animation	elapsed
+# entity	facing_x	facing_y	animation	elapsed
+

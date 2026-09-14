@@ -21,8 +21,6 @@ from ..model.components.instances import VerticalPhysics, CharacterAnimationStat
 def _codec(encode, decode, item_count=1):
 	return SimpleNamespace(encode=encode, decode=decode, item_count=item_count)
 
-
-
 def GameRowCodec(key_codec, value_codec, column_delimiter='\t'):
 	return ComposedCodec(
 		ConcatenatedContainerCodec(list, key_codec, value_codec),
@@ -30,49 +28,43 @@ def GameRowCodec(key_codec, value_codec, column_delimiter='\t'):
 		DelimitedStringsCodec(column_delimiter),
 	)
 
-
 def GameTableCodec(header, key_codec, value_codec,
 		column_delimiter='\t', row_delimiter='\n', comment_delimiter='#'):
-	rows = DelimitedStringsCodec(row_delimiter)
 	return ComposedCodec(
 			DictionaryListCodec(),
 			MappedCodec(GameRowCodec(key_codec, value_codec, column_delimiter=column_delimiter)),
-			_codec(rows.encode, lambda code: rows.decode(code) if code else []),
+			DelimitedStringsCodec(row_delimiter),
 			CommentedStringCodec(comment_delimiter),
 			PrefixedStringCodec(header+row_delimiter),
-			_codec(lambda code: code.rstrip(row_delimiter),
-				lambda code: code.strip(row_delimiter)+row_delimiter),
+			_codec(lambda code: code.rstrip(row_delimiter), lambda code: code.strip(row_delimiter)+row_delimiter),
 		)
-
 
 def GameTablesCodec(*table_codecs,
 		column_delimiter='\t', row_delimiter='\n', table_delimiter='\n\n', comment_delimiter='#'):
 	return ComposedCodec(
 			ZippedCodec(*table_codecs),
-			DelimitedStringsCodec(table_delimiter),
-			_codec(lambda code: code, lambda code: code.strip(row_delimiter)),
+			DelimitedStringsCodec(table_delimiter, postfixed=True),
 		)
-
 
 def GameStateCodec():
 	return GameTablesCodec(
 		GameTableCodec(
-			'# format\n'+'\t'.join('key value'.split()),
+			'# format\n #'+'\t'.join('key value'.split()),
 			PrimitiveListCodec(str),
 			PrimitiveListCodec(int),
 		),
 		GameTableCodec(
-			'# globals\n'+'\t'.join('key value'.split()),
+			'# globals\n #'+'\t'.join('key value'.split()),
 			PrimitiveListCodec(str),
 			PrimitiveListCodec(float),
 		),
 		GameTableCodec(
-			'# inventory\n'+'\t'.join('item quantity'.split()),
+			'# inventory\n #'+'\t'.join('item quantity'.split()),
 			PrimitiveListCodec(str),
 			PrimitiveListCodec(int),
 		),
 		GameTableCodec(
-			'# tile_archetypes\n'+'\t'.join('archetype top_texture side_texture max_erosion is_collidable'.split()),
+			'# tile_archetypes\n #'+'\t'.join('archetype top_texture side_texture max_erosion is_collidable'.split()),
 			PrimitiveListCodec(str),
 			ObjectListCodec(TileArchetype,
 				('top_texture', PrimitiveListCodec(str)),
@@ -97,7 +89,7 @@ def GameStateCodec():
 			),
 		),
 		GameTableCodec(
-			'# character_animation_frames\n'+'\t'.join('archetype animation direction frame texture seconds_per_frame'.split()),
+			'# character_animation_frames\n #'+'\t'.join('archetype animation direction frame texture seconds_per_frame'.split()),
 			ConcatenatedContainerCodec(tuple,
 				PrimitiveListCodec(str),
 				PrimitiveListCodec(str),
@@ -107,31 +99,32 @@ def GameStateCodec():
 			ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(float)),
 		),
 		GameTableCodec(
-			'# tile_palette\n'+'\t'.join('index archetype'.split()),
+			'# tile_palette\n #'+'\t'.join('index archetype'.split()),
 			PrimitiveListCodec(int),
 			PrimitiveListCodec(str),
 		),
 		GameTableCodec(
-			'# object_palette\n'+'\t'.join('index archetype'.split()),
+			'# object_palette\n #'+'\t'.join('index archetype'.split()),
 			PrimitiveListCodec(int),
 			PrimitiveListCodec(str),
 		),
 		GameTableCodec(
-			'# objects\n'+'\t'.join('entity archetype position'.split()),
+			'# objects\n #'+'\t'.join('entity archetype position'.split()),
 			PrimitiveListCodec(str),
-			ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), 
+			ConcatenatedContainerCodec(tuple, 
+				PrimitiveListCodec(str), 
 				ComposedCodec(
 					ContainerListCodec(glm.vec3, float, 3), 
 					DelimitedStringsCodec(','),
 					_codec(lambda value: [value], lambda cells: cells[0]),
 				)),
 		),
-		GameTableCodec('# physics\n'+'\t'.join('entity vertical_velocity is_grounded'.split()), 
+		GameTableCodec('# physics\n #'+'\t'.join('entity vertical_velocity is_grounded'.split()), 
 			PrimitiveListCodec(str),
 			ObjectListCodec(VerticalPhysics,
 				('vertical_velocity', PrimitiveListCodec(float)),
 				('is_grounded', BooleanListCodec()))),
-		GameTableCodec('# character_states\n'+'\t'.join('entity facing_x facing_y animation elapsed'.split()), 
+		GameTableCodec('# character_states\n #'+'\t'.join('entity facing_x facing_y animation elapsed'.split()), 
 			PrimitiveListCodec(str),
 			ObjectListCodec(CharacterAnimationState,
 				('facing', ContainerListCodec(glm.vec2, float, 2)),
