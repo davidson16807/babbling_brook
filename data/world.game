@@ -10,18 +10,18 @@ item	quantity
 
 # tile_archetypes
 archetype	top_texture	side_texture	max_erosion	is_collidable
-grass	grass.svg	ground.svg	0.5	true
-path	path.svg	ground.svg	0	true
-stone	stone.svg	stone.svg	0	true
+grass	grass.svg	ground.svg	0.5	x
+path	path.svg	ground.svg	0	x
+stone	stone.svg	stone.svg	0	x
 
 # object_archetypes
 archetype	texture	is_collidable	radius	height	width	has_gravity	action	label
-tree	tree.svg	true	0.35	2.0	1.0	false		Tree
-apple	apple.svg	false	0.15	0.32	0.32	true	collect_apple	Apple
-crate	crate.svg	true	0.45	0.9	0.9	false		Crate
-villager	villager-front-0.svg	true	0.28	1.3	0.7	false	greet	Villager
-stick	stick.svg	false	0.12	0.28	0.55	true	collect_stick	Stick
-child	child-front-0.svg	true	0.24	1.1	0.65	true		Player
+tree	tree.svg	x	0.35	2.0	1.0			Tree
+apple	apple.svg		0.15	0.32	0.32	x	collect_apple	Apple
+crate	crate.svg	x	0.45	0.9	0.9			Crate
+villager	villager-front-0.svg	x	0.28	1.3	0.7		greet	Villager
+stick	stick.svg		0.12	0.28	0.55	x	collect_stick	Stick
+child	child-front-0.svg	x	0.24	1.1	0.65	x		Player
 
 # character_animation_frames
 archetype	animation	direction	frame	texture	seconds_per_frame

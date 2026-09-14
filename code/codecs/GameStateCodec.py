@@ -1,18 +1,16 @@
-from functools import partial
-import json
 from types import SimpleNamespace
 
 from pyglm import glm
 
 from .ComposedCodec import ComposedCodec
-from .ConcatenatedListCodec import ConcatenatedListCodec
+from .ConcatenatedContainerCodec import ConcatenatedContainerCodec
 from .ContainerListCodec import ContainerListCodec
 from .DictionaryListCodec import DictionaryListCodec
 from .DelimitedStringsCodec import DelimitedStringsCodec
 from .EscapedTextCodec import EscapedTextCodec
 from .MappedCodec import MappedCodec
 from .ObjectListCodec import ObjectListCodec
-from .PrimitiveListCodec import PrimitiveListCodec
+from .PrimitiveListCodec import PrimitiveListCodec, BooleanListCodec
 from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
@@ -24,23 +22,10 @@ def _codec(encode, decode, item_count=1):
 	return SimpleNamespace(encode=encode, decode=decode, item_count=item_count)
 
 
-def _tuple_codec(*codecs):
-	codec = ConcatenatedListCodec(*codecs)
-	return _codec(codec.encode, lambda code: tuple(codec.decode(code)),
-		sum(codec.item_count for codec in codecs))
-
-def _cell_codec(encode, decode):
-	return _codec(lambda content: [encode(content)], lambda code: decode(code[0]))
-
-
-boolean = _cell_codec(lambda value: str(value).lower(),
-	lambda value: bool(('false', 'true').index(value)))
-scalar = _cell_codec(partial(json.dumps, ensure_ascii=False, allow_nan=False), json.loads)
-
 
 def GameRowCodec(key_codec, value_codec, column_delimiter='\t'):
 	return ComposedCodec(
-		ConcatenatedListCodec(key_codec, value_codec),
+		ConcatenatedContainerCodec(list, key_codec, value_codec),
 		MappedCodec(EscapedTextCodec()),
 		DelimitedStringsCodec(column_delimiter),
 	)
@@ -70,8 +55,6 @@ def GameTablesCodec(*table_codecs,
 
 
 def GameStateCodec():
-	position = ComposedCodec(
-		ContainerListCodec(glm.vec3, float, 3), DelimitedStringsCodec(','), PrimitiveListCodec(str))
 	return GameTablesCodec(
 		GameTableCodec(
 			'# format\n'+'\t'.join('key value'.split()),
@@ -81,7 +64,7 @@ def GameStateCodec():
 		GameTableCodec(
 			'# globals\n'+'\t'.join('key value'.split()),
 			PrimitiveListCodec(str),
-			scalar,
+			PrimitiveListCodec(float),
 		),
 		GameTableCodec(
 			'# inventory\n'+'\t'.join('item quantity'.split()),
@@ -95,7 +78,7 @@ def GameStateCodec():
 				('top_texture', PrimitiveListCodec(str)),
 				('side_texture', PrimitiveListCodec(str)),
 				('max_erosion', PrimitiveListCodec(float)),
-				('is_collidable', boolean),
+				('is_collidable', BooleanListCodec()),
 			),
 		),
 		GameTableCodec(
@@ -104,24 +87,24 @@ def GameStateCodec():
 			PrimitiveListCodec(str),
 			ObjectListCodec(ObjectArchetype,
 				('texture', PrimitiveListCodec(str)),
-				('is_collidable', boolean),
+				('is_collidable', BooleanListCodec()),
 				('radius', PrimitiveListCodec(float)),
 				('height', PrimitiveListCodec(float)),
 				('width', PrimitiveListCodec(float)),
-				('has_gravity', boolean),
+				('has_gravity', BooleanListCodec()),
 				('action', PrimitiveListCodec(str)),
 				('label', PrimitiveListCodec(str)),
 			),
 		),
 		GameTableCodec(
 			'# character_animation_frames\n'+'\t'.join('archetype animation direction frame texture seconds_per_frame'.split()),
-			_tuple_codec(
+			ConcatenatedContainerCodec(tuple,
 				PrimitiveListCodec(str),
 				PrimitiveListCodec(str),
 				PrimitiveListCodec(int),
 				PrimitiveListCodec(int),
 			),
-			_tuple_codec(PrimitiveListCodec(str), PrimitiveListCodec(float)),
+			ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(float)),
 		),
 		GameTableCodec(
 			'# tile_palette\n'+'\t'.join('index archetype'.split()),
@@ -136,13 +119,20 @@ def GameStateCodec():
 		GameTableCodec(
 			'# objects\n'+'\t'.join('entity archetype position'.split()),
 			PrimitiveListCodec(str),
-			_tuple_codec(PrimitiveListCodec(str), _codec(position.encode, position.decode)),
+			ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), 
+				ComposedCodec(
+					ContainerListCodec(glm.vec3, float, 3), 
+					DelimitedStringsCodec(','),
+					_codec(lambda value: [value], lambda cells: cells[0]),
+				)),
 		),
-		GameTableCodec('# physics\nentity\tvertical_velocity\tis_grounded', PrimitiveListCodec(str),
+		GameTableCodec('# physics\n'+'\t'.join('entity vertical_velocity is_grounded'.split()), 
+			PrimitiveListCodec(str),
 			ObjectListCodec(VerticalPhysics,
 				('vertical_velocity', PrimitiveListCodec(float)),
-				('is_grounded', boolean))),
-		GameTableCodec('# character_states\nentity\tfacing_x\tfacing_y\tanimation\telapsed', PrimitiveListCodec(str),
+				('is_grounded', BooleanListCodec()))),
+		GameTableCodec('# character_states\n'+'\t'.join('entity facing_x facing_y animation elapsed'.split()), 
+			PrimitiveListCodec(str),
 			ObjectListCodec(CharacterAnimationState,
 				('facing', ContainerListCodec(glm.vec2, float, 2)),
 				('animation', PrimitiveListCodec(str)),

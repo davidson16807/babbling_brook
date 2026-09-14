@@ -5,9 +5,14 @@ from pathlib import Path
 from pyglm import glm
 
 from babbling_brook.codecs import (
-    ComponentsCodec, ComposedCodec, DelimitedStringsCodec, EscapedTextCodec,
-    GameFileCodec, IdentifierCodec, LookupCodec, MappedCodec, VectorCodec, ZippedCodec,
+    ComposedCodec, DelimitedStringsCodec, EscapedTextCodec,
+    MappedCodec, ZippedCodec,
 )
+from babbling_brook.codecs.GameFileCodec import GameFileCodec
+from babbling_brook.codecs.GameStateCodec import GameTableCodec, GameTablesCodec, _codec
+from babbling_brook.codecs.PrimitiveListCodec import PrimitiveListCodec
+from babbling_brook.codecs.ContainerListCodec import ContainerListCodec
+from babbling_brook.codecs.ObjectListCodec import ObjectListCodec
 from babbling_brook.codecs.maps.MapCodec import MapCodec
 from babbling_brook.codecs.maps.ObjectPlacementCodec import ObjectPlacementCodec
 from babbling_brook.codecs.maps.PpmImageCodec import PpmImageCodec
@@ -26,59 +31,60 @@ class Qux:
     norf: float
 
 
+def table(name, cls, attributes):
+    key = PrimitiveListCodec(str)
+    return GameTableCodec('# ' + name + '\nentity\t' + '\t'.join(name for name, _ in attributes),
+                          key, ObjectListCodec(cls, *attributes))
+
+
 def tables():
-    return (ComponentsCodec('Foo', Foo, [('bar', int), ('baz', str)]),
-            ComponentsCodec('Qux', Qux, [('norf', float)]))
+    return (table('Foo', Foo, [('bar', PrimitiveListCodec(int)), ('baz', PrimitiveListCodec(str))]),
+            table('Qux', Qux, [('norf', PrimitiveListCodec(float))]))
 
 
 class CodecTests(unittest.TestCase):
     def test_composed_tables_round_trip(self):
-        codec = ComposedCodec(
-            ZippedCodec(*tables()),
-            MappedCodec(MappedCodec(MappedCodec(EscapedTextCodec()))),
-            MappedCodec(MappedCodec(DelimitedStringsCodec('\t'))),
-            MappedCodec(DelimitedStringsCodec('\n')),
-            DelimitedStringsCodec('\n\n'),
-        )
+        codec = GameTablesCodec(*tables())
         content = [
             {'player': Foo(3, '  literal \\n and \\t\tactual tab\n\n# hash\r  '),
-             '1': Foo(1, ''), 1: Foo(2, 'integer'), (2, 3): Foo(4, 'coordinate')},
+             '1': Foo(1, ''), 'integer': Foo(2, 'integer'), '(2, 3)': Foo(4, 'coordinate')},
             {'qux': Qux(1.25)},
         ]
         encoded = codec.encode(content)
         self.assertTrue(encoded.startswith('# Foo\n'))
         self.assertIn('\n\n# Qux\n', encoded)
         self.assertEqual(codec.decode(encoded), content)
-        self.assertEqual(GameFileCodec(*tables()).encode(content), encoded)
-        self.assertEqual(GameFileCodec(*tables()).decode(encoded + '\n'), content)
+        self.assertEqual(GameTablesCodec(*tables()).encode(content), encoded)
+        self.assertEqual(GameTablesCodec(*tables()).decode(encoded + '\n'), content)
 
     def test_empty_tables_and_comments_round_trip(self):
-        codec = GameFileCodec(*tables())
+        codec = GameTablesCodec(*tables())
         self.assertEqual(codec.decode(codec.encode([{}, {}])), [{}, {}])
         encoded = codec.encode([{'player': Foo(1, '# literal hash')}, {}])
         encoded = encoded.replace('entity\tbar\tbaz\n', 'entity\tbar\tbaz\n# a comment\n')
         self.assertEqual(codec.decode(encoded)[0]['player'].baz, '# literal hash')
 
     def test_model_components_with_booleans_and_glm_vectors_round_trip(self):
-        codec = GameFileCodec(
-            ComponentsCodec('Physics', VerticalPhysics,
-                            [('vertical_velocity', float), ('is_grounded', bool)]),
-            ComponentsCodec('Characters', CharacterAnimationState,
-                            [('facing', VectorCodec(glm.vec2)), ('animation', str), ('elapsed', float)]),
+        codec = GameTablesCodec(
+            table('Physics', VerticalPhysics,
+                  [('vertical_velocity', PrimitiveListCodec(float)), ('is_grounded', PrimitiveListCodec(bool))]),
+            table('Characters', CharacterAnimationState,
+                  [('facing', ContainerListCodec(glm.vec2, float, 2)),
+                   ('animation', PrimitiveListCodec(str)), ('elapsed', PrimitiveListCodec(float))]),
         )
-        content = [{'player': VerticalPhysics(-1.25, False)},
+        content = [{'player': VerticalPhysics(-1.25, True)},
                    {'player': CharacterAnimationState(glm.vec2(1, 0), 'standing', 0.25)}]
         self.assertEqual(codec.decode(codec.encode(content)), content)
 
     def test_invalid_tables_are_not_silently_truncated_or_reassigned(self):
-        codec = GameFileCodec(*tables())
+        codec = GameTablesCodec(*tables())
         encoded = codec.encode([{'player': Foo(1, 'text')}, {'qux': Qux(2)}])
         sections = encoded.split('\n\n')
         for invalid in (sections[0], encoded + '\n\n' + sections[0],
                         '\n\n'.join(reversed(sections)),
                         encoded.replace('entity\tbar\tbaz', 'entity\tbaz\tbar'),
-                        encoded.replace('"player"\t1\ttext', '"player"\t1'),
-                        encoded.replace('"player"\t1\ttext', '"player"\t1\ttext\n"player"\t2\tother')):
+                        encoded.replace('player\t1\ttext', 'player\t1'),
+                        encoded.replace('player\t1\ttext', 'player\t1\ttext\nplayer\t2\tother')):
             with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                 codec.decode(invalid)
         with self.assertRaises(ValueError):
@@ -93,41 +99,23 @@ class CodecTests(unittest.TestCase):
             with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                 codec.decode(invalid)
 
-    def test_lookup_uses_key_position_and_preserves_rows(self):
-        codec = LookupCodec(ComposedCodec(), key_id=1)
-        content = {'player': [1, 2], 'npc': [3, 4]}
-        encoded = codec.encode(content)
-        self.assertEqual(encoded, [[1, 'player', 2], [3, 'npc', 4]])
-        self.assertEqual(codec.decode(encoded), content)
-        self.assertEqual(encoded[0], [1, 'player', 2])
-        with self.assertRaises(ValueError):
-            codec.decode(encoded + [encoded[0]])
-
-    def test_identifier_types_do_not_collapse(self):
-        codec = IdentifierCodec()
-        identifiers = ['1', 1, (1, 2), '# comment-like ID', 'player']
-        self.assertEqual([codec.decode(codec.encode(key)) for key in identifiers], identifiers)
-        for invalid in (True, 1.5, (1,), (1, '2')):
-            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
-                codec.encode(invalid)
-
 
 class MapCodecTests(unittest.TestCase):
     def test_ppm_channel_values_and_initial_placement(self):
         image = PpmImageCodec().decode('P3\n# channel comments\n2 1\n255\n4 1 0 12 1 7\n')
-        tiles = {'grass': TileArchetype('grass.png', max_erosion=1)}
+        tiles = {'grass': TileArchetype('grass.png', 'ground.png', max_erosion=1)}
         map_ = MapCodec({1: 'grass'}, tiles).decode(image)
-        self.assertEqual(map_.stored_height((1, 0)), 6)
+        self.assertAlmostEqual(map_.height(glm.vec2(1.999, 0.5)), 5.999, places=5)
         placements = ObjectPlacementCodec({7: 'tree'}, map_).decode(image)
         self.assertEqual(len(placements), 1)
-        self.assertEqual(placements[0].entity, (1, 0))
+        self.assertEqual(placements[0].entity, '(1, 0)')
         self.assertEqual(placements[0].archetype, 'tree')
         self.assertEqual(tuple(placements[0].position), (1.5, 0.5, 5.5))
 
     def test_canonical_map_loads_all_nonzero_object_pixels(self):
         with open(Path(__file__).resolve().parents[1] / 'data/world.ppm', encoding='ascii') as file:
             image = PpmImageCodec().decode(file.read())
-        tiles = {'ground': TileArchetype('ground.png', max_erosion=1)}
+        tiles = {'ground': TileArchetype('ground.png', 'ground.png', max_erosion=1)}
         map_ = MapCodec({1: 'ground', 2: 'ground', 3: 'ground'}, tiles).decode(image)
         placements = ObjectPlacementCodec({index: str(index) for index in range(1, 6)}, map_).decode(image)
         self.assertEqual(tuple(map_.dimensions), (18, 18))
@@ -142,7 +130,7 @@ class MapCodecTests(unittest.TestCase):
             with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                 codec.decode(invalid)
         image = codec.decode('P3 1 1 255 4 1 7')
-        tiles = {'ground': TileArchetype('ground.png')}
+        tiles = {'ground': TileArchetype('ground.png', 'ground.png')}
         with self.assertRaises(ValueError):
             MapCodec({}, tiles).decode(image)
         map_ = MapCodec({1: 'ground'}, tiles).decode(image)

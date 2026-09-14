@@ -1,22 +1,17 @@
-# HUMAN WRITTEN
+# HUMAN VETTED
+
+from .ConcatenatedContainerCodec import ConcatenatedContainerCodec
 
 class ObjectListCodec:
-	def __init__(self, Class, *attribute_codecs):
-		self.Class = Class
-		self.headers = [header for header, codec in attribute_codecs]
-		self.codecs = [codec for header, codec in attribute_codecs]
-		self.item_count = len(attribute_codecs)
-	def encode(self, content) -> list[str]:
-		decoded = [getattr(content,header) for header in self.headers]
-		encoded = []
-		for codec in self.codecs:
-			encoded = [*encoded, *codec.encode(decoded[0])]
-			decoded = decoded[1:]
-		return encoded
-	def decode(self, code: list[str]):
-		encoded = code
-		decoded = []
-		for codec in self.codecs:
-			decoded = [*decoded, codec.decode(encoded)]
-			encoded = encoded[codec.item_count:]
-		return self.Class(**dict(zip(self.headers, decoded)))
+    def __init__(self, Class, *attribute_codecs):
+        self.Class = Class
+        self.headers = [header for header, _ in attribute_codecs]
+        self.codecs = [codec for _, codec in attribute_codecs]
+        self.values = ConcatenatedContainerCodec(list, *self.codecs)
+        self.item_count = self.values.item_count
+
+    def encode(self, content):
+        return self.values.encode([getattr(content, header) for header in self.headers])
+
+    def decode(self, code):
+        return self.Class(**dict(zip(self.headers, self.values.decode(code))))
