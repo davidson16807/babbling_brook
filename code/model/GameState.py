@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from .CameraState import CameraState
 from .ControlState import ControlState
 from .Map import Map
-from .stores import ArchetypeComponentStores, InstanceComponentStores
+from .store import ArchetypeComponentStores, InstanceComponentStores
 
 
 @dataclass(frozen=True)

@@ -4,8 +4,8 @@ from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from typing import ClassVar, overload
 
-from ..components.archetypes import ObjectArchetype, TileArchetype
-from ..components.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from ..component.archetypes import ObjectArchetype, TileArchetype
+from ..component.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
 from ..identifiers import ArchetypeId, EntityId
 
 AnimationFrameId = tuple[ArchetypeId, str, int, int]

@@ -22,7 +22,15 @@ python -m babbling_brook
 ```
 
 The equivalent installed command is `babbling-brook`. Keep `data/` in the working
-directory, or pass `--data /path/to/data`.
+directory, or pass `--data /path/to/data`. To layer mods over the base game,
+list the files in load order; arguments without a `.game` or `.mod` extension
+are ignored:
+
+```sh
+python -m babbling_brook data/world.game mod/weather.mod
+```
+
+Use `--map /path/to/world.ppm` when the map is not `DATA/world.ppm`.
 
 | Input | Action |
 | --- | --- |
@@ -32,7 +40,7 @@ directory, or pass `--data /path/to/data`.
 | E | Interact with the closest eligible neighboring object |
 | Tab | Show or hide inventory |
 | Middle mouse drag | Rotate between four isometric azimuths |
-| F5 | Save to `saves/slot.sav` |
+| F5 | Save to `save/slot.sav` |
 | F9 | Load that slot |
 | Escape | Quit |
 
@@ -47,7 +55,7 @@ faster playback rates.
 To resume directly or use another slot:
 
 ```sh
-python -m babbling_brook --load --save saves/slot.sav
+python -m babbling_brook --load --save save/slot.sav
 ```
 
 Saves are manual; quitting does not automatically overwrite the slot. A failed
@@ -65,7 +73,7 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 - `Map` owns the tile `Field` instances. Runtime entity-indexed component
   dictionaries, including `ObjectPlacement`, stay in `InstanceComponentStores`.
   Systems receive the specific dictionaries they need, rather than entire stores.
-- `GameStateCodec.decode` returns a `Plugin`. `PluginOps.update` overlays plugin
+- `PluginStringCodec.decode` returns a `Plugin`. `PluginOps.update` overlays plugin
   tables in load order, and `PluginOps.load` combines the result with a decoded
   `Map` to create the runtime `GameState`.
 - Erosion uses the supplied capped-minimum rule, including the current tile.
@@ -100,7 +108,7 @@ and cached textures was added.
 ## Verify
 
 ```sh
-python -m unittest discover -s tests -v
+python -m unittest discover -s test -v
 ```
 
 When dependencies are missing, the gameplay and rendering modules explicitly
@@ -111,7 +119,7 @@ preservation. An opt-in test compiles the actual shaders and draws to an EGL
 framebuffer:
 
 ```sh
-BB_TEST_GL=1 python -m unittest discover -s tests -v
+BB_TEST_GL=1 python -m unittest discover -s test -v
 python -m babbling_brook --headless --frames 2 --screenshot smoke.png
 ```
 
@@ -123,5 +131,5 @@ python -m babbling_brook --frames 120 --screenshot desktop-smoke.png
 ```
 
 The placeholder PNGs ship ready to load. To regenerate them, optionally install
-Pillow and run `python tools/make_placeholder_textures.py`; Pillow is not a runtime
+Pillow and run `python tool/make_placeholder_textures.py`; Pillow is not a runtime
 game dependency.

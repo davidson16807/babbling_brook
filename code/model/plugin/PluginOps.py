@@ -9,9 +9,9 @@ from pyglm import glm
 from ..GameState import GameState
 from ..Map import Map
 from .Plugin import Plugin
-from ..components.archetypes import CharacterAnimation, CharacterArchetype, DirectionFrames
-from ..components.instances import CharacterAnimationState, VerticalPhysics
-from ..stores import ArchetypeComponentStores, InstanceComponentStores
+from ..component.archetypes import CharacterAnimation, CharacterArchetype, DirectionFrames
+from ..component.instances import CharacterAnimationState, VerticalPhysics
+from ..store import ArchetypeComponentStores, InstanceComponentStores
 
 class PluginOps:
     """Operations for composing plugins and converting game state."""

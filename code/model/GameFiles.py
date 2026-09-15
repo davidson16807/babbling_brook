@@ -5,9 +5,9 @@ from collections.abc import Iterable
 import os
 from pathlib import Path
 
-from ..codecs.maps.MapCodec import MapCodec
-from ..codecs.maps.ObjectPlacementCodec import ObjectPlacementCodec
-from ..codecs.maps.PpmImageCodec import PpmImageCodec
+from ..codec.map.MapCodec import MapCodec
+from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
+from ..codec.map.PpmImageCodec import PpmImageCodec
 from .plugin.Plugin import Plugin
 from .plugin.PluginOps import PluginOps
 

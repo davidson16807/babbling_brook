@@ -4,7 +4,7 @@ from dataclasses import replace
 
 from ..messages import (KeyboardMessage, KeyboardAction, MouseButton, MouseMotionMessage,
     QuitMessage, WindowResizeMessage)
-from ..model.components.instances import VerticalPhysics
+from ..model.component.instances import VerticalPhysics
 
 
 class GameUpdater:

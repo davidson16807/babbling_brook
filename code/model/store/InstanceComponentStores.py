@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass, field
 
-from ..components.archetypes import CharacterArchetype, ObjectArchetype, TileArchetype
-from ..identifiers import ArchetypeId
+from ..component.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from ..identifiers import EntityId
 
 '''
 A "store" is the name chosen for this application to represent
@@ -15,7 +15,7 @@ a system should only operate on the fewest component collections needed to do it
 '''
 
 @dataclass(frozen=True)
-class ArchetypeComponentStores:
-    objects: dict[ArchetypeId, ObjectArchetype] = field(default_factory=dict)
-    characters: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
-    tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
+class InstanceComponentStores:
+    placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
+    physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
+    characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)

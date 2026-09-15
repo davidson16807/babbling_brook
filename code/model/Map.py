@@ -20,8 +20,8 @@ from math import isfinite
 
 from pyglm import glm
 
-from .fields import IndexedField, RasterField
-from .components.archetypes import TileArchetype
+from .field import IndexedField, RasterField
+from .component.archetypes import TileArchetype
 from .identifiers import ArchetypeId, Coordinate
 
 

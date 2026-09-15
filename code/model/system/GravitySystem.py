@@ -3,7 +3,7 @@
 from dataclasses import replace
 
 from pyglm import glm
-from ..components.instances import VerticalPhysics
+from ..component.instances import VerticalPhysics
 
 
 class GravitySystem:

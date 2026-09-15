@@ -3,7 +3,7 @@
 from collections import defaultdict
 from math import cos, sin
 from pyglm import glm
-from ..programs.ViewState import ViewState
+from ..program.ViewState import ViewState
 
 
 class BillboardView:

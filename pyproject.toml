@@ -18,12 +18,12 @@ render = ["moderngl", "pygame-ce"]
 [tool.setuptools]
 package-dir = {babbling_brook = "code"}
 packages = [
-    "babbling_brook", "babbling_brook.model", "babbling_brook.model.plugin", "babbling_brook.model.components", "babbling_brook.model.fields", "babbling_brook.model.query",
-    "babbling_brook.model.stores", "babbling_brook.model.systems",
-    "babbling_brook.codecs", "babbling_brook.codecs.maps", "babbling_brook.adapters",
-    "babbling_brook.update", "babbling_brook.view", "babbling_brook.view.programs",
-    "babbling_brook.view.views",
+    "babbling_brook", "babbling_brook.model", "babbling_brook.model.plugin", "babbling_brook.model.component", "babbling_brook.model.field", "babbling_brook.model.query",
+    "babbling_brook.model.store", "babbling_brook.model.system",
+    "babbling_brook.codec", "babbling_brook.codec.map", "babbling_brook.adapter",
+    "babbling_brook.update", "babbling_brook.view", "babbling_brook.view.program",
+    "babbling_brook.view.view",
 ]
 
 [tool.setuptools.package-data]
-"babbling_brook.view.programs" = ["README.md"]
+"babbling_brook.view.program" = ["README.md"]

@@ -1,7 +1,7 @@
 # HUMAN VETTED
 
 from collections import defaultdict
-from ..programs.ViewState import ViewState
+from ..program.ViewState import ViewState
 
 
 class TileView:

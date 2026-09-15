@@ -6,14 +6,14 @@ from dataclasses import replace
 
 from pyglm import glm
 
-import babbling_brook.codecs
+import babbling_brook.codec
 import babbling_brook.model
 from babbling_brook.model import GameState
-from babbling_brook.model.fields import RasterField, IndexedField
+from babbling_brook.model.field import RasterField, IndexedField
 from babbling_brook.model.Map import Map
-from babbling_brook.model.components.archetypes import TileArchetype
-from babbling_brook.model.components.instances import CharacterAnimationState, ObjectPlacement
-from babbling_brook.model.stores import ArchetypeComponentStores
+from babbling_brook.model.component.archetypes import TileArchetype
+from babbling_brook.model.component.instances import CharacterAnimationState, ObjectPlacement
+from babbling_brook.model.store import ArchetypeComponentStores
 
 
 def terrain(width, heights, erosion=float('inf'), tile_ids=None, archetypes=None):
@@ -130,7 +130,7 @@ class TerrainTests(unittest.TestCase):
 
 class ModelTests(unittest.TestCase):
     def test_all_model_and_codec_modules_import_without_graphics_dependencies(self):
-        for package in (babbling_brook.model, babbling_brook.codecs):
+        for package in (babbling_brook.model, babbling_brook.codec):
             for module in pkgutil.walk_packages(package.__path__, package.__name__ + '.'):
                 importlib.import_module(module.name)
 
