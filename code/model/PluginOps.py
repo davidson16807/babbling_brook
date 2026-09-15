@@ -16,7 +16,7 @@ from .stores import ArchetypeComponentStores, InstanceComponentStores
 class PluginOps:
     """Operations for composing plugins and converting game state."""
 
-    def update(self, plugins: Iterable[Plugin]) -> Plugin:
+    def update(self, *plugins: Iterable[Plugin]) -> Plugin:
         combined = Plugin()
         for plugin in plugins:
             combined = Plugin(**{
