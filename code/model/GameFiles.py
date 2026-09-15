@@ -28,7 +28,7 @@ class GameFiles:
         map_filename: Path,
         game_filenames: list[Path],
         save_filename: Path | None = None,
-    ):
+    ) -> GameState:
         plugins = [self._plugin(filename) for filename in game_filenames]
         plugin = self.plugin_ops.update(*plugins)
 
@@ -46,7 +46,7 @@ class GameFiles:
 
         return self.plugin_ops.load(map_, plugin)
 
-    def save(self, filename: Path, state) -> None:
+    def save(self, filename: Path, state: GameState) -> None:
         plugin = self.plugin_ops.save(state)
         filename.parent.mkdir(parents=True, exist_ok=True)
         temporary = filename.with_name(filename.name + '.tmp')
