@@ -14,7 +14,6 @@ from .PrimitiveListCodec import PrimitiveListCodec, BooleanListCodec
 from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
-from ..model.GameState import GameState
 from ..model.Plugin import Plugin
 from ..model.components.archetypes import TileArchetype, ObjectArchetype
 from ..model.components.instances import ObjectPlacement, VerticalPhysics, CharacterAnimationState
@@ -52,7 +51,7 @@ def GameTableCodec(header, key_codec, value_codec,
 				item_count=1),
 		)
 
-def GameStateCodec(table_delimiter='\n\n'):
+def PluginStringCodec(table_delimiter='\n\n'):
 	return ComposedCodec(
 		PluginListCodec(),
 		ZippedCodec(
