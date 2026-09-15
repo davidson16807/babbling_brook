@@ -14,7 +14,7 @@ from .PrimitiveListCodec import PrimitiveListCodec, BooleanListCodec
 from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
-from ..model.Plugin import Plugin
+from ..model.plugin.Plugin import Plugin
 from ..model.components.archetypes import TileArchetype, ObjectArchetype
 from ..model.components.instances import ObjectPlacement, VerticalPhysics, CharacterAnimationState
 

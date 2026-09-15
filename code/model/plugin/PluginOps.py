@@ -6,12 +6,12 @@ from dataclasses import replace
 
 from pyglm import glm
 
-from .GameState import GameState
-from .Map import Map
+from ..GameState import GameState
+from ..Map import Map
 from .Plugin import Plugin
-from .components.archetypes import CharacterAnimation, CharacterArchetype, DirectionFrames
-from .components.instances import CharacterAnimationState, VerticalPhysics
-from .stores import ArchetypeComponentStores, InstanceComponentStores
+from ..components.archetypes import CharacterAnimation, CharacterArchetype, DirectionFrames
+from ..components.instances import CharacterAnimationState, VerticalPhysics
+from ..stores import ArchetypeComponentStores, InstanceComponentStores
 
 class PluginOps:
     """Operations for composing plugins and converting game state."""

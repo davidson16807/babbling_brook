@@ -3,11 +3,11 @@ from collections.abc import Iterable
 import os
 from pathlib import Path
 
-from .codecs.maps.MapCodec import MapCodec
-from .codecs.maps.ObjectPlacementCodec import ObjectPlacementCodec
-from .codecs.maps.PpmImageCodec import PpmImageCodec
-from .model.Plugin import Plugin
-from .model.PluginOps import PluginOps
+from ..codecs.maps.MapCodec import MapCodec
+from ..codecs.maps.ObjectPlacementCodec import ObjectPlacementCodec
+from ..codecs.maps.PpmImageCodec import PpmImageCodec
+from .plugin.Plugin import Plugin
+from .plugin.PluginOps import PluginOps
 
 
 class GameFiles:
