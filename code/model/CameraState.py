@@ -1,3 +1,5 @@
+# HUMAN VETTED
+
 from dataclasses import dataclass
 from math import sin, cos, atan, pi, sqrt, floor
 

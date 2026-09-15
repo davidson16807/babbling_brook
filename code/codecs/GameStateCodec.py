@@ -1,3 +1,5 @@
+# HUMAN VETTED
+
 from types import SimpleNamespace
 
 from pyglm import glm

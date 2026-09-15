@@ -1,3 +1,5 @@
+# HUMAN VETTED
+
 """Load and save game state at the filesystem boundary."""
 from collections.abc import Iterable
 import os

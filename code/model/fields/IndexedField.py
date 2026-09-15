@@ -1,3 +1,4 @@
+# HUMAN VETTED
 
 from collections.abc import Mapping
 from typing import Generic, TypeVar

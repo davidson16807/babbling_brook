@@ -1,3 +1,5 @@
+# HUMAN VETTED
+
 """Identifiers and grid addresses; geometric quantities use PyGLM."""
 
 from typing import TypeAlias

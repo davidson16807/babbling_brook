@@ -1,3 +1,5 @@
+# HUMAN VETTED
+
 from collections import defaultdict
 from math import cos, sin
 from pyglm import glm
