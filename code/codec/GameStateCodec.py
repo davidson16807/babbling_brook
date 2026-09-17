@@ -1,20 +1,14 @@
 # HUMAN VETTED
 
-from types import SimpleNamespace
-
 from pyglm import glm
 
 from .ComposedCodec import ComposedCodec
 from .ConcatenatedContainerCodec import ConcatenatedContainerCodec
 from .ContainerListCodec import ContainerListCodec
-from .DictionaryListCodec import DictionaryListCodec
 from .DelimitedStringsCodec import DelimitedStringsCodec
-from .EscapedTextCodec import EscapedTextCodec
-from .MappedCodec import MappedCodec
+from .GameTablesCodec import GameTableCodec
 from .ObjectListCodec import ObjectListCodec
 from .PrimitiveListCodec import PrimitiveListCodec, BooleanListCodec
-from .CommentedStringCodec import CommentedStringCodec
-from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
 from ..model.plugin.Plugin import Plugin
 from ..model.component.archetypes import TileArchetype, ObjectArchetype
@@ -28,30 +22,6 @@ class PluginListCodec:
         return plugin.to_tables()
     def decode(self, code):
         return Plugin.from_tables(code)
-
-def _codec(encode, decode, item_count=1):
-	return SimpleNamespace(encode=encode, decode=decode, item_count=item_count)
-
-def GameRowCodec(key_codec, value_codec, column_delimiter='\t'):
-	return ComposedCodec(
-		ConcatenatedContainerCodec(list, key_codec, value_codec),
-		MappedCodec(EscapedTextCodec()),
-		DelimitedStringsCodec(column_delimiter),
-	)
-
-def GameTableCodec(header, key_codec, value_codec,
-		column_delimiter='\t', row_delimiter='\n', comment_delimiter='#'):
-	return ComposedCodec(
-			DictionaryListCodec(),
-			MappedCodec(GameRowCodec(key_codec, value_codec, column_delimiter=column_delimiter)),
-			DelimitedStringsCodec(row_delimiter),
-			CommentedStringCodec(comment_delimiter),
-			PrefixedStringCodec(header+row_delimiter),
-			SimpleNamespace(
-				encode=lambda code: code.rstrip(row_delimiter), 
-				decode=lambda code: code.strip(row_delimiter)+row_delimiter, 
-				item_count=1),
-		)
 
 def PluginStringCodec(table_delimiter='\n\n'):
 	return ComposedCodec(

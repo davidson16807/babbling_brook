@@ -35,18 +35,19 @@ class PluginOps:
         characters = {}
         for key in dict.fromkeys(key for key, _ in animations):
             decoded = {}
-            for animation in ('standing', 'walking', 'running'):
-                frames = animations.get((key, animation))
-                if frames is None:
-                    continue
-                decoded[animation] = CharacterAnimation(
+            animation_names = dict.fromkeys(
+                animation for archetype, animation in animations if archetype == key
+            )
+            for animation_name in animation_names:
+                frames = animations[key, animation_name]
+                decoded[animation_name] = CharacterAnimation(
                     tuple(
                         DirectionFrames(tuple(frames[direction, frame][0] for frame in (0, 1)))
                         for direction in (0, 1)
                     ),
                     frames[0, 0][1],
                 )
-            characters[key] = CharacterArchetype(**decoded)
+            characters[key] = CharacterArchetype(decoded)
 
         archetypes = ArchetypeComponentStores(
             objects=dict(plugin.objects),
@@ -82,10 +83,7 @@ class PluginOps:
     def save(self, state: GameState) -> Plugin:
         frames = {}
         for key, character in state.archetypes.characters.items():
-            for animation_name in ('standing', 'walking', 'running'):
-                animation = getattr(character, animation_name)
-                if animation is None:
-                    continue
+            for animation_name, animation in character.animations.items():
                 for direction, direction_frames in enumerate(animation.directions):
                     for frame, texture in enumerate(direction_frames.textures):
                         frames[key, animation_name, direction, frame] = (

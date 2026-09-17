@@ -4,12 +4,10 @@ This revision adds the desktop MVP implementation to the supplied model and shad
 foundation. It preserves the `code/` source layout and exposes the package as
 `babbling_brook` to avoid Python's built-in `code` and `codecs` modules.
 
-**Validation status:** the six codec tests and Python compilation pass. Gameplay,
+**Validation status:** Python compilation passes. The full test suite, gameplay,
 Pygame event integration, and actual OpenGL rendering have not been executed in
-the delivery environment: PyGLM, Pygame-CE, and ModernGL were unavailable and the
-network did not permit installing them. This is an implementation for review,
-not a claim of a playtested build. See `review/REVIEW.md` for exact changes and
-remaining verification.
+the delivery environment because PyGLM, Pygame-CE, and ModernGL were unavailable.
+This is an implementation for review, not a claim of a playtested build.
 
 ## Run
 
@@ -69,6 +67,8 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
   (zero places nothing).
 - `data/world.game` supplies archetypes, palettes, four frames per character
   animation (two directions, two frames each), and optional additional objects.
+  Character archetypes keep animations in a name-keyed dictionary, so additional
+  names such as `attacking` and `disabled` need no model or renderer changes.
   Identifiers are JSON scalar cells: `"player"` is a string ID, `1` an integer ID.
 - `Map` owns the tile `Field` instances. Runtime entity-indexed component
   dictionaries, including `ObjectPlacement`, stay in `InstanceComponentStores`.
@@ -76,6 +76,8 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 - `PluginStringCodec.decode` returns a `Plugin`. `PluginOps.update` overlays plugin
   tables in load order, and `PluginOps.load` combines the result with a decoded
   `Map` to create the runtime `GameState`.
+- Generic named-table and legacy row/table codec construction lives in
+  `GameTablesCodec`; `GameFileCodec` remains as a compatibility alias.
 - Erosion uses the supplied capped-minimum rule, including the current tile.
   Each tile top has exactly two triangles along the h00–h11 diagonal. Height
   queries interpolate those same triangles. Exposed sides extend to the fixed
@@ -83,6 +85,11 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 - `PygameMessageQueue` remains the event boundary. The loop consumes its internal
   messages and fixed 1/120-second ticks. Updaters map model/message to model;
   systems handle component collections. No Pygame polling is used in game logic.
+- `Motion` is an ordered series of independently timed `MotionSegment` values.
+  Each segment linearly interpolates x/y and evaluates an unclamped quadratic
+  height; `MotionSystem` advances it and clamps the realized height to the map.
+  `Map.is_continuous_transition` compares the midpoint geometry on a shared edge
+  so callers can choose a linear path or a jump without depending on erosion flags.
 - `GameView` composes `TileView`, `BillboardView`, and `PygameUiView`. Programs
   receive primitive sequences. Pygame font surfaces are rendered through the
   OpenGL `UiProgram`; characters remain upright cylindrical billboards.

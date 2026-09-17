@@ -29,6 +29,7 @@ from .model.query.CollisionQuery import CollisionQuery
 from .model.query.InteractionQuery import InteractionQuery
 from .model.system.GravitySystem import GravitySystem
 from .model.system.CharacterAnimationSystem import CharacterAnimationSystem
+from .model.system.MotionSystem import MotionSystem
 from .model.plugin.PluginOps import PluginOps
 from .codec.GameStateCodec import PluginStringCodec
 
@@ -88,9 +89,8 @@ def main(argv=None):
             for texture in (item.top_texture, item.side_texture)
         } | {item.texture for item in model.archetypes.objects.values()}
         for character in model.archetypes.characters.values():
-            for animation in (character.standing, character.walking, character.running):
-                if animation:
-                    names.update(texture for direction in animation.directions for texture in direction.textures)
+            for animation in character.animations.values():
+                names.update(texture for direction in animation.directions for texture in direction.textures)
         for name in sorted(names):
             textures.get(name)
         view = GameView(TileView(TileProgram(gl, textures)),
@@ -98,6 +98,7 @@ def main(argv=None):
                         PygameUiView(UiProgram(gl)))
         movement = MovementUpdater(CollisionQuery())
         gravity = GravitySystem()
+        motion = MotionSystem()
         animations = CharacterAnimationSystem()
         updater = GameUpdater(
             ControlUpdater(),
@@ -129,8 +130,16 @@ def main(argv=None):
                 seconds = 1 / 120
                 model = movement.update(model, seconds)
                 instances = model.instances
-                placements, physics = gravity.step(
-                    instances.placements, instances.physics, model.map, seconds)
+                stationary_physics = {
+                    entity: state
+                    for entity, state in instances.physics.items()
+                    if entity not in instances.motions
+                }
+                placements, stepped_physics = gravity.step(
+                    instances.placements, stationary_physics, model.map, seconds)
+                physics = {**instances.physics, **stepped_physics}
+                placements, motions = motion.step(
+                    placements, instances.motions, model.map, seconds)
                 characters = animations.step(instances.characters, seconds)
                 model = replace(
                     model,
@@ -139,6 +148,7 @@ def main(argv=None):
                         placements=placements,
                         physics=physics,
                         characters=characters,
+                        motions=motions,
                     ),
                 )
                 accumulator -= seconds

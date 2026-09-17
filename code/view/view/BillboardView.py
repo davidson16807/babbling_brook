@@ -20,7 +20,11 @@ class BillboardView:
             if key in archetypes.characters:
                 state = instances.characters[entity]
                 archetype = archetypes.characters[key]
-                animation = getattr(archetype, state.animation, None) or archetype.walking or archetype.standing
+                animation = (
+                    archetype.animations.get(state.animation)
+                    or archetype.animations.get('walking')
+                    or archetype.animations['standing']
+                )
                 direction = 0 if glm.dot(state.facing, toward_camera) >= 0 else 1
                 frame = int(state.elapsed / animation.seconds_per_frame) % 2
                 texture = animation.directions[direction].textures[frame]

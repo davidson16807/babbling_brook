@@ -87,7 +87,8 @@ class Map:
         cell = glm.floor(position)
         return int(cell.x), int(cell.y)
 
-    def __contains__(self, position: glm.vec2) -> bool:
+    def __contains__(self, position: Coordinate | glm.vec2) -> bool:
+        """Return whether a tile coordinate or continuous position is on the map."""
         return position in self._corner_heights
 
     def tile(self, coordinate: Coordinate) -> TileArchetype:
@@ -95,6 +96,37 @@ class Map:
 
     def corner_heights(self, coordinate: Coordinate) -> glm.mat2:
         return self._corner_heights[coordinate]
+
+    def is_continuous_transition(
+            self,
+            start: Coordinate,
+            end: Coordinate,
+            tolerance: float = 1e-5) -> bool:
+        """Return whether adjacent tiles meet at the midpoint of their shared edge."""
+
+        if not isfinite(tolerance) or tolerance < 0:
+            raise ValueError("tolerance must be finite and nonnegative")
+        if start not in self or end not in self:
+            raise IndexError("Tile transition is outside the map")
+        dx, dy = end[0] - start[0], end[1] - start[1]
+        if abs(dx) + abs(dy) != 1:
+            raise ValueError("Tile transitions require orthogonally adjacent cells")
+
+        start_heights = self._corner_heights[start]
+        end_heights = self._corner_heights[end]
+        if dx == 1:
+            first = (start_heights[1][0] + start_heights[1][1]) / 2
+            second = (end_heights[0][0] + end_heights[0][1]) / 2
+        elif dx == -1:
+            first = (start_heights[0][0] + start_heights[0][1]) / 2
+            second = (end_heights[1][0] + end_heights[1][1]) / 2
+        elif dy == 1:
+            first = (start_heights[0][1] + start_heights[1][1]) / 2
+            second = (end_heights[0][0] + end_heights[1][0]) / 2
+        else:
+            first = (start_heights[0][0] + start_heights[1][0]) / 2
+            second = (end_heights[0][1] + end_heights[1][1]) / 2
+        return abs(first - second) <= tolerance
 
     def height(self, position: glm.vec2) -> float | None:
         if position not in self:

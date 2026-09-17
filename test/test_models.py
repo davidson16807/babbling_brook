@@ -8,12 +8,21 @@ from pyglm import glm
 
 import babbling_brook.codec
 import babbling_brook.model
+from babbling_brook.codec import GameFileCodec, GameTablesCodec
 from babbling_brook.model import GameState
 from babbling_brook.model.field import RasterField, IndexedField
 from babbling_brook.model.Map import Map
 from babbling_brook.model.component.archetypes import TileArchetype
-from babbling_brook.model.component.instances import CharacterAnimationState, ObjectPlacement
+from babbling_brook.model.component.instances import (
+    CharacterAnimationState,
+    Motion,
+    MotionSegment,
+    ObjectPlacement,
+    arc_height_coefficients,
+    linear_height_coefficients,
+)
 from babbling_brook.model.store import ArchetypeComponentStores
+from babbling_brook.model.system.MotionSystem import MotionSystem
 
 
 def terrain(width, heights, erosion=float('inf'), tile_ids=None, archetypes=None):
@@ -60,6 +69,19 @@ class TerrainTests(unittest.TestCase):
         self.assertEqual(map_.height(glm.vec2(1, 0.5)), 5)
         self.assertEqual(map_.height(glm.vec2(0.999, 0.5)), 2)
 
+    def test_transition_continuity_compares_shared_edge_geometry(self):
+        smooth = terrain(2, [2, 4])
+        cliff = terrain(2, [2, 6], erosion=1)
+        self.assertTrue(smooth.is_continuous_transition((0, 0), (1, 0)))
+        self.assertTrue(smooth.is_continuous_transition((1, 0), (0, 0)))
+        self.assertFalse(cliff.is_continuous_transition((0, 0), (1, 0)))
+        self.assertFalse(cliff.is_continuous_transition((1, 0), (0, 0)))
+
+        with self.assertRaises(ValueError):
+            smooth.is_continuous_transition((0, 0), (0, 0))
+        with self.assertRaises(IndexError):
+            smooth.is_continuous_transition((0, 0), (2, 0))
+
     def test_per_archetype_cap_and_complete_erosion_of_isolated_peak(self):
         heights = [2, 2, 2, 2, 6, 2, 2, 2, 2]
         for cap, expected in ((0, 6), (1.5, 4.5), (float('inf'), 2)):
@@ -104,6 +126,12 @@ class TerrainTests(unittest.TestCase):
     def test_bounds_and_row_major_indexing(self):
         map_ = terrain(3, [1, 2, 3, 4, 5, 6], erosion=0)
         self.assertEqual(map_.height(glm.vec2(2.5, 1.5)), 6)
+        for coordinate in ((0, 0), (2, 1)):
+            with self.subTest(coordinate=coordinate):
+                self.assertIn(coordinate, map_)
+        for coordinate in ((-1, 0), (0, -1), (3, 0), (0, 2)):
+            with self.subTest(coordinate=coordinate):
+                self.assertNotIn(coordinate, map_)
         for xy in ((-0.001, 0), (0, -0.001), (3, 0), (0, 2), (math.nan, 0), (0, math.inf)):
             with self.subTest(xy=xy):
                 position = glm.vec2(*xy)
@@ -146,3 +174,64 @@ class ModelTests(unittest.TestCase):
         new = replace(old, facing=glm.vec2(1, 0))
         self.assertEqual(tuple(old.facing), (0, 1))
         self.assertEqual(tuple(new.facing), (1, 0))
+
+    def test_generic_game_tables_codec_keeps_unknown_named_sections(self):
+        self.assertIs(GameFileCodec, GameTablesCodec)
+        codec = GameTablesCodec()
+        content = {'future_table': [['key', 'value'], ['alpha', 'one']]}
+        self.assertEqual(codec.decode(codec.encode(content)), content)
+
+
+class MotionTests(unittest.TestCase):
+    def test_segment_interpolates_xy_and_evaluates_quadratic_height(self):
+        segment = MotionSegment(
+            glm.vec2(0, 1),
+            glm.vec2(2, 3),
+            (0, 1, 2),
+            2,
+        )
+        self.assertEqual(tuple(segment(1)), (1, 2, 3))
+        self.assertEqual(linear_height_coefficients(2, 4, 2), (0, 1, 2))
+
+    def test_arc_height_reaches_its_endpoints_and_maximum(self):
+        coefficients = arc_height_coefficients(1, 2, 4, 2)
+        segment = MotionSegment(glm.vec2(0), glm.vec2(1, 0), coefficients, 2)
+        vertex_time = -coefficients[1] / (2 * coefficients[0])
+        self.assertAlmostEqual(segment(0).z, 1)
+        self.assertAlmostEqual(segment(2).z, 2)
+        self.assertAlmostEqual(segment(vertex_time).z, 4)
+
+    def test_system_clamps_to_ground_and_removes_completed_motion(self):
+        map_ = terrain(2, [1, 1], erosion=0)
+        segment = MotionSegment(
+            glm.vec2(.5, .5),
+            glm.vec2(1.5, .5),
+            linear_height_coefficients(0, 0, 2),
+            2,
+        )
+        placements = {'unit': ObjectPlacement('child', glm.vec3(.5, .5, 1))}
+        motions = {'unit': Motion((segment,))}
+        system = MotionSystem()
+
+        placements, motions = system.step(placements, motions, map_, 1)
+        self.assertEqual(tuple(placements['unit'].position), (1, .5, 1))
+        self.assertEqual(motions['unit'].elapsed, 1)
+
+        placements, motions = system.step(placements, motions, map_, 1)
+        self.assertEqual(tuple(placements['unit'].position), (1.5, .5, 1))
+        self.assertEqual(motions, {})
+
+    def test_system_crosses_segments_with_independent_durations(self):
+        map_ = terrain(3, [1, 1, 1], erosion=0)
+        first = MotionSegment(
+            glm.vec2(.5, .5), glm.vec2(1.5, .5), (0, 0, 1), 1)
+        second = MotionSegment(
+            glm.vec2(1.5, .5), glm.vec2(2.5, .5), (0, 0, 1), 2)
+        placements = {'unit': ObjectPlacement('child', glm.vec3(.5, .5, 1))}
+        motions = {'unit': Motion((first, second))}
+
+        placements, motions = MotionSystem().step(placements, motions, map_, 2)
+
+        self.assertEqual(tuple(placements['unit'].position), (2, .5, 1))
+        self.assertEqual(motions['unit'].segment_index, 1)
+        self.assertEqual(motions['unit'].elapsed, 1)

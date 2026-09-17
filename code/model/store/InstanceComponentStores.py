@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-from ..component.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from ..component.instances import CharacterAnimationState, Motion, ObjectPlacement, VerticalPhysics
 from ..identifiers import EntityId
 
 '''
@@ -19,3 +19,4 @@ class InstanceComponentStores:
     placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
+    motions: dict[EntityId, Motion] = field(default_factory=dict)

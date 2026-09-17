@@ -92,6 +92,32 @@ class GameFilesTests(unittest.TestCase):
         self.assertEqual(len(self.codec.decoded), 2)
         self.assertEqual(len(self.ops.updated), 2)
 
+    def test_arbitrary_named_character_animation_round_trips(self):
+        frames = {
+            ('child', 'attacking', direction, frame):
+                (f'attack-{direction}-{frame}.svg', .2)
+            for direction in (0, 1)
+            for frame in (0, 1)
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            mod_filename = Path(directory) / 'attack.mod'
+            mod_filename.write_text(
+                self.codec.delegate.encode(Plugin(animation_frames=frames)),
+                encoding='utf-8',
+            )
+            state = self.files.load(
+                self.map_filename,
+                [self.game_filename, mod_filename],
+            )
+
+        self.assertIn('attacking', state.archetypes.characters['child'].animations)
+        saved = self.ops.delegate.save(state)
+        self.assertEqual(
+            {key: value for key, value in saved.animation_frames.items()
+             if key[1] == 'attacking'},
+            frames,
+        )
+
     def test_load_requires_at_least_one_game_file(self):
         with self.assertRaises(ValueError):
             self.files.load(self.map_filename, [])
