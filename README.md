@@ -4,12 +4,10 @@ This revision adds the desktop MVP implementation to the supplied model and shad
 foundation. It preserves the `code/` source layout and exposes the package as
 `babbling_brook` to avoid Python's built-in `code` and `codecs` modules.
 
-**Validation status:** the six codec tests and Python compilation pass. Gameplay,
-Pygame event integration, and actual OpenGL rendering have not been executed in
-the delivery environment: PyGLM, Pygame-CE, and ModernGL were unavailable and the
-network did not permit installing them. This is an implementation for review,
-not a claim of a playtested build. See `review/REVIEW.md` for exact changes and
-remaining verification.
+**Validation status:** 38 tests pass with the EGL check enabled, and the actual
+game renders successfully in a two-frame headless smoke run. Interactive desktop
+play has not been exercised. See [shared refactor notes](review/SHARED_REFACTORS.md)
+for the changes, integration contracts, and remaining Stratege work.
 
 ## Run
 
@@ -23,8 +21,7 @@ python -m babbling_brook
 
 The equivalent installed command is `babbling-brook`. Keep `data/` in the working
 directory, or pass `--data /path/to/data`. To layer mods over the base game,
-list the files in load order; arguments without a `.game` or `.mod` extension
-are ignored:
+list the files in load order:
 
 ```sh
 python -m babbling_brook data/world.game mod/weather.mod
@@ -69,7 +66,7 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
   (zero places nothing).
 - `data/world.game` supplies archetypes, palettes, four frames per character
   animation (two directions, two frames each), and optional additional objects.
-  Identifiers are JSON scalar cells: `"player"` is a string ID, `1` an integer ID.
+  Entity and archetype identifiers are plain string cells; palette indices are integers.
 - `Map` owns the tile `Field` instances. Runtime entity-indexed component
   dictionaries, including `ObjectPlacement`, stay in `InstanceComponentStores`.
   Systems receive the specific dictionaries they need, rather than entire stores.
@@ -90,8 +87,8 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
   placements, inventory, globals, physics, and character states. Loading a save
   reads only tiles from the PPM and obtains object instances only from the save.
   Archetype definitions still come from `world.game`. Unknown sections are
-  reported instead of silently discarded. The generic `GameFileCodec` preserves
-  unknown table sections when decoding.
+  reported instead of silently discarded. The generic `GameTablesCodec` preserves
+  unknown table sections when decoding. `BabblingBrookFileCodec` owns the application schema.
 
 For section framing, a `# name` line immediately after a blank line (or at the
 start) begins a section. Other lines beginning with optional whitespace and `#`
@@ -111,12 +108,10 @@ and cached textures was added.
 python -m unittest discover -s test -v
 ```
 
-When dependencies are missing, the gameplay and rendering modules explicitly
-skip; a run with skips is not evidence of a working desktop game. The suite covers
-codec round trips, erosion, mesh/height agreement, movement, jump/landing,
-collision, interaction, save restoration without PPM respawning, and failed-save
-preservation. An opt-in test compiles the actual shaders and draws to an EGL
-framebuffer:
+Model/codec tests require PyGLM. Adapter tests skip when Pygame is absent.
+The suite covers codec round trips, named animations, erosion, mesh/height
+agreement, save snapshots, motion, and line of sight. An opt-in test compiles
+and renders `HighlightProgram` in an EGL framebuffer:
 
 ```sh
 BB_TEST_GL=1 python -m unittest discover -s test -v
@@ -130,6 +125,5 @@ by Pygame. A desktop smoke command is:
 python -m babbling_brook --frames 120 --screenshot desktop-smoke.png
 ```
 
-The placeholder PNGs ship ready to load. To regenerate them, optionally install
-Pillow and run `python tool/make_placeholder_textures.py`; Pillow is not a runtime
-game dependency.
+The supplied SVG textures load directly through Pygame. No separate mask files
+or generated player-palette variants are required for Babbling Brook.

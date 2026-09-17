@@ -29,9 +29,11 @@ class CharacterAnimation:
 
 @dataclass(frozen=True)
 class CharacterArchetype:
-    standing: CharacterAnimation
-    walking: CharacterAnimation | None = None
-    running: CharacterAnimation | None = None
+    animations: dict[str, CharacterAnimation]
+
+    def __post_init__(self):
+        if 'standing' not in self.animations:
+            raise ValueError("A character requires a standing animation")
 
 
 @dataclass(frozen=True)

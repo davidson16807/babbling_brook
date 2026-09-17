@@ -82,11 +82,14 @@ class GameFilesTests(unittest.TestCase):
         self.assertIn('player', saved.placements)
 
     def test_optional_save_file_is_applied_after_game_files(self):
-        state = self.files.load(
-            self.map_filename,
-            [self.game_filename],
-            self.root / 'save' / 'slot.sav',
-        )
+        # Generate the fixture: personal save slots are not part of the archive.
+        with tempfile.TemporaryDirectory() as directory:
+            save_filename = Path(directory) / 'slot.sav'
+            initial = GameFiles(PluginOps(), PluginStringCodec()).load(
+                self.map_filename, [self.game_filename])
+            initial.inventory['apple'] = 1
+            save_filename.write_text(PluginStringCodec().encode(PluginOps().save(initial)), encoding='utf-8')
+            state = self.files.load(self.map_filename, [self.game_filename], save_filename)
 
         self.assertEqual(state.inventory['apple'], 1)
         self.assertEqual(len(self.codec.decoded), 2)

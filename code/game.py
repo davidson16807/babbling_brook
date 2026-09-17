@@ -30,7 +30,7 @@ from .model.query.InteractionQuery import InteractionQuery
 from .model.system.GravitySystem import GravitySystem
 from .model.system.CharacterAnimationSystem import CharacterAnimationSystem
 from .model.plugin.PluginOps import PluginOps
-from .codec.GameStateCodec import PluginStringCodec
+from .codec.BabblingBrookFileCodec import BabblingBrookFileCodec
 
 from . import APPLICATION_TITLE
 from .model.GameFiles import GameFiles
@@ -56,7 +56,7 @@ def main(argv=None):
     if not args.game_files:
         args.game_files = [args.data / 'world.game']
     map_filename = args.map or args.data / 'world.ppm'
-    game_files = GameFiles(PluginOps(), PluginStringCodec())
+    game_files = GameFiles(PluginOps(), BabblingBrookFileCodec())
     try:
         model = game_files.load(map_filename, args.game_files, args.save if args.load else None)
     except (OSError, ValueError) as error:
@@ -88,7 +88,7 @@ def main(argv=None):
             for texture in (item.top_texture, item.side_texture)
         } | {item.texture for item in model.archetypes.objects.values()}
         for character in model.archetypes.characters.values():
-            for animation in (character.standing, character.walking, character.running):
+            for animation in character.animations.values():
                 if animation:
                     names.update(texture for direction in animation.directions for texture in direction.textures)
         for name in sorted(names):

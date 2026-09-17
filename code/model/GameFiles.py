@@ -1,13 +1,14 @@
 # HUMAN VETTED
 
 """Load and save game state at the filesystem boundary."""
-from collections.abc import Iterable
+from dataclasses import replace
 import os
 from pathlib import Path
 
 from ..codec.map.MapCodec import MapCodec
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..codec.map.PpmImageCodec import PpmImageCodec
+from .GameState import GameState
 from .plugin.Plugin import Plugin
 from .plugin.PluginOps import PluginOps
 
@@ -29,6 +30,13 @@ class GameFiles:
         game_filenames: list[Path],
         save_filename: Path | None = None,
     ) -> GameState:
+        map_, plugin = self.load_content(map_filename, game_filenames, save_filename)
+        return self.plugin_ops.load(map_, plugin)
+
+    def load_content(self, map_filename, game_filenames, save_filename=None):
+        """Compose map and plugin data without constructing an application state."""
+        if not game_filenames:
+            raise ValueError("At least one game file is required")
         plugins = [self._plugin(filename) for filename in game_filenames]
         plugin = self.plugin_ops.update(*plugins)
 
@@ -37,14 +45,18 @@ class GameFiles:
         map_ = MapCodec(plugin.tile_palette, plugin.tiles).decode(image)
 
         if save_filename is not None:
-            plugin = self.plugin_ops.update(*plugins, self._plugin(save_filename))
+            saved = self._plugin(save_filename)
+            plugin = self.plugin_ops.update(*plugins, saved)
+            # A save is an instance snapshot: removed objects must not respawn.
+            plugin = replace(plugin, placements=dict(saved.placements),
+                             physics=dict(saved.physics), characters=dict(saved.characters))
         else:
             map_objects = Plugin(
                 placements=ObjectPlacementCodec(plugin.object_palette, map_).decode(image)
             )
             plugin = self.plugin_ops.update(map_objects, *plugins)
 
-        return self.plugin_ops.load(map_, plugin)
+        return map_, plugin
 
     def save(self, filename: Path, state: GameState) -> None:
         plugin = self.plugin_ops.save(state)

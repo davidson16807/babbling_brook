@@ -87,7 +87,8 @@ class Map:
         cell = glm.floor(position)
         return int(cell.x), int(cell.y)
 
-    def __contains__(self, position: glm.vec2) -> bool:
+    def __contains__(self, position: Coordinate | glm.vec2) -> bool:
+        """Bounds membership for integer cells and continuous XY positions."""
         return position in self._corner_heights
 
     def tile(self, coordinate: Coordinate) -> TileArchetype:
@@ -109,3 +110,40 @@ class Map:
             weights = glm.vec3(1 - local.y, local.x, local.y - local.x)
             heights = glm.vec3(h[0][0], h[1][1], h[0][1])
         return glm.dot(weights, heights)
+
+    def cell_center(self, coordinate: Coordinate) -> glm.vec2:
+        """Horizontal center of an integer tile coordinate inside this map."""
+        x, y = coordinate
+        if x != int(x) or y != int(y):
+            raise ValueError("Expected an integer tile coordinate")
+        if coordinate not in self:
+            raise IndexError(f"Tile coordinate outside map: {coordinate}")
+        return glm.vec2(x + 0.5, y + 0.5)
+
+    def world_position(self, coordinate: Coordinate) -> glm.vec3:
+        center = self.cell_center(coordinate)
+        return glm.vec3(center, self.height(center))
+
+    def is_continuous_transition(
+        self, source: Coordinate, destination: Coordinate, tolerance: float = 1e-5,
+    ) -> bool:
+        """Compare shared-edge midpoint heights from two orthogonal neighbors.
+
+        Uses each tile's own geometry, so capped erosion can still leave a cliff.
+        This describes the center-to-center crossing, not every point on the edge.
+        """
+        if not isfinite(tolerance) or tolerance < 0:
+            raise ValueError("tolerance must be finite and nonnegative")
+        self.cell_center(source)
+        self.cell_center(destination)
+        dx, dy = destination[0] - source[0], destination[1] - source[1]
+        if abs(dx) + abs(dy) != 1:
+            raise ValueError("Tiles must be orthogonally adjacent")
+        a, b = self.corner_heights(source), self.corner_heights(destination)
+        if dx:
+            i, j = (1, 0) if dx > 0 else (0, 1)
+            before, after = (a[i][0] + a[i][1]) / 2, (b[j][0] + b[j][1]) / 2
+        else:
+            i, j = (1, 0) if dy > 0 else (0, 1)
+            before, after = (a[0][i] + a[1][i]) / 2, (b[0][j] + b[1][j]) / 2
+        return abs(before - after) <= tolerance

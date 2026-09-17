@@ -3,6 +3,7 @@
 from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import replace
+from math import isfinite
 
 from pyglm import glm
 
@@ -33,20 +34,18 @@ class PluginOps:
             frames[direction, frame] = texture, seconds
 
         characters = {}
-        for key in dict.fromkeys(key for key, _ in animations):
-            decoded = {}
-            for animation in ('standing', 'walking', 'running'):
-                frames = animations.get((key, animation))
-                if frames is None:
-                    continue
-                decoded[animation] = CharacterAnimation(
-                    tuple(
-                        DirectionFrames(tuple(frames[direction, frame][0] for frame in (0, 1)))
-                        for direction in (0, 1)
-                    ),
-                    frames[0, 0][1],
-                )
-            characters[key] = CharacterArchetype(**decoded)
+        for (key, name), frames in animations.items():
+            if set(frames) != {(0, 0), (0, 1), (1, 0), (1, 1)}:
+                raise ValueError(f"Animation {key!r}/{name!r} needs two frames in each direction")
+            seconds = frames[0, 0][1]
+            if not isfinite(seconds) or seconds <= 0 or any(value[1] != seconds for value in frames.values()):
+                raise ValueError(f"Animation {key!r}/{name!r} needs one positive frame duration")
+            characters.setdefault(key, {})[name] = CharacterAnimation(
+                tuple(DirectionFrames(tuple(frames[direction, frame][0] for frame in (0, 1)))
+                      for direction in (0, 1)),
+                seconds,
+            )
+        characters = {key: CharacterArchetype(named) for key, named in characters.items()}
 
         archetypes = ArchetypeComponentStores(
             objects=dict(plugin.objects),
@@ -82,10 +81,7 @@ class PluginOps:
     def save(self, state: GameState) -> Plugin:
         frames = {}
         for key, character in state.archetypes.characters.items():
-            for animation_name in ('standing', 'walking', 'running'):
-                animation = getattr(character, animation_name)
-                if animation is None:
-                    continue
+            for animation_name, animation in character.animations.items():
                 for direction, direction_frames in enumerate(animation.directions):
                     for frame, texture in enumerate(direction_frames.textures):
                         frames[key, animation_name, direction, frame] = (
