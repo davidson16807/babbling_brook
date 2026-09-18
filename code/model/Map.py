@@ -87,7 +87,7 @@ class Map:
         cell = glm.floor(position)
         return int(cell.x), int(cell.y)
 
-    def __contains__(self, position: glm.vec2) -> bool:
+    def __contains__(self, position: Coordinate | glm.vec2) -> bool:
         return position in self._corner_heights
 
     def tile(self, coordinate: Coordinate) -> TileArchetype:
