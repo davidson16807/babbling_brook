@@ -28,11 +28,3 @@ class CharacterAnimationState:
     facing: glm.vec2 = field(default_factory=lambda: glm.vec2(0, 1))
     animation: str = "standing"
     elapsed: float = 0.0
-
-
-@dataclass(frozen=True)
-class Motion:
-    segment_count: int
-    segment_index: int = 0
-    elapsed: float = 0.0
-
