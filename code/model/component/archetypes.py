@@ -1,10 +1,6 @@
 # HUMAN VETTED
 
-from collections import defaultdict
 from dataclasses import dataclass
-from typing import TypeAlias
-
-from pyglm import glm
 
 """Application data. No window, event-library, GPU, or filesystem dependencies.
 
@@ -15,23 +11,11 @@ systems/updaters replace them, never mutate their coordinates in place.
 from dataclasses import dataclass
 from math import isnan
 
-# COMPONENTS
-
-@dataclass(frozen=True)
-class DirectionFrames:
-    textures: tuple[str, str]
-
-@dataclass(frozen=True)
-class CharacterAnimation:
-    # 0 faces toward the camera, 1 away. Rightward poses mirror the UVs.
-    directions: tuple[DirectionFrames, DirectionFrames]
-    seconds_per_frame: float = 0.3
 
 @dataclass(frozen=True)
 class CharacterArchetype:
-    standing: CharacterAnimation
-    walking: CharacterAnimation | None = None
-    running: CharacterAnimation | None = None
+    """Presence component for archetypes that use character animation state."""
+    pass
 
 
 @dataclass(frozen=True)

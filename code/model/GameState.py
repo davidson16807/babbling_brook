@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 
 from .CameraState import CameraState
 from .ControlState import ControlState
+from .identifiers import ArchetypeId
 from .Map import Map
 from .store import ArchetypeComponentStores, InstanceComponentStores
 
@@ -24,3 +25,6 @@ class GameState:
     message: str = "" # contents of a dialog box or message to the player
     running: bool = True
     show_inventory: bool = False
+    character_animation_frames: dict[
+        tuple[ArchetypeId, str, int, int], tuple[str, float]
+    ] = field(default_factory=dict)

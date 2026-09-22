@@ -87,10 +87,10 @@ def main(argv=None):
             for item in model.archetypes.tiles.values()
             for texture in (item.top_texture, item.side_texture)
         } | {item.texture for item in model.archetypes.objects.values()}
-        for character in model.archetypes.characters.values():
-            for animation in (character.standing, character.walking, character.running):
-                if animation:
-                    names.update(texture for direction in animation.directions for texture in direction.textures)
+        names.update(
+            texture
+            for texture, _ in model.character_animation_frames.values()
+        )
         for name in sorted(names):
             textures.get(name)
         view = GameView(TileView(TileProgram(gl, textures)),
