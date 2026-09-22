@@ -3,13 +3,14 @@
 from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import replace
+from math import isfinite
 
 from pyglm import glm
 
 from ..GameState import GameState
 from ..Map import Map
 from .Plugin import Plugin
-from ..component.archetypes import CharacterAnimation, CharacterArchetype, DirectionFrames
+from ..component.archetypes import CharacterArchetype
 from ..component.instances import CharacterAnimationState, VerticalPhysics
 from ..store import ArchetypeComponentStores, InstanceComponentStores
 
@@ -27,30 +28,25 @@ class PluginOps:
 
     def load(self, map_: Map, plugin: Plugin) -> GameState:
 
-        animations = {}
-        for (key, animation, direction, frame), (texture, seconds) in plugin.animation_frames.items():
-            frames = animations.setdefault((key, animation), {})
-            frames[direction, frame] = texture, seconds
-
-        characters = {}
-        for key in dict.fromkeys(key for key, _ in animations):
-            decoded = {}
-            for animation in ('standing', 'walking', 'running'):
-                frames = animations.get((key, animation))
-                if frames is None:
-                    continue
-                decoded[animation] = CharacterAnimation(
-                    tuple(
-                        DirectionFrames(tuple(frames[direction, frame][0] for frame in (0, 1)))
-                        for direction in (0, 1)
-                    ),
-                    frames[0, 0][1],
-                )
-            characters[key] = CharacterArchetype(**decoded)
+        animation_ids = {(key, name) for key, name, _, _ in plugin.animation_frames}
+        for key, name in animation_ids:
+            frames = {
+                (direction, frame): value
+                for (archetype, animation, direction, frame), value
+                in plugin.animation_frames.items()
+                if (archetype, animation) == (key, name)
+            }
+            seconds = frames[0, 0][1]
+            if not isfinite(seconds) or seconds <= 0 or any(value[1] != seconds for value in frames.values()):
+                raise ValueError(f"Animation {key!r}/{name!r} needs one positive frame duration")
+        character_keys = {key for key, _ in animation_ids}
+        for key in character_keys:
+            if (key, 'standing') not in animation_ids:
+                raise ValueError(f"Character {key!r} requires a standing animation")
 
         archetypes = ArchetypeComponentStores(
             objects=dict(plugin.objects),
-            characters=characters,
+            characters={key: CharacterArchetype() for key in character_keys},
             tiles=dict(plugin.tiles),
         )
 
@@ -72,33 +68,22 @@ class PluginOps:
         )
 
         return GameState(
-            map_,
-            dict(plugin.globals),
-            archetypes,
-            instances,
-            defaultdict(int, plugin.inventory),
+            map=map_,
+            globals=dict(plugin.globals),
+            archetypes=archetypes,
+            character_animation_frames=dict(plugin.animation_frames),
+            instances=instances,
+            inventory=defaultdict(int, plugin.inventory),
         )
 
     def save(self, state: GameState) -> Plugin:
-        frames = {}
-        for key, character in state.archetypes.characters.items():
-            for animation_name in ('standing', 'walking', 'running'):
-                animation = getattr(character, animation_name)
-                if animation is None:
-                    continue
-                for direction, direction_frames in enumerate(animation.directions):
-                    for frame, texture in enumerate(direction_frames.textures):
-                        frames[key, animation_name, direction, frame] = (
-                            texture,
-                            animation.seconds_per_frame,
-                        )
         return Plugin(
             format={'version': 1},
             globals=dict(state.globals),
             inventory=dict(state.inventory),
             tiles=dict(state.archetypes.tiles),
             objects=dict(state.archetypes.objects),
-            animation_frames=frames,
+            animation_frames=dict(state.character_animation_frames),
             placements=dict(state.instances.placements),
             physics=dict(state.instances.physics),
             characters=dict(state.instances.characters),

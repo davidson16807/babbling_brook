@@ -21,7 +21,13 @@ class GameView:
             camera.right()
         )
         self.tiles.draw(game.map, view)
-        self.billboards.draw(camera, game.instances, game.archetypes, view)
+        self.billboards.draw(
+            camera,
+            game.instances,
+            game.archetypes,
+            game.character_animation_frames,
+            view,
+        )
         self.ui.draw(game)
 
     def release(self):
