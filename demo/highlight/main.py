@@ -32,7 +32,7 @@ if 'babbling_brook' not in sys.modules:
     spec.loader.exec_module(package)
 
 from babbling_brook.adapter.PygameImages import PygameImages
-from babbling_brook.codec.BabblingBrookFileCodec import BabblingBrookFileCodec
+from babbling_brook.codec.GameStateCodec import PluginStringCodec
 from babbling_brook.model.GameFiles import GameFiles
 from babbling_brook.model.plugin.PluginOps import PluginOps
 from babbling_brook.view.Textures import Textures
@@ -72,7 +72,7 @@ def main():
     )
     context = moderngl.create_context(require=330)
 
-    files = GameFiles(PluginOps(), BabblingBrookFileCodec())
+    files = GameFiles(PluginOps(), PluginStringCodec())
     game = files.load(ROOT / 'data' / 'world.ppm', [ROOT / 'data' / 'world.game'])
     textures = Textures(context, PygameImages(ROOT / 'data' / 'texture'))
     terrain = TileView(TileProgram(context, textures))
