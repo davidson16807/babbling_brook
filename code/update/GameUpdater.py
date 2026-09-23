@@ -8,13 +8,13 @@ from ..model.component.instances import VerticalPhysics
 
 
 class GameUpdater:
-    def __init__(self, controls, camera, interactions, actions):
+    def __init__(self, controls, camera, interactions, actions, jump_speed=6):
 
         self.controls = controls
         self.camera = camera
         self.interactions = interactions
-
         self.actions = actions
+        self.jump_speed = jump_speed
 
     def update(self, game, message):
         game = replace(game, controls=self.controls.update(game.controls, message))
@@ -30,7 +30,7 @@ class GameUpdater:
             if message.key == 'tab':
                 return replace(game, show_inventory=not game.show_inventory)
             if message.key == 'space' and game.instances.physics['player'].is_grounded:
-                physics = {**game.instances.physics, 'player': VerticalPhysics(6.0, False)}
+                physics = {**game.instances.physics, 'player': VerticalPhysics(self.jump_speed, False)}
                 return replace(game, instances=replace(game.instances, physics=physics))
             if message.key == 'e':
                 target = self.interactions.nearest(
