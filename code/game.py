@@ -3,10 +3,12 @@
 """Desktop composition root: Pygame window/timing, internal messages, MVU."""
 import argparse
 from dataclasses import replace
+from math import pi
 from pathlib import Path
 
 import moderngl
 import pygame
+from pyglm import glm
 
 from .adapter.PygameMessageQueue import PygameMessageQueue
 from .adapter.PygameImages import PygameImages
@@ -98,12 +100,12 @@ def main(argv=None):
         view = GameView(TileView(TileProgram(gl, textures)),
                         BillboardView(BillboardProgram(gl, textures)), 
                         PygameUiView(UiProgram(gl)))
-        movement = MovementUpdater(CollisionQuery(), DirectionalKeysUpdater(*'wasd'))
+        movement = MovementUpdater(CollisionQuery(), DirectionalKeysUpdater(*'wasd', glm.vec2(1)))
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
         updater = GameUpdater(
             HemisphereLookUpdater(),
-            DirectionalKeysUpdater(*'ijkl'),
+            DirectionalKeysUpdater(*'ijkl', glm.vec2(pi / 2, pi / 6)),
             InteractionQuery(),
             ActionRegistry({'collect_apple': collect('apple'), 'collect_stick': collect('stick'), 'greet': greet})
         )
@@ -125,7 +127,9 @@ def main(argv=None):
                             model = replace(model, message='Game saved.')
                         else:
                             restored = game_files.load(map_filename, args.game_files, args.save)
-                            model = replace(restored, viewport=model.viewport, camera=model.camera, message='Game loaded.')
+                            model = replace(restored, viewport=model.viewport, camera=model.camera,
+                                            camera_drag_remainder=model.camera_drag_remainder,
+                                            message='Game loaded.')
                             accumulator = 0.0
                     except (OSError, ValueError) as error:
                         model = replace(model, message=f'Save/load failed: {error}')

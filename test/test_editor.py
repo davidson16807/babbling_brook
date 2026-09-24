@@ -1,5 +1,5 @@
 from dataclasses import replace
-from math import pi
+from math import pi, sin
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -8,7 +8,8 @@ from unittest.mock import patch
 from pyglm import glm
 
 from babbling_brook.codec.map.PpmImageCodec import PpmImage, PpmImageCodec
-from babbling_brook.messages import KeyboardAction, KeyboardMessage, KeyboardModifiers, ScrollMessage
+from babbling_brook.messages import (KeyboardAction, KeyboardMessage, KeyboardModifiers,
+                                     MouseButton, MouseMotionMessage, ScrollMessage)
 from babbling_brook.model.EditorFiles import EditorFiles
 from babbling_brook.update.DirectionalKeysUpdater import DirectionalKeysUpdater
 from babbling_brook.update.EditorUpdater import EditorUpdater
@@ -28,8 +29,9 @@ class EditorTests(unittest.TestCase):
         self.path.write_text(PpmImageCodec().encode(self.image), encoding='ascii')
         self.files = EditorFiles(ROOT / 'data')
         self.state = self.files.load(self.path)
-        self.updater = EditorUpdater(DirectionalKeysUpdater(*'wasd'),
-                                     DirectionalKeysUpdater(*'ijkl'), HemisphereLookUpdater())
+        self.updater = EditorUpdater(DirectionalKeysUpdater(*'wasd', glm.vec2(1)),
+                                     DirectionalKeysUpdater(*'ijkl', glm.vec2(pi / 4)),
+                                     HemisphereLookUpdater())
 
     def key(self, key, modifiers=KeyboardModifiers.NONE):
         return KeyboardMessage(key, KeyboardAction.PRESS, modifiers)
@@ -44,15 +46,27 @@ class EditorTests(unittest.TestCase):
         self.assertNotIn('player', result.placements)
         self.assertEqual(self.state.image, self.image)
 
-    def test_modifiers_edit_separate_channels(self):
-        tile = self.updater.update(self.state, self.key('.', KeyboardModifiers.CTRL))
-        object_ = self.updater.update(self.state, ScrollMessage(glm.vec2(0, 1), KeyboardModifiers.SHIFT))
+    def test_brackets_and_parentheses_edit_ids(self):
+        tile = self.updater.update(self.state, self.key(']'))
+        object_ = self.updater.update(self.state, self.key('0', KeyboardModifiers.SHIFT))
         self.assertEqual(tile.image.pixels[4], (2, 8, 3))
+        self.assertEqual(self.updater.update(tile, self.key('[')).image, self.image)
         self.assertEqual(object_.image.pixels[4], (2, 7, 4))
-        for _ in range(3):
-            self.state = self.updater.update(self.state, self.key(',', KeyboardModifiers.SHIFT))
+        self.assertEqual(self.updater.update(self.state, self.key(')')).image, object_.image)
+        self.assertEqual(self.updater.update(self.state, self.key('0')).image, self.image)
+        self.state = self.updater.update(self.state, self.key('9', KeyboardModifiers.SHIFT))
+        for _ in range(2):
+            self.state = self.updater.update(self.state, self.key('('))
         self.assertEqual(self.state.image.pixels[4][2], 0)
         self.assertNotIn('(1, 1)', self.state.placements)
+
+    def test_height_controls_ignore_modifiers(self):
+        for modifiers in (KeyboardModifiers.NONE, KeyboardModifiers.SHIFT, KeyboardModifiers.CTRL,
+                          KeyboardModifiers.SHIFT | KeyboardModifiers.CTRL):
+            for message in (self.key('>', modifiers), ScrollMessage(glm.vec2(0, 1), modifiers)):
+                with self.subTest(message=message):
+                    result = self.updater.update(self.state, message)
+                    self.assertEqual(result.image.pixels[4], (3, 7, 3))
 
     def test_undo_redo_and_atomic_save(self):
         changed = self.updater.update(self.state, self.key('.'))
@@ -70,15 +84,65 @@ class EditorTests(unittest.TestCase):
         self.assertEqual(self.files.load(self.path).image, saved.image)
 
     def test_cursor_bounds_camera_and_repeat_delay(self):
-        corner = replace(self.state, cursor=(0, 0))
-        self.assertEqual(self.updater.update(corner, self.key('w')).cursor, (0, 0))
+        self.assertEqual(self.state.cursor, [(1, 1)])
+        corner = replace(self.state, cursor=[(0, 0)])
+        self.assertEqual(self.updater.update(corner, self.key('w')).cursor, [(0, 0)])
         moved = self.updater.update(corner, self.key('d'))
-        self.assertEqual(moved.cursor, (0, 1))
-        self.assertEqual(self.updater.step(moved, .05, frozenset('d')).cursor, (0, 1))
-        self.assertEqual(self.updater.step(moved, .3, frozenset('d')).cursor, (0, 2))
+        self.assertEqual(moved.cursor, [(0, 1)])
+        self.assertEqual(self.updater.step(moved, .05, frozenset('d')).cursor, [(0, 1)])
+        self.assertEqual(self.updater.step(moved, .3, frozenset('d')).cursor, [(0, 2)])
         turned = self.updater.update(self.state, self.key('l'))
-        self.assertAlmostEqual(turned.camera.look_azimuth(), 3 * pi / 4)
-        self.assertEqual(self.updater.update(turned, self.key('w')).cursor, (1, 0))
+        self.assertAlmostEqual(turned.camera.azimuth, pi / 2)
+        self.assertEqual(self.updater.update(turned, self.key('w')).cursor, [(1, 0)])
+
+    def test_shift_selects_rectangle_and_can_shrink_back_to_anchor(self):
+        shift = KeyboardModifiers.SHIFT
+        selected = self.updater.update(self.state, self.key('w', shift))
+        selected = self.updater.update(selected, self.key('d', shift))
+        self.assertEqual(selected.cursor[0], (1, 1))
+        self.assertEqual(selected.cursor[-1], (0, 2))
+        self.assertCountEqual(selected.cursor, [(1, 1), (0, 1), (1, 2), (0, 2)])
+        self.assertEqual(self.state.cursor, [(1, 1)])
+        released = self.updater.update(selected, KeyboardMessage('shift', KeyboardAction.RELEASE))
+        self.assertEqual(self.updater.step(released, .3, frozenset()).cursor, selected.cursor)
+        shrunk = self.updater.update(selected, self.key('a', shift))
+        self.assertEqual(shrunk.cursor, [(1, 1), (0, 1)])
+        self.assertEqual(self.updater.update(shrunk, self.key('s', shift)).cursor, [(1, 1)])
+        self.assertEqual(self.updater.update(selected, self.key('s')).cursor, [(1, 2)])
+
+    def test_held_shift_extends_selection_and_group_edits_undo_together(self):
+        start = replace(self.state, cursor=[(0, 0)])
+        for shift in ('shift', 'right shift'):
+            with self.subTest(shift=shift):
+                selected = self.updater.update(start, self.key('d', KeyboardModifiers.SHIFT))
+                selected = self.updater.step(selected, .3, frozenset(('d', shift)))
+                self.assertEqual(selected.cursor, [(0, 0), (0, 1), (0, 2)])
+                for key, channel, value in (('.', 0, 3), (']', 1, 8), (')', 2, 1)):
+                    edited = self.updater.update(selected, self.key(key))
+                    for index in (0, 3, 6):
+                        self.assertEqual(edited.image.pixels[index][channel], value)
+                    self.assertEqual(edited.image.pixels[4], self.image.pixels[4])
+                    self.assertEqual(len(edited.undo), 1)
+                    undone = self.updater.update(edited, self.key('z', KeyboardModifiers.CTRL))
+                    self.assertEqual(undone.image, self.image)
+                    self.assertEqual(undone.cursor, selected.cursor)
+
+    def test_camera_has_45_degree_keys_continuous_drag_and_range_limits(self):
+        for key, daz, del_ in (('i', 0, pi / 4), ('k', 0, -pi / 4),
+                              ('j', -pi / 4, 0), ('l', pi / 4, 0)):
+            result = self.updater.update(self.state, self.key(key))
+            self.assertAlmostEqual(result.camera.azimuth, max(0, pi / 4 + daz))
+            self.assertAlmostEqual(result.camera.elevation, max(0, pi / 6 + del_))
+        buttons = frozenset((MouseButton.MIDDLE,))
+        dragged = self.updater.update(self.state, MouseMotionMessage(glm.vec2(0), glm.vec2(-13, -7), buttons))
+        self.assertAlmostEqual(dragged.camera.azimuth, pi / 4 + .13)
+        self.assertAlmostEqual(dragged.camera.elevation, pi / 6 + .07)
+        self.assertAlmostEqual(dragged.camera.right().x, -sin(pi / 4 + .13))
+        for offset, expected in ((-1000, (pi, pi / 2)), (1000, (0, 0))):
+            clamped = self.updater.update(dragged, MouseMotionMessage(glm.vec2(0), glm.vec2(offset), buttons))
+            self.assertEqual((clamped.camera.azimuth, clamped.camera.elevation), expected)
+        untouched = self.updater.update(self.state, MouseMotionMessage(glm.vec2(0), glm.vec2(100)))
+        self.assertIs(untouched, self.state)
 
     def test_maxval_can_grow_without_rescaling(self):
         raised = replace(self.image, maximum=2, pixels=((2, 0, 0),) * 9)
@@ -108,7 +172,7 @@ class EditorTests(unittest.TestCase):
             message, = PygameMessageQueue(events=lambda: (event,)).poll()
         self.assertEqual(message.modifiers, KeyboardModifiers.CTRL)
         result = self.updater.update(self.state, message)
-        self.assertEqual(result.image.pixels[4], (2, 6, 3))
+        self.assertEqual(result.image.pixels[4], (1, 7, 3))
 
     def test_unsaved_exit_requires_second_request(self):
         changed = self.updater.update(self.state, self.key('.'))

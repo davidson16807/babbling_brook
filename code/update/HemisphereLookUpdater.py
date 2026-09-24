@@ -1,10 +1,10 @@
 # HUMAN VETTED
 
-from dataclasses import replace
+from pyglm import glm
 from ..messages import MouseMotionMessage
 
 class HemisphereLookUpdater:
-    def update(self, camera, message):
+    def update(self, message) -> glm.vec2:
         if isinstance(message, MouseMotionMessage):
-            return replace(camera, raw_azimuth=camera.raw_azimuth - message.offset.x * .01)
-        return camera
+            return -message.offset * .01
+        return glm.vec2(0)

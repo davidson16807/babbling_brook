@@ -1,6 +1,7 @@
 """Edit a P3 level: python -m babbling_brook.editor path/to/level.ppm."""
 import argparse
 from dataclasses import replace
+from math import pi
 from pathlib import Path
 
 # Also allow `python code/editor.py level.ppm` from a source checkout.
@@ -16,6 +17,7 @@ if not __package__:
 
 import moderngl
 import pygame
+from pyglm import glm
 
 from .adapter.PygameEditorUiView import PygameEditorUiView
 from .adapter.PygameImages import PygameImages
@@ -66,9 +68,11 @@ def main(argv=None):
         view = EditorView(TileView(TileProgram(context, textures)),
                           BillboardProgram(context, textures), HighlightProgram(context),
                           PygameEditorUiView(UiProgram(context)))
-        updater = EditorUpdater(DirectionalKeysUpdater(*'wasd'), DirectionalKeysUpdater(*'ijkl'),
+        updater = EditorUpdater(DirectionalKeysUpdater(*'wasd', glm.vec2(1)),
+                                DirectionalKeysUpdater(*'ijkl', glm.vec2(pi / 4)),
                                 HemisphereLookUpdater())
-        queue = PygameMessageQueue(monitored_keys=[*'wasd', 'left ctrl', 'right ctrl'])
+        queue = PygameMessageQueue(monitored_keys=[*'wasd', 'left ctrl', 'right ctrl',
+                                                 'shift', 'right shift'])
         clock = pygame.time.Clock()
         while state.running:
             seconds = min(clock.tick(60) / 1000, 0.25)

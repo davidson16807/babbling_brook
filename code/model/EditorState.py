@@ -21,7 +21,8 @@ class EditorState:
     object_palette: dict[int, ArchetypeId]
     tile_archetypes: dict[ArchetypeId, TileArchetype]
     object_archetypes: dict[ArchetypeId, ObjectArchetype]
-    cursor: Coordinate
+    # First cell anchors the selection; last cell is the moving end of the range.
+    cursor: list[Coordinate]
     camera: CameraState = field(default_factory=CameraState)
     viewport: tuple[int, int] = (1280, 720)
     message: str = ''

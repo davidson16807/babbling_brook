@@ -15,16 +15,17 @@ class PygameEditorUiView:
     def draw(self, state):
         key = (state.viewport, state.cursor, id(state.image), state.dirty, state.message)
         if key != self.cache_key:
-            x, y = state.cursor
+            x, y = state.cursor[-1]
             height, tile, object_ = state.image.pixels[y * state.image.width + x]
             tile_name = str(state.tile_palette[tile])
             object_name = 'none' if object_ == 0 else str(state.object_palette[object_])
             width = max(1, min(720, state.viewport[0] - 32))
             lines = [
-                'WASD Cursor   J/L Rotate   I/K Tilt   Middle-drag Rotate',
-                'Wheel or ,/. Height   Ctrl Tile ID   Shift Object ID',
+                'WASD Cursor   Shift+WASD Select range',
+                'J/L Rotate 45\N{DEGREE SIGN}   I/K Tilt 45\N{DEGREE SIGN}   Middle-drag Free look',
+                'Wheel or ,/. Height   [ / ] Tile ID   ( / ) Object ID',
                 'Ctrl+S / F5 Save   Ctrl+Z Undo   Ctrl+Y Redo   Esc Close',
-                f'Cell ({x}, {y})   Height {height * 0.5:g} (R {height})',
+                f'{len(state.cursor)} selected | Cell ({x}, {y})   Height {height * 0.5:g} (R {height})',
                 f'Tile {tile}: {tile_name}   Object {object_}: {object_name}',
             ]
             if state.message:

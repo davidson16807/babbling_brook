@@ -33,7 +33,7 @@ class EditorFiles:
         return EditorState(
             filename, image, image, map_, placements,
             plugin.tile_palette, plugin.object_palette, plugin.tiles, plugin.objects,
-            (image.width // 2, image.height // 2),
+            [(image.width // 2, image.height // 2)],
         )
 
     def save(self, state: EditorState) -> EditorState:

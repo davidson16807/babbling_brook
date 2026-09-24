@@ -37,6 +37,8 @@ Use `--map /path/to/world.ppm` when the map is not `DATA/world.ppm`.
 | E | Interact with the closest eligible neighboring object |
 | Tab | Show or hide inventory |
 | Middle mouse drag | Rotate between four isometric azimuths |
+| J / L | Rotate the camera by 90 degrees |
+| I / K | Raise / lower the viewing angle by 30 degrees |
 | F5 | Save to `save/slot.sav` |
 | F9 | Load that slot |
 | Escape | Quit |
@@ -70,26 +72,34 @@ python code/editor.py data/world.ppm
 ```
 
 The installed command is `babbling-brook-editor data/world.ppm`.
-The highlighted tile is the cursor, and the camera follows it. It can cross
+The highlighted tiles are the cursor, and the camera follows its moving end. It can cross
 objects and cliffs. WASD steps through the grid relative to the camera; holding
-a key repeats after a short delay.
+a key repeats after a short delay. Shift+WASD selects the rectangle between the
+starting tile and the moving end, including both. Releasing Shift retains that
+selection; the next move without Shift returns to one tile. Height and ID edits
+apply to every selected tile as a single undoable change.
 
 | Input | Editor action |
 | --- | --- |
 | WASD | Move the cursor by one tile |
-| J / L | Rotate the camera by 90 degrees |
-| I / K | Raise / lower the viewing angle |
-| Middle mouse drag | Rotate the camera |
+| Shift+WASD | Extend or shrink the rectangular selection |
+| J / L | Rotate the camera by 45 degrees |
+| I / K | Raise / lower the viewing angle by 45 degrees |
+| Middle mouse drag | Freely rotate and tilt the camera |
 | Wheel up/down or period/comma (`>`/`<` keys) | Increase/decrease height by 0.5 |
-| Ctrl + wheel or period/comma | Select the next/previous defined tile ID |
-| Shift + wheel or period/comma | Select the next/previous defined object ID; 0 removes it |
+| `[` / `]` | Select the previous/next defined tile ID |
+| `(` / `)` | Select the previous/next defined object ID; 0 removes it |
 | Ctrl+S or F5 | Save the PPM |
 | Ctrl+Z / Ctrl+Y | Undo / redo (up to 100 edits) |
 | Escape or close window | Close; repeat to discard unsaved edits |
 
-The comma and period keys work without Shift. Holding Shift selects object
-editing, including when typing the `<` and `>` symbols. Ctrl takes precedence
-if both modifiers are held. ID selection stops at the palette's ends.
+The comma and period keys work with or without Shift. Wheel and `<`/`>` always
+edit height. Parentheses are Shift+9 and Shift+0 on a US keyboard. Each selected
+cell advances through its palette independently, stopping at the palette's ends.
+Camera azimuth stays between 0 and 180 degrees; elevation stays between 0 and
+90 degrees. Mouse look is continuous within these limits. Both input updaters
+return angle deltas; the editor only limits their ranges, while the game snaps
+its displayed azimuth to diagonal directions.
 
 Palette definitions come from `world.game` beside the map, falling back to this
 project's `data/world.game`. An optional `.game` with the same stem as the map is
@@ -155,7 +165,7 @@ and cached textures was added.
 python -m unittest discover -s test -v
 ```
 
-The editor tests cover cursor bounds, camera turns, edit modifiers, erosion,
+The tests cover cursor bounds, rectangular selections, camera controls, editing keys, erosion,
 object heights, undo/redo, 16-bit PPM values, and saving without damaging the
 original on failure. The wheel-adapter check skips if Pygame is unavailable.
 The game can also render through EGL:

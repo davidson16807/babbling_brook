@@ -1,4 +1,4 @@
-"""Render terrain, PPM objects, and the editor's selected tile."""
+"""Render terrain, PPM objects, and the editor's selected tiles."""
 from collections import defaultdict
 
 from pyglm import glm
@@ -14,14 +14,16 @@ class EditorView:
         self.ui = ui
 
     def draw(self, state):
-        xy = glm.vec2(*state.cursor) + glm.vec2(0.5)
+        xy = glm.vec2(*state.cursor[-1]) + glm.vec2(0.5)
         target = glm.vec3(xy, state.map.height(xy))
         camera = state.camera
         aspect = state.viewport[0] / state.viewport[1]
         scale = camera.orthographic_scale / 2
         projection = glm.ortho(-scale * aspect, scale * aspect, -scale, scale, 0.1, 100.0)
+        # Camera-relative up remains defined even at the top-down limit.
+        up = glm.cross(camera.right(), camera.forward())
         view = ViewState(projection * glm.lookAt(target - camera.forward() * 30,
-                                                target, glm.vec3(0, 0, 1)), camera.right())
+                                                target, up), camera.right())
         self.tiles.draw(state.map, view)
         batches = defaultdict(lambda: ([], []))
         for placement in state.placements.values():
@@ -33,8 +35,10 @@ class EditorView:
             self.objects.draw(texture, tuple(origins), tuple(sizes),
                               (glm.vec4(0, 0, 1, 1),) * len(origins),
                               (False,) * len(origins), view)
-        self.highlight.draw((state.cursor,), (state.map.corner_heights(state.cursor),),
-                            ((1.0, 0.78, 0.12, 0.65),), view)
+        self.highlight.draw(state.cursor,
+                            tuple(state.map.corner_heights(cell) for cell in state.cursor),
+                            tuple((1.0, 0.78, 0.12, 0.65 if cell == state.cursor[-1] else 0.35)
+                                  for cell in state.cursor), view)
         self.ui.draw(state)
 
     def release(self):

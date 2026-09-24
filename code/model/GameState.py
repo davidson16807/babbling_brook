@@ -18,6 +18,8 @@ class GameState:
 
     inventory: defaultdict[str, int] = field(default_factory=lambda: defaultdict(int))
     camera: CameraState = field(default_factory=CameraState)
+    # Preserve sub-threshold drags while GameUpdater snaps the displayed azimuth.
+    camera_drag_remainder: float = 0.0
 
     viewport: tuple[int, int] = (1280, 720)
     message: str = "" # contents of a dialog box or message to the player
