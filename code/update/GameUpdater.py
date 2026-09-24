@@ -8,21 +8,19 @@ from ..model.component.instances import VerticalPhysics
 
 
 class GameUpdater:
-    def __init__(self, controls, camera, interactions, actions, jump_speed=6):
+    def __init__(self, camera, interactions, actions, jump_speed=6):
 
-        self.controls = controls
         self.camera = camera
         self.interactions = interactions
         self.actions = actions
         self.jump_speed = jump_speed
 
     def update(self, game, message):
-        game = replace(game, controls=self.controls.update(game.controls, message))
         if isinstance(message, QuitMessage):
             return replace(game, running=False)
         if isinstance(message, WindowResizeMessage):
             return replace(game, viewport=message.size)
-        if isinstance(message, MouseMotionMessage) and MouseButton.MIDDLE in game.controls.pressed_mouse_buttons:
+        if isinstance(message, MouseMotionMessage) and MouseButton.MIDDLE in message.buttons:
             return replace(game, camera=self.camera.update(game.camera, message))
         if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS:
             if message.key == 'escape':

@@ -4,7 +4,6 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 
 from .CameraState import CameraState
-from .ControlState import ControlState
 from .identifiers import ArchetypeId
 from .Map import Map
 from .store import ArchetypeComponentStores, InstanceComponentStores
@@ -18,7 +17,6 @@ class GameState:
     instances: InstanceComponentStores = field(default_factory=InstanceComponentStores)
 
     inventory: defaultdict[str, int] = field(default_factory=lambda: defaultdict(int))
-    controls: ControlState = field(default_factory=ControlState)
     camera: CameraState = field(default_factory=CameraState)
 
     viewport: tuple[int, int] = (1280, 720)

@@ -42,36 +42,49 @@ descriptions of control state at a given moment,
 such as tracking the change in the position of a mouse since the last poll.
 '''
 class PygameMessageQueue:
-    def __init__(self, events: Callable[[], Iterable] = pygame.event.get):
+    def __init__(self, events: Callable[[], Iterable] = pygame.event.get,
+                 monitored_keys: Iterable[str] = ()):
         self.events = events
-        self.modifiers = KeyboardModifiers.NONE
+        self.monitored_keys = tuple(
+            (name, pygame.key.key_code('left shift' if name == 'shift' else name))
+            for name in monitored_keys
+        )
 
     def poll(self) -> list:
-        return [message for event in self.events()
-                if (message := self._translate(event)) is not None]
+        messages = [message for event in self.events()
+                    if (message := self._translate(event)) is not None]
+        if pygame.key.get_focused():
+            held = pygame.key.get_pressed()
+            modifiers = _modifiers(pygame.key.get_mods())
+            messages += [
+                KeyboardMessage(name, KeyboardAction.REPEAT, modifiers)
+                for name, code in self.monitored_keys if held[code]
+            ]
+        return messages
 
     def _translate(self, event):
         if event.type == pygame.QUIT:
             return QuitMessage()
         if event.type in (pygame.KEYDOWN, pygame.KEYUP):
-            self.modifiers = _modifiers(event.mod)
             if getattr(event, "repeat", False):
                 return None
             action = KeyboardAction.PRESS if event.type == pygame.KEYDOWN else KeyboardAction.RELEASE
             aliases = {pygame.K_LSHIFT: "shift", pygame.K_RSHIFT: "right shift"}
-            return KeyboardMessage(aliases.get(event.key, pygame.key.name(event.key)), action, self.modifiers)
+            return KeyboardMessage(aliases.get(event.key, pygame.key.name(event.key)), action, _modifiers(event.mod))
         if event.type == pygame.MOUSEMOTION:
-            return MouseMotionMessage(glm.vec2(event.pos), glm.vec2(event.rel))
+            buttons = frozenset(button for button, pressed in zip(
+                (MouseButton.LEFT, MouseButton.MIDDLE, MouseButton.RIGHT), event.buttons
+            ) if pressed)
+            return MouseMotionMessage(glm.vec2(event.pos), glm.vec2(event.rel), buttons)
         if event.type in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP):
             button = {1: MouseButton.LEFT, 2: MouseButton.MIDDLE, 3: MouseButton.RIGHT}.get(event.button)
             if button is not None:
                 action = ButtonAction.PRESS if event.type == pygame.MOUSEBUTTONDOWN else ButtonAction.RELEASE
-                return MouseButtonMessage(button, action, self.modifiers)
+                return MouseButtonMessage(button, action, _modifiers(pygame.key.get_mods()))
         if event.type == pygame.MOUSEWHEEL:
             return ScrollMessage(glm.vec2(event.x, event.y))
         if event.type in (pygame.WINDOWRESIZED, pygame.WINDOWSIZECHANGED):
             return WindowResizeMessage((max(1, event.x), max(1, event.y)))
         if event.type == pygame.WINDOWFOCUSLOST:
-            self.modifiers = KeyboardModifiers.NONE
             return FocusLostMessage()
         return None

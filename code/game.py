@@ -19,7 +19,6 @@ from .view.view.TileView import TileView
 from .view.view.BillboardView import BillboardView
 from .view.view.GameView import GameView
 
-from .update.ControlUpdater import ControlUpdater
 from .update.GameUpdater import GameUpdater
 from .update.HemisphereLookUpdater import HemisphereLookUpdater
 from .update.MovementUpdater import MovementUpdater
@@ -80,7 +79,9 @@ def main(argv=None):
             pygame.display.set_caption(APPLICATION_TITLE)
             gl = moderngl.create_context(require=330)
             gl.screen.use()
-            queue = PygameMessageQueue()
+            queue = PygameMessageQueue(
+                monitored_keys=['w', 'a', 's', 'd', 'shift', 'right shift']
+            )
         textures = Textures(gl, PygameImages(args.data / 'texture'))
         # Validate and create the finite texture set before entering the render loop.
         names = {
@@ -97,11 +98,10 @@ def main(argv=None):
         view = GameView(TileView(TileProgram(gl, textures)),
                         BillboardView(BillboardProgram(gl, textures)), 
                         PygameUiView(UiProgram(gl)))
-        movement = MovementUpdater(CollisionQuery(), DirectionalKeysUpdater())
+        movement = MovementUpdater(CollisionQuery(), DirectionalKeysUpdater(*'wasd'))
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
         updater = GameUpdater(
-            ControlUpdater(),
             HemisphereLookUpdater(),
             InteractionQuery(),
             ActionRegistry({'collect_apple': collect('apple'), 'collect_stick': collect('stick'), 'greet': greet})
@@ -111,7 +111,12 @@ def main(argv=None):
         frames = 0
         while model.running and (args.frames is None or frames < args.frames):
             elapsed = 1 / 60 if args.headless else min(clock.tick(60) / 1000.0, .25)
-            for message in queue.poll():
+            messages = queue.poll()
+            pressed_keys = frozenset(
+                message.key for message in messages
+                if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.REPEAT
+            )
+            for message in messages:
                 if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS and message.key in ('f5', 'f9'):
                     try:
                         if message.key == 'f5':
@@ -128,7 +133,7 @@ def main(argv=None):
             accumulator += elapsed
             while accumulator >= 1 / 120:
                 seconds = 1 / 120
-                model = movement.update(model, seconds)
+                model = movement.update(model, seconds, pressed_keys)
                 instances = model.instances
                 placements, physics = gravity.step(
                     instances.placements, instances.physics, model.map, seconds)

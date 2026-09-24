@@ -44,6 +44,7 @@ class KeyboardMessage:
 class MouseMotionMessage:
     position: glm.vec2
     offset: glm.vec2
+    buttons: frozenset[MouseButton] = frozenset()
 
 
 @dataclass(frozen=True, slots=True)

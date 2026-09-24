@@ -8,20 +8,19 @@ class MovementUpdater:
         self.collisions = collisions
         self.directional_keys = directional_keys
 
-    def update(self, game, seconds):
+    def update(self, game, seconds, pressed_keys):
         placements = game.instances.placements
         characters = game.instances.characters
         objects = game.archetypes.objects
         map_ = game.map
-        keys = game.controls.pressed_keys
-        axes = self.directional_keys.update(keys)
+        axes = self.directional_keys.update(pressed_keys)
         direction = (
             glm.normalize(game.camera.right().xy) * axes.x +
             glm.normalize(game.camera.forward().xy) * axes.y
         )
         if glm.length(direction) > 0:
             direction = glm.normalize(direction)
-        tries_running = 'shift' in keys or 'right shift' in keys
+        tries_running = 'shift' in pressed_keys or 'right shift' in pressed_keys
         before = placements['player'].position
         after = self.collisions.move(
             'player', before, direction * (4.0 if tries_running else 2.5) * seconds,
