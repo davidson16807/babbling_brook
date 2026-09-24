@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48" viewBox="0 0 32 48" shape-rendering="crispEdges">
+<title>firewood — 1-880</title>
+<path d="M6 40L26 26M7 28L25 41" fill="none" stroke="#715640" stroke-width="7"/><ellipse cx="6" cy="40" rx="4" ry="4" fill="#d2a974"/><ellipse cx="25" cy="41" rx="4" ry="4" fill="#d2a974"/><ellipse cx="26" cy="26" rx="4" ry="4" fill="#d2a974"/><line x1="10" y1="35" x2="23" y2="27" stroke="#ab8153" stroke-width="1"/><line x1="10" y1="31" x2="22" y2="39" stroke="#ab8153" stroke-width="1"/>
+</svg>

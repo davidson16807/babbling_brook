@@ -10,13 +10,22 @@ version	1
 
 # tile_archetypes
 # archetype	top_texture	side_texture	max_erosion	is_collidable
-grass	grass.svg	dirt.svg	0.5	x
-sand	sand.svg	sand.svg	0.5	x
-path	sand.svg	dirt.svg	0	x
+rock	rock.svg	rock.svg	0.5	x
+sandy-rock	sand.svg	rock.svg	0.5	x
+snowy-rock	snow.svg	rock.svg	0.5	x
+grassy-rock	grass.svg	rock.svg	0.5	x
 stone	stone.svg	stone.svg	0	x
-rock	rock.svg	rock.svg	0	x
-snow	snow.svg	dirt.svg	0.5	x
-snowy-rock	snow.svg	rock.svg	0	x
+sandy-stone	sand.svg	stone.svg	0	x
+snowy-stone	snow.svg	stone.svg	0	x
+grassy-stone	grass.svg	stone.svg	0	x
+dirt	dirt.svg	dirt.svg	1	x
+path	sand.svg	dirt.svg	1	x
+snow	snow.svg	dirt.svg	1	x
+grass	grass.svg	dirt.svg	1	x
+sand	sand.svg	sand.svg	2	x
+snow-bank	snow.svg	snow.svg	2	x
+water	water.svg	water.svg	10	x
+ice	snow.svg	water.svg	0	x
 
 # object_archetypes
 # archetype	texture	is_collidable	radius	height	width	has_gravity	action	label
@@ -56,12 +65,22 @@ villager	running	1	1	villager-back-1.svg	0.12
 
 # tile_palette
 # index	archetype
-1	grass
-2	sand
-3	stone
-4	snow
-5	rock
-6	snowy-rock
+0	rock
+1	sandy-rock
+2	snowy-rock
+3	grassy-rock
+4	stone
+5	sandy-stone
+6	snowy-stone
+7	grassy-stone
+8	dirt
+9	path
+10	snow
+11	grass
+12	sand
+13	snow-bank
+14	water
+15	ice
 
 # object_palette
 # index	archetype
