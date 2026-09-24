@@ -5,11 +5,11 @@ from math import sin, cos, atan, pi, sqrt, floor
 
 import glm
 
-@dataclass(frozen=True)
+@dataclass()
 class CameraState:
     # The unsnapped angle accumulates small drags between displayed orientations.
     raw_azimuth: float = pi/4
-    elevation: float = atan(0.5)
+    elevation: float = pi/6
     orthographic_scale: float = 12.0
 
     def look_azimuth(self):

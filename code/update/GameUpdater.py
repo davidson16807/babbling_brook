@@ -6,11 +6,13 @@ from ..messages import (KeyboardMessage, KeyboardAction, MouseButton, MouseMotio
     QuitMessage, WindowResizeMessage)
 from ..model.component.instances import VerticalPhysics
 
+pi = 3.14159265358979
 
 class GameUpdater:
-    def __init__(self, camera, interactions, actions, jump_speed=6):
+    def __init__(self, mouselook, keylook, interactions, actions, jump_speed=6):
 
-        self.camera = camera
+        self.mouselook = mouselook
+        self.keylook = keylook
         self.interactions = interactions
         self.actions = actions
         self.jump_speed = jump_speed
@@ -21,7 +23,7 @@ class GameUpdater:
         if isinstance(message, WindowResizeMessage):
             return replace(game, viewport=message.size)
         if isinstance(message, MouseMotionMessage) and MouseButton.MIDDLE in message.buttons:
-            return replace(game, camera=self.camera.update(game.camera, message))
+            return replace(game, camera=self.mouselook.update(game.camera, message))
         if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS:
             if message.key == 'escape':
                 return replace(game, running=False)
@@ -41,4 +43,11 @@ class GameUpdater:
                     return replace(game, message="Nothing to interact with nearby.")
                 entity, archetype = target
                 return self.actions.apply(archetype.action, game, entity)
+            else:
+                game = replace(game, 
+                    camera = replace(game.camera,
+                        raw_azimuth = game.camera.raw_azimuth + (self.keylook.update(message.key).x * pi/2) % (2*pi),
+                        elevation = max(pi/6, min(pi/3, game.camera.elevation + self.keylook.update(message.key).y * pi/6))
+                    )
+                )
         return game

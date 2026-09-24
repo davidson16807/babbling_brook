@@ -80,7 +80,7 @@ def main(argv=None):
             gl = moderngl.create_context(require=330)
             gl.screen.use()
             queue = PygameMessageQueue(
-                monitored_keys=['w', 'a', 's', 'd', 'shift', 'right shift']
+                monitored_keys=[*'wasd', 'shift', 'right shift']
             )
         textures = Textures(gl, PygameImages(args.data / 'texture'))
         # Validate and create the finite texture set before entering the render loop.
@@ -103,6 +103,7 @@ def main(argv=None):
         animations = CharacterAnimationSystem()
         updater = GameUpdater(
             HemisphereLookUpdater(),
+            DirectionalKeysUpdater(*'ijkl'),
             InteractionQuery(),
             ActionRegistry({'collect_apple': collect('apple'), 'collect_stick': collect('stick'), 'greet': greet})
         )
