@@ -11,6 +11,7 @@ dependencies = ["PyGLM>=2.8.3"]
 
 [project.scripts]
 babbling-brook = "babbling_brook.game:main"
+babbling-brook-editor = "babbling_brook.editor:main"
 
 [project.optional-dependencies]
 render = ["moderngl", "pygame-ce"]

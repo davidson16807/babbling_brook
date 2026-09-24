@@ -4,12 +4,9 @@ This revision adds the desktop MVP implementation to the supplied model and shad
 foundation. It preserves the `code/` source layout and exposes the package as
 `babbling_brook` to avoid Python's built-in `code` and `codecs` modules.
 
-**Validation status:** the six codec tests and Python compilation pass. Gameplay,
-Pygame event integration, and actual OpenGL rendering have not been executed in
-the delivery environment: PyGLM, Pygame-CE, and ModernGL were unavailable and the
-network did not permit installing them. This is an implementation for review,
-not a claim of a playtested build. See `review/REVIEW.md` for exact changes and
-remaining verification.
+**Validation status:** editor model and persistence tests, Python compilation,
+and offscreen OpenGL rendering pass. Interactive desktop playtesting has not
+been performed in the delivery environment.
 
 ## Run
 
@@ -62,6 +59,53 @@ Saves are manual; quitting does not automatically overwrite the slot. A failed
 load leaves the running game intact and displays the error. Save/load catches
 filesystem and invalid-data errors and reports them through `GameState.message`.
 
+## Level editor
+
+The editor accepts exactly one positional argument: the P3 PPM to edit.
+
+```sh
+python -m babbling_brook.editor data/world.ppm
+# Or, directly from this checkout:
+python code/editor.py data/world.ppm
+```
+
+The installed command is `babbling-brook-editor data/world.ppm`.
+The highlighted tile is the cursor, and the camera follows it. It can cross
+objects and cliffs. WASD steps through the grid relative to the camera; holding
+a key repeats after a short delay.
+
+| Input | Editor action |
+| --- | --- |
+| WASD | Move the cursor by one tile |
+| J / L | Rotate the camera by 90 degrees |
+| I / K | Raise / lower the viewing angle |
+| Middle mouse drag | Rotate the camera |
+| Wheel up/down or period/comma (`>`/`<` keys) | Increase/decrease height by 0.5 |
+| Ctrl + wheel or period/comma | Select the next/previous defined tile ID |
+| Shift + wheel or period/comma | Select the next/previous defined object ID; 0 removes it |
+| Ctrl+S or F5 | Save the PPM |
+| Ctrl+Z / Ctrl+Y | Undo / redo (up to 100 edits) |
+| Escape or close window | Close; repeat to discard unsaved edits |
+
+The comma and period keys work without Shift. Holding Shift selects object
+editing, including when typing the `<` and `>` symbols. Ctrl takes precedence
+if both modifiers are held. ID selection stops at the palette's ends.
+
+Palette definitions come from `world.game` beside the map, falling back to this
+project's `data/world.game`. An optional `.game` with the same stem as the map is
+then overlaid. Textures are resolved from the map's `texture/` folder with the
+project's `data/texture/` as fallback. Objects authored only in `.game` files
+are not PPM content and are not shown or edited here.
+
+Saving writes the same dimensions and integer RGB samples as text P3. `Maxval`
+is preserved unless an edit needs a larger value, up to 65,535; samples are never
+rescaled. PPM comments and whitespace are rewritten. Terrain and object bases
+are rebuilt after edits so erosion and placement heights stay consistent.
+
+`EditorState`, `EditorUpdater`, and `EditorView` form a separate MVU path.
+`EditorFiles` handles file access; the source PPM, decoded map, object placements,
+cursor, camera, viewport, and status message belong to `EditorState`.
+
 ## Data and architecture
 
 - `data/world.ppm` is unchanged from the attachment. R is height in half-units,
@@ -111,15 +155,12 @@ and cached textures was added.
 python -m unittest discover -s test -v
 ```
 
-When dependencies are missing, the gameplay and rendering modules explicitly
-skip; a run with skips is not evidence of a working desktop game. The suite covers
-codec round trips, erosion, mesh/height agreement, movement, jump/landing,
-collision, interaction, save restoration without PPM respawning, and failed-save
-preservation. An opt-in test compiles the actual shaders and draws to an EGL
-framebuffer:
+The editor tests cover cursor bounds, camera turns, edit modifiers, erosion,
+object heights, undo/redo, 16-bit PPM values, and saving without damaging the
+original on failure. The wheel-adapter check skips if Pygame is unavailable.
+The game can also render through EGL:
 
 ```sh
-BB_TEST_GL=1 python -m unittest discover -s test -v
 python -m babbling_brook --headless --frames 2 --screenshot smoke.png
 ```
 
