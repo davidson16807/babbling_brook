@@ -62,13 +62,14 @@ in vec2 element_uv;
 in ivec3 element_normal;
 in vec2 coordinate;
 in mat2 heights;
+in float base_height;
 out vec2 uv;
 out float lighting;
 flat out int fragment_is_top;
 
 void main() {
     float height = element_position.z == 0
-        ? 0.0
+        ? base_height
         : heights[element_position.x][element_position.y];
     vec3 position = vec3(coordinate + vec2(element_position.xy), height);
 
@@ -127,12 +128,14 @@ void main() {
         ))
         self.coordinate_buffer = gl.buffer(reserve=16)
         self.height_buffer = gl.buffer(reserve=16)
+        self.base_height_buffer = gl.buffer(reserve=4)
         self.vao = gl.vertex_array(self.program, [
             (self.element_position_buffer, "3i", "element_position"),
             (self.element_uv_buffer, "2f", "element_uv"),
             (self.element_normal_buffer, "3i", "element_normal"),
             (self.coordinate_buffer, "2f /i", "coordinate"),
             (self.height_buffer, "4f /i", "heights"),
+            (self.base_height_buffer, "1f /i", "base_height"),
         ])
         self.released = False
 
@@ -141,18 +144,19 @@ void main() {
         side_texture: str,
         coordinates: tuple[tuple[int, int], ...],
         heights: tuple[glm.mat2, ...],
+        base_heights: tuple[float, ...],
         view: ViewState
     ) -> None:
-        """Draw unit tiles from parallel coordinate and height-matrix collections.
+        """Draw one tile per coordinate, height matrix, and base height.
 
         Matrix columns are west/east and rows are south/north.
-        Sides extend from their top edge to the shader's fixed bottom height.
+        Sides extend from their top edge to the tile's base height.
         Top triangles share the southwest–northeast diagonal.
         """
         if self.released:
             return
-        if len(coordinates) != len(heights):
-            raise ValueError("Tile coordinates and heights must have equal lengths")
+        if len(coordinates) != len(heights) or len(heights) != len(base_heights):
+            raise ValueError("Tile coordinates, heights, and base heights must have equal lengths")
         if not coordinates:
             return
         self.gl.enable_only(gl.DEPTH_TEST | gl.CULL_FACE)
@@ -176,6 +180,11 @@ void main() {
             self.height_buffer.orphan(len(height_data))
         self.height_buffer.write(height_data)
 
+        base_height_data = pack(f"{len(base_heights)}f", *base_heights)
+        if self.base_height_buffer.size < len(base_height_data):
+            self.base_height_buffer.orphan(len(base_height_data))
+        self.base_height_buffer.write(base_height_data)
+
         # Two top triangles and two for each side.
         self.vao.render(gl.TRIANGLES, vertices=len(self.ELEMENT_POSITIONS), instances=len(coordinates))
 
@@ -188,4 +197,5 @@ void main() {
         self.element_normal_buffer.release()
         self.coordinate_buffer.release()
         self.height_buffer.release()
+        self.base_height_buffer.release()
         self.program.release()
