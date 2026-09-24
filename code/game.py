@@ -23,6 +23,7 @@ from .update.ControlUpdater import ControlUpdater
 from .update.GameUpdater import GameUpdater
 from .update.HemisphereLookUpdater import HemisphereLookUpdater
 from .update.MovementUpdater import MovementUpdater
+from .update.DirectionalKeysUpdater import DirectionalKeysUpdater
 from .update.actions import *
 
 from .model.query.CollisionQuery import CollisionQuery
@@ -96,7 +97,7 @@ def main(argv=None):
         view = GameView(TileView(TileProgram(gl, textures)),
                         BillboardView(BillboardProgram(gl, textures)), 
                         PygameUiView(UiProgram(gl)))
-        movement = MovementUpdater(CollisionQuery())
+        movement = MovementUpdater(CollisionQuery(), DirectionalKeysUpdater())
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
         updater = GameUpdater(

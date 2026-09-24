@@ -1,12 +1,12 @@
 # HUMAN VETTED
 
 from dataclasses import replace
-from math import cos, sin
 from pyglm import glm
 
 class MovementUpdater:
-    def __init__(self, collisions):
+    def __init__(self, collisions, directional_keys):
         self.collisions = collisions
+        self.directional_keys = directional_keys
 
     def update(self, game, seconds):
         placements = game.instances.placements
@@ -14,9 +14,10 @@ class MovementUpdater:
         objects = game.archetypes.objects
         map_ = game.map
         keys = game.controls.pressed_keys
+        axes = self.directional_keys.update(keys)
         direction = (
-            glm.normalize(game.camera.right().xy) * (int('d' in keys) - int('a' in keys)) + 
-            glm.normalize(game.camera.forward().xy) * (int('w' in keys) - int('s' in keys))
+            glm.normalize(game.camera.right().xy) * axes.x +
+            glm.normalize(game.camera.forward().xy) * axes.y
         )
         if glm.length(direction) > 0:
             direction = glm.normalize(direction)
