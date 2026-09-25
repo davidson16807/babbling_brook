@@ -42,12 +42,11 @@ class DirectLookUpdater:
     def update(self, camera, message):
         v = self.vector_updater.update(
             glm.vec2(camera.raw_azimuth, camera.raw_elevation), message)
-        v.x %= 2*pi
         return replace(
             camera,
             raw_azimuth=v.x,
             raw_elevation=v.y,
-            look_azimuth=v.x,
+            look_azimuth=v.x%(2*pi),
             look_elevation=v.y,
         )
 

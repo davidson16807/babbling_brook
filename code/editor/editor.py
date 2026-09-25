@@ -16,7 +16,7 @@ from ..messages import KeyboardAction, KeyboardMessage, KeyboardModifiers
 from .EditorFiles import EditorFiles
 from ..update.CursorUpdater import CursorUpdater
 from .EditorUpdater import EditorUpdater
-from ..update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
+from ..update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater, DirectLookUpdater,
                                   VectorKeysUpdater, VectorMouseUpdater)
 from ..view.Textures import Textures
 from ..view.program.BillboardProgram import BillboardProgram
@@ -35,8 +35,9 @@ def make_updater(map_codec, object_palette):
         tuple(pi/4 + i*pi/2 for i in range(4)), (pi/6, pi/3),
     )
     return EditorUpdater(map_codec, object_palette,
-                         CursorUpdater(VectorKeysUpdater(*'wasd')),
-                         VectorMouseUpdater(-.01), keylook)
+            CursorUpdater(VectorKeysUpdater(*'wasd')),
+            DirectLookUpdater(BoundedVectorUpdater(VectorMouseUpdater(-.01), y0=0, y1=pi/2)),
+            keylook)
 
 
 def main(argv=None):

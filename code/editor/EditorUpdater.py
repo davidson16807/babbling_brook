@@ -81,12 +81,7 @@ class EditorUpdater:
         if isinstance(message, FocusLostMessage):
             return replace(state, cursor_delay=0.0)
         if isinstance(message, MouseMotionMessage) and MouseButton.MIDDLE in message.buttons:
-            v = self.mouselook.update(
-                glm.vec2(state.camera.raw_azimuth, state.camera.raw_elevation), message)
-            az, el = max(0.0, min(pi, v.x)), max(0.0, min(pi/2, v.y))
-            return replace(state, camera=replace(state.camera,
-                           raw_azimuth=az, raw_elevation=el,
-                           look_azimuth=az, look_elevation=el))
+            return replace(state, camera=self.mouselook.update(state.camera, message))
         if isinstance(message, ScrollMessage):
             # Ctrl chooses tiles; Shift chooses objects; otherwise change height.
             channel = (1 if message.modifiers & KeyboardModifiers.CTRL else
