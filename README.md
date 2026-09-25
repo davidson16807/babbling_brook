@@ -1,5 +1,55 @@
 # Babbling Brook
 
+## Level editor
+
+With the render dependencies installed, run the new standalone entry point:
+
+```sh
+python editor.py data/world.ppm
+```
+
+The required argument is the P3 PPM file to edit. Palettes, object definitions,
+and textures come from this checkout's `data/world.game` and `data/texture/`,
+even when the PPM is elsewhere or the command runs from another directory.
+
+| Input | Editor action |
+| --- | --- |
+| WASD | Move one tile in the nearest camera-relative grid direction; hold to repeat |
+| Shift+WASD | Extend or shrink a rectangular selection from its anchor |
+| IJKL | Use the regular game's snapped camera controls |
+| Middle mouse drag | Free camera rotation; azimuth is bounded to 0–180°, elevation to 0–90° |
+| Wheel down / up | Lower / raise selected tiles by one PPM height step (0.5 world units) |
+| Ctrl+wheel down / up | Previous / next tile palette ID |
+| Shift+wheel down / up | Previous / next object palette ID |
+| `<` / `>` (also comma / period) | Lower / raise height |
+| `[` / `]` | Previous / next tile palette ID |
+| `9` / `0` | Previous / next object palette ID |
+| Ctrl+S or F5 | Save to the PPM passed on the command line |
+| Escape or window close | Quit; repeat to discard unsaved edits when prompted |
+
+The cursor is always a list of tile coordinates. Amber marks its moving end;
+cyan marks the rest of the selection. Releasing Shift retains the selection for
+editing; the next movement without Shift selects a single tile. All edits apply
+to every selected tile. Ctrl takes precedence if both wheel modifiers are held.
+Palette steps skip undefined IDs and stop at the ends; object ID zero removes
+the object. Heights cannot go below zero. The PPM maximum grows when needed,
+up to the format's 65535 limit. Saving preserves sample values and dimensions,
+using normalized P3 whitespace (comments are not retained).
+
+`EditorState`, `EditorUpdater`, and `EditorView` form a separate MVU application.
+The original PPM samples remain authoritative; map erosion and object placements
+are rebuilt after edits. Game-only `.game` placements, including the player,
+are not part of the PPM editor. `CursorUpdater` handles list-based tile selection,
+and the existing `HighlightProgram` draws that list on the terrain. Input polling
+and file writes stay in the entry point, with no held-key cache in the model.
+
+Editor checks (including save/load compatibility with the game):
+
+```sh
+python -m unittest discover -s test -v
+BB_TEST_GL=1 python -m unittest discover -s test -v
+```
+
 This revision adds the desktop MVP implementation to the supplied model and shader
 foundation. It preserves the `code/` source layout and exposes the package as
 `babbling_brook` to avoid Python's built-in `code` and `codecs` modules.
