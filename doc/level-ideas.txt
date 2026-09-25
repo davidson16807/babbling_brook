@@ -1,0 +1,106 @@
+ideas are only listed here if they serve a purpose for demonstrating language, either declension, conjugation, or vocab from the Buck list
+
+times of day	a town or market where certain people are only available at certain times of day
+times of day	a gated city that closes at night
+seasons 	a forest where certain resources can only be found in certain seasons
+seasons 	a farm where certain tasks need to be done in certain seasons
+seasons 	a mountain pass that closes in winter
+state of knowledge 	forests, vallies, or rock formations where certain things can fall out-of-sight
+weather 	a forest stream that is only traversible in dry weather
+weather 	a hilltop that cannot be traversed in stormy weather
+weather 	a harbor where boats only depart in favorable winds and weather
+weather 	a mountain pass that closes in snowy or stormy weather
+tides 	a fort on a tidal flat that can only be reached at certain tides
+animals 	a riverside village that is unpleasant in mosquito season
+animals 	a forest village with wolves and bears that are dangerous
+animals 	a farm that features animals that must be cared for
+animals 	a harbor town with sea animals
+agriculture 	a farming town that struggles when harvest fails
+masonry 	a town recovering from disaster when enough supplies are available
+metalwork 	a forge beside a trade road where repairs determine if carts continue
+doors 	a storehouse or granary where access depends on a key
+roads	a bridge settlement that controls the only reliable crossing
+owning & sharing 	a storehouse or granary where households must agree on shares of food
+owning & sharing 	a trade post where people buy and sell goods to progress the story
+life cycle 	a cemetery
+warfare 	a war front that can only be accessed in times of peace
+illness 	a healer's house that provides the only means to recover from illness
+learning & secrecy 	a library with private records
+speech & vows 	a meeting house where public promise has witness
+arts 	a meeting or feast hall where stories and songs and are performed
+law 	a meeting or court house where laws are enforced
+supernatural 	a pilgramage shrine, place of worship, or cemetery
+
+priority of implementation:
+
+babbling brook 	
+	implied by the name of the game, itself a play on words
+	streams, buildings, and rock formations that obstruct line-of-sight and require communication
+	streams that are only traversible in dry weather
+	a forest where certain resources can only be found in certain seasons
+	certain people who are only available at certain times of day
+	a riverside village that is unpleasant in mosquito season
+	a forest village with wolves and bears that are dangerous
+	a meeting house where public promise has witness
+	a meeting or feast hall where stories and songs and are performed
+	a meeting or court house where laws are enforced
+	a pilgrimage shrine that provides opportunities to pilgrimage or exorcize demons
+	a cemetery that demonstrates the supernatural and life cycle
+	a healer's house that provides the only means to recover from illness
+	a trade post where people buy and sell goods to progress the story
+
+farming town
+	a farm where certain tasks need to be done in certain seasons
+	a farming town that struggles when harvest fails
+	a storehouse or granary where access depends on a key
+	a farm that features animals that must be cared for
+	a meeting house where public promise has witness
+	a meeting or feast hall where stories and songs and are performed
+	a meeting or court house where laws are enforced
+	a pilgrimage shrine that provides opportunities to pilgrimage or exorcize demons
+	a cemetery that demonstrates the supernatural and life cycle
+	a healer's house that provides the only means to recover from illness
+	a trade post where people buy and sell goods to progress the story
+	a town that suffers disaster?
+	a town recovering from disaster when enough supplies are available?
+
+big town
+	large buildings that obstruct line-of-sight and require communication
+	a gated city that closes at night
+	an ampitheater where stories and songs and are performed
+	a court house where public promise has witness
+	a court house where laws are enforced
+	a pilgrimage shrine that provides opportunities to pilgrimage or exorcize demons
+	a cemetery that demonstrates the supernatural and life cycle
+	a library with private records
+	an apothecary that provides the only means to recover from illness
+	a market where certain people are only available at certain times of day
+	a market where people buy and sell goods to progress the story
+
+mountain pass
+	a mountain pass that closes in winter, stormy weather, or snow
+	a snowy biome
+	needed to pass between two towns
+
+hilltop fort
+	a hilltop that cannot be traversed in stormy weather
+	a war front that can only be accessed in times of peace
+
+trading camp
+	a forge beside a trade road where repairs determine if carts continue
+	needed to pass from mountain pass to a town (harbor?)
+	a desert biome
+
+harbor town
+	a harbor where boats only depart in favorable winds and weather
+	a harbor town with sea animals
+	point of access for tidal flat castle
+
+tidal flat castle
+	a fort on a tidal flat that can only be reached at certain tides
+
+ruined town
+	a town recovering from disaster when enough supplies are available
+
+ancient ruins
+	stone formations that obstruct line-of-sight and require communication
