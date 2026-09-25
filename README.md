@@ -5,11 +5,11 @@
 With the render dependencies installed, run the new standalone entry point:
 
 ```sh
-python editor.py data/world.ppm
+python editor.py data/map/world.ppm
 ```
 
 The required argument is the P3 PPM file to edit. Palettes, object definitions,
-and textures come from this checkout's `data/world.game` and `data/texture/`,
+and textures come from this checkout's `data/world.game` and top-level `texture/`,
 even when the PPM is elsewhere or the command runs from another directory.
 
 | Input | Editor action |
@@ -74,16 +74,16 @@ python -m pip install -e '.[render]'
 python -m babbling_brook
 ```
 
-The equivalent installed command is `babbling-brook`. Keep `data/` in the working
-directory, or pass `--data /path/to/data`. To layer mods over the base game,
-list the files in load order; arguments without a `.game` or `.mod` extension
-are ignored:
+The equivalent installed command is `babbling-brook`. Keep `data/` and its
+sibling `texture/` in the working directory, or pass `--data /path/to/data`.
+To layer mods over the base game, list the files in load order; arguments without
+a `.game` or `.mod` extension are ignored:
 
 ```sh
 python -m babbling_brook data/world.game mod/weather.mod
 ```
 
-Use `--map /path/to/world.ppm` when the map is not `DATA/world.ppm`.
+Use `--map /path/to/world.ppm` when the map is not `DATA/map/world.ppm`.
 
 | Input | Action |
 | --- | --- |
@@ -117,7 +117,7 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 
 ## Data and architecture
 
-- `data/world.ppm` is unchanged from the attachment. R is height in half-units,
+- `data/map/world.ppm` is unchanged from the attachment. R is height in half-units,
   G selects a tile palette entry, B selects an initial object palette entry
   (zero places nothing).
 - `data/world.game` supplies archetypes, palettes, four frames per character

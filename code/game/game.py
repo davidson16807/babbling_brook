@@ -40,8 +40,8 @@ from ..messages import KeyboardMessage, KeyboardAction
 def main(argv=None):
     parser = argparse.ArgumentParser(description=APPLICATION_TITLE)
     parser.add_argument('game_files', nargs='*', type=Path, help='Plugin files; only .game and .mod files are loaded')
-    parser.add_argument('--data', type=Path, default=Path('data'), help='Directory containing world.ppm, world.game, and texture/')
-    parser.add_argument('--map', type=Path, help='PPM map file (defaults to DATA/world.ppm)')
+    parser.add_argument('--data', type=Path, default=Path('data'), help='Directory containing world.game and map/')
+    parser.add_argument('--map', type=Path, help='PPM map file (defaults to DATA/map/world.ppm)')
     parser.add_argument('--save', type=Path, default=Path('save/slot.sav'), help='F5/F9 save slot')
     parser.add_argument('--load', action='store_true', help='Resume the save slot at startup')
     parser.add_argument('--frames', type=int, help='Exit after this many frames (smoke testing)')
@@ -56,7 +56,7 @@ def main(argv=None):
         parser.error('at least one .game or .mod file is required')
     if not args.game_files:
         args.game_files = [args.data / 'world.game']
-    map_filename = args.map or args.data / 'world.ppm'
+    map_filename = args.map or args.data / 'map' / 'world.ppm'
     game_files = GameFiles(PluginOps(), PluginStringCodec())
     try:
         model = game_files.load(map_filename, args.game_files, args.save if args.load else None)
@@ -83,7 +83,7 @@ def main(argv=None):
             queue = PygameMessageQueue(
                 monitored_keys=[*'wasd', 'shift', 'right shift']
             )
-        textures = Textures(gl, PygameImages(args.data / 'texture'))
+        textures = Textures(gl, PygameImages(args.data.parent / 'texture'))
         # Validate and create the finite texture set before entering the render loop.
         names = {
             texture

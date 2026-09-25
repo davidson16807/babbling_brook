@@ -73,8 +73,9 @@ def main():
     context = moderngl.create_context(require=330)
 
     files = GameFiles(PluginOps(), PluginStringCodec())
-    game = files.load(ROOT / 'data' / 'world.ppm', [ROOT / 'data' / 'world.game'])
-    textures = Textures(context, PygameImages(ROOT / 'data' / 'texture'))
+    game = files.load(ROOT / 'data' / 'map' / 'world.ppm',
+                      [ROOT / 'data' / 'world.game'])
+    textures = Textures(context, PygameImages(ROOT / 'texture'))
     terrain = TileView(TileProgram(context, textures))
     highlights = HighlightProgram(context)
 

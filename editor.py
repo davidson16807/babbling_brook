@@ -1,4 +1,4 @@
-"""Edit a P3 level: python editor.py data/world.ppm."""
+"""Edit a P3 level: python editor.py data/map/world.ppm."""
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 import sys

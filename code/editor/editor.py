@@ -44,7 +44,8 @@ def main(argv=None):
     parser.add_argument('ppm', type=Path, help='Text P3 PPM level to edit')
     args = parser.parse_args(argv)
     filename = args.ppm.resolve()
-    data = Path(__file__).resolve().parents[2] / 'data'
+    root = Path(__file__).resolve().parents[2]
+    data = root / 'data'
     try:
         plugin = PluginStringCodec().decode((data / 'world.game').read_text(encoding='utf-8'))
         if any(not 0 <= index <= 65535 for index in plugin.tile_palette):
@@ -70,7 +71,7 @@ def main(argv=None):
         pygame.display.set_mode(state.viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE)
         gl = moderngl.create_context(require=330)
         gl.screen.use()
-        textures = Textures(gl, PygameImages(data / 'texture'))
+        textures = Textures(gl, PygameImages(root / 'texture'))
         view = EditorView(TileView(TileProgram(gl, textures)), BillboardProgram(gl, textures),
                           HighlightProgram(gl),
                           PygameEditorUiView(UiProgram(gl), filename.name, map_codec, plugin.object_palette),
