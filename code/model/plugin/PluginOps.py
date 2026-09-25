@@ -7,7 +7,7 @@ from math import isfinite
 
 from pyglm import glm
 
-from ..GameState import GameState
+from ...game.GameState import GameState
 from ..Map import Map
 from .Plugin import Plugin
 from ..component.archetypes import CharacterArchetype

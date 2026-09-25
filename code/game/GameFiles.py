@@ -9,8 +9,8 @@ from ..codec.map.MapCodec import MapCodec
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..codec.map.PpmImageCodec import PpmImageCodec
 from .GameState import GameState
-from .plugin.Plugin import Plugin
-from .plugin.PluginOps import PluginOps
+from ..model.plugin.Plugin import Plugin
+from ..model.plugin.PluginOps import PluginOps
 
 
 class GameFiles:

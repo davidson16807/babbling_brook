@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from pyglm import glm
 
-from ..program.ViewState import ViewState
+from ..view.program.ViewState import ViewState
 
 
 class EditorView:

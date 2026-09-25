@@ -1,2 +1,1 @@
-from .GameState import GameState
-from .plugin import Plugin, PluginOps
+"""Shared game and editor model primitives."""

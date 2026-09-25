@@ -2,10 +2,10 @@
 from dataclasses import dataclass, field
 
 from ..codec.map.PpmImageCodec import PpmImage
-from .CameraState import CameraState
-from .Map import Map
-from .component.instances import ObjectPlacement
-from .identifiers import Coordinate, EntityId
+from ..model.CameraState import CameraState
+from ..model.Map import Map
+from ..model.component.instances import ObjectPlacement
+from ..model.identifiers import Coordinate, EntityId
 
 
 @dataclass(frozen=True)

@@ -9,33 +9,33 @@ from pathlib import Path
 import moderngl
 import pygame
 
-from .adapter.PygameMessageQueue import PygameMessageQueue
-from .adapter.PygameImages import PygameImages
-from .adapter.PygameUiView import PygameUiView
-from .view.Textures import Textures
-from .view.program.TileProgram import TileProgram
-from .view.program.BillboardProgram import BillboardProgram
-from .view.program.UiProgram import UiProgram
-from .view.view.TileView import TileView
-from .view.view.BillboardView import BillboardView
-from .view.view.GameView import GameView
+from ..adapter.PygameMessageQueue import PygameMessageQueue
+from ..adapter.PygameImages import PygameImages
+from ..adapter.PygameUiView import PygameUiView
+from ..view.Textures import Textures
+from ..view.program.TileProgram import TileProgram
+from ..view.program.BillboardProgram import BillboardProgram
+from ..view.program.UiProgram import UiProgram
+from ..view.view.TileView import TileView
+from ..view.view.BillboardView import BillboardView
+from .GameView import GameView
 
-from .update.GameUpdater import GameUpdater
-from .update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
-                                 VectorKeysUpdater, VectorMouseUpdater)
-from .update.MovementUpdater import MovementUpdater
-from .update.actions import *
+from .GameUpdater import GameUpdater
+from ..update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
+                                  VectorKeysUpdater, VectorMouseUpdater)
+from ..update.MovementUpdater import MovementUpdater
+from ..update.actions import *
 
-from .model.query.CollisionQuery import CollisionQuery
-from .model.query.InteractionQuery import InteractionQuery
-from .model.system.GravitySystem import GravitySystem
-from .model.system.CharacterAnimationSystem import CharacterAnimationSystem
-from .model.plugin.PluginOps import PluginOps
-from .codec.GameStateCodec import PluginStringCodec
+from ..model.query.CollisionQuery import CollisionQuery
+from ..model.query.InteractionQuery import InteractionQuery
+from ..model.system.GravitySystem import GravitySystem
+from ..model.system.CharacterAnimationSystem import CharacterAnimationSystem
+from ..model.plugin.PluginOps import PluginOps
+from ..codec.GameStateCodec import PluginStringCodec
 
-from . import APPLICATION_TITLE
-from .model.GameFiles import GameFiles
-from .messages import KeyboardMessage, KeyboardAction
+from .. import APPLICATION_TITLE
+from .GameFiles import GameFiles
+from ..messages import KeyboardMessage, KeyboardAction
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=APPLICATION_TITLE)

@@ -16,7 +16,7 @@ if 'babbling_brook' not in sys.modules:
     sys.modules['babbling_brook'] = package
     spec.loader.exec_module(package)
 
-from babbling_brook.editor import main
+from babbling_brook.editor.editor import main
 
 
 if __name__ == '__main__':

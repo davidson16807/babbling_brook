@@ -33,7 +33,7 @@ if 'babbling_brook' not in sys.modules:
 
 from babbling_brook.adapter.PygameImages import PygameImages
 from babbling_brook.codec.GameStateCodec import PluginStringCodec
-from babbling_brook.model.GameFiles import GameFiles
+from babbling_brook.game.GameFiles import GameFiles
 from babbling_brook.model.plugin.PluginOps import PluginOps
 from babbling_brook.view.Textures import Textures
 from babbling_brook.view.program.HighlightProgram import HighlightProgram

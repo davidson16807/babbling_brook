@@ -7,24 +7,24 @@ from pathlib import Path
 import moderngl
 import pygame
 
-from .adapter.PygameEditorUiView import PygameEditorUiView
-from .adapter.PygameImages import PygameImages
-from .adapter.PygameMessageQueue import PygameMessageQueue
-from .codec.GameStateCodec import PluginStringCodec
-from .codec.map.MapCodec import MapCodec
-from .messages import KeyboardAction, KeyboardMessage, KeyboardModifiers
-from .model.EditorFiles import EditorFiles
-from .update.CursorUpdater import CursorUpdater
-from .update.EditorUpdater import EditorUpdater
-from .update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
-                                 VectorKeysUpdater, VectorMouseUpdater)
-from .view.Textures import Textures
-from .view.program.BillboardProgram import BillboardProgram
-from .view.program.HighlightProgram import HighlightProgram
-from .view.program.TileProgram import TileProgram
-from .view.program.UiProgram import UiProgram
-from .view.view.EditorView import EditorView
-from .view.view.TileView import TileView
+from ..adapter.PygameEditorUiView import PygameEditorUiView
+from ..adapter.PygameImages import PygameImages
+from ..adapter.PygameMessageQueue import PygameMessageQueue
+from ..codec.GameStateCodec import PluginStringCodec
+from ..codec.map.MapCodec import MapCodec
+from ..messages import KeyboardAction, KeyboardMessage, KeyboardModifiers
+from .EditorFiles import EditorFiles
+from ..update.CursorUpdater import CursorUpdater
+from .EditorUpdater import EditorUpdater
+from ..update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
+                                  VectorKeysUpdater, VectorMouseUpdater)
+from ..view.Textures import Textures
+from ..view.program.BillboardProgram import BillboardProgram
+from ..view.program.HighlightProgram import HighlightProgram
+from ..view.program.TileProgram import TileProgram
+from ..view.program.UiProgram import UiProgram
+from .EditorView import EditorView
+from ..view.view.TileView import TileView
 
 
 def make_updater(map_codec, object_palette):
@@ -44,7 +44,7 @@ def main(argv=None):
     parser.add_argument('ppm', type=Path, help='Text P3 PPM level to edit')
     args = parser.parse_args(argv)
     filename = args.ppm.resolve()
-    data = Path(__file__).resolve().parent.parent / 'data'
+    data = Path(__file__).resolve().parents[2] / 'data'
     try:
         plugin = PluginStringCodec().decode((data / 'world.game').read_text(encoding='utf-8'))
         if any(not 0 <= index <= 65535 for index in plugin.tile_palette):

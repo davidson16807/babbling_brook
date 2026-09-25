@@ -1,7 +1,7 @@
 # HUMAN VETTED
 
 from pyglm import glm
-from ..program.ViewState import ViewState
+from ..view.program.ViewState import ViewState
 
 
 class GameView:

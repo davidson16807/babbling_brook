@@ -3,10 +3,10 @@
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from .CameraState import CameraState
-from .identifiers import ArchetypeId
-from .Map import Map
-from .store import ArchetypeComponentStores, InstanceComponentStores
+from ..model.CameraState import CameraState
+from ..model.identifiers import ArchetypeId
+from ..model.Map import Map
+from ..model.store import ArchetypeComponentStores, InstanceComponentStores
 
 
 @dataclass(frozen=True)

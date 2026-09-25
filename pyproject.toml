@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 dependencies = ["PyGLM>=2.8.3"]
 
 [project.scripts]
-babbling-brook = "babbling_brook.game:main"
+babbling-brook = "babbling_brook.game.game:main"
 
 [project.optional-dependencies]
 render = ["moderngl", "pygame-ce"]
@@ -18,7 +18,8 @@ render = ["moderngl", "pygame-ce"]
 [tool.setuptools]
 package-dir = {babbling_brook = "code"}
 packages = [
-    "babbling_brook", "babbling_brook.model", "babbling_brook.model.plugin", "babbling_brook.model.component", "babbling_brook.model.field", "babbling_brook.model.query",
+    "babbling_brook", "babbling_brook.editor", "babbling_brook.game",
+    "babbling_brook.model", "babbling_brook.model.plugin", "babbling_brook.model.component", "babbling_brook.model.field", "babbling_brook.model.query",
     "babbling_brook.model.store", "babbling_brook.model.system",
     "babbling_brook.codec", "babbling_brook.codec.map", "babbling_brook.adapter",
     "babbling_brook.update", "babbling_brook.view", "babbling_brook.view.program",

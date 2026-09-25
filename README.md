@@ -37,6 +37,9 @@ up to the format's 65535 limit. Saving preserves sample values and dimensions,
 using normalized P3 whitespace (comments are not retained).
 
 `EditorState`, `EditorUpdater`, and `EditorView` form a separate MVU application.
+Editor-specific application modules live in `code/editor/`; regular-game
+application modules live in `code/game/`. Shared model, update, and view
+modules remain in their existing packages.
 The original PPM samples remain authoritative; map erosion and object placements
 are rebuilt after edits. Game-only `.game` placements, including the player,
 are not part of the PPM editor. `CursorUpdater` handles list-based tile selection,
