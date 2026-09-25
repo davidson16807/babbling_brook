@@ -1,0 +1,19 @@
+P3
+# R: nearest whole height (h); G: tile_palette.txt; B: 0
+# One pixel per tile. Highest stored surface; half heights round up.
+# Source: https://fftcompanion.app/maps/sideQuest/nelveskaTemple
+# Original FFHacktics page could not be inspected.
+8 12
+255
+0 11 0	0 12 0	0 11 0	0 4 0	0 11 0	0 11 0	0 12 0	0 11 0
+0 12 0	0 12 0	0 12 0	0 4 0	0 11 0	0 12 0	1 11 0	1 11 0
+1 11 0	7 4 0	0 12 0	0 4 0	0 11 0	7 4 0	1 11 0	2 11 0
+1 11 0	0 11 0	0 12 0	0 4 0	0 12 0	0 12 0	2 11 0	2 11 0
+1 11 0	1 8 0	0 12 0	0 4 0	0 4 0	2 0 0	2 11 0	4 0 0
+1 11 0	1 11 0	0 11 0	0 4 0	0 4 0	2 11 0	3 11 0	5 11 0
+8 4 0	8 4 0	8 4 0	8 4 0	8 4 0	8 4 0	7 4 0	6 11 0
+10 0 0	12 4 0	8 4 0	12 4 0	8 4 0	12 4 0	10 0 0	10 11 0
+10 11 0	12 4 0	9 4 0	12 4 0	9 4 0	12 4 0	10 11 0	10 11 0
+9 11 0	9 11 0	8 11 0	8 4 0	8 11 0	9 11 0	8 11 0	9 11 0
+5 11 0	4 11 0	7 11 0	6 4 0	7 11 0	7 11 0	7 11 0	7 11 0
+4 11 0	3 11 0	5 11 0	6 4 0	4 11 0	5 11 0	5 11 0	4 11 0

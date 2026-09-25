@@ -1,0 +1,15 @@
+P3
+# R: nearest whole height (h); G: tile_palette.txt; B: 0
+# One pixel per tile. Highest stored surface; half heights round up.
+# Source: https://fftcompanion.app/maps/location/dugeuraPass
+# Original FFHacktics page could not be inspected.
+10 8
+255
+1 11 0	1 11 0	1 11 0	1 11 0	0 11 0	1 11 0	1 11 0	1 11 0	2 11 0	2 11 0
+1 0 0	1 0 0	3 0 0	4 0 0	0 11 0	1 11 0	1 11 0	6 0 0	5 0 0	3 0 0
+8 11 0	8 11 0	8 0 0	6 0 0	6 0 0	7 0 0	7 0 0	7 0 0	5 11 0	4 0 0
+8 0 0	8 11 0	8 0 0	8 0 0	7 11 0	7 11 0	7 11 0	7 11 0	5 11 0	7 0 0
+6 11 0	7 0 0	9 0 0	11 0 0	7 11 0	7 11 0	9 0 0	8 0 0	6 11 0	8 0 0
+8 0 0	10 0 0	10 0 0	11 11 0	12 0 0	12 0 0	13 0 0	13 0 0	7 11 0	7 11 0
+10 0 0	11 0 0	11 11 0	11 11 0	12 11 0	12 11 0	13 11 0	13 11 0	13 11 0	13 0 0
+10 0 0	11 0 0	14 0 0	14 0 0	12 0 0	12 11 0	13 11 0	13 11 0	13 0 0	13 0 0

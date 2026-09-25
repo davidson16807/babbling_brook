@@ -1,0 +1,15 @@
+Additional green-channel codes
+
+16	roof
+17	wooden-floor
+18	tree
+19	books
+20	furniture
+21	crate
+22	swamp
+23	bridge-deck
+24	cutaway-edge
+
+bridge-deck: source does not specify a reliable stone/wood material.
+cutaway-edge: map-boundary cross-section; material is not specified.
+These codes keep unclassified surfaces distinct instead of treating them as rock (0).
