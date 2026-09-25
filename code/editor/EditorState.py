@@ -1,4 +1,5 @@
-"""Level-editor values, independent of the game's entity/component stores."""
+# HUMAN VETTED
+
 from dataclasses import dataclass, field
 
 from ..codec.map.PpmImageCodec import PpmImage
@@ -22,3 +23,7 @@ class EditorState:
     dirty: bool = False
     quit_requested: bool = False
     cursor_delay: float = 0.0
+    channel: int | None = None  # PPM R/G/B index; None selects zoom.
+    clipboard: PpmImage | None = None
+    undo_history: list[PpmImage] = field(default_factory=list)
+    redo_history: list[PpmImage] = field(default_factory=list)
