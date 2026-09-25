@@ -6,8 +6,6 @@ from ..messages import (KeyboardMessage, KeyboardAction, MouseButton, MouseMotio
     QuitMessage, WindowResizeMessage)
 from ..model.component.instances import VerticalPhysics
 
-pi = 3.14159265358979
-
 class GameUpdater:
     def __init__(self, mouselook, keylook, interactions, actions, jump_speed=6):
 
@@ -44,10 +42,8 @@ class GameUpdater:
                 entity, archetype = target
                 return self.actions.apply(archetype.action, game, entity)
             else:
-                game = replace(game, 
-                    camera = replace(game.camera,
-                        raw_azimuth = game.camera.raw_azimuth + (self.keylook.update(message.key).x * pi/2) % (2*pi),
-                        elevation = max(pi/6, min(pi/3, game.camera.elevation + self.keylook.update(message.key).y * pi/6))
-                    )
+                game = replace(
+                    game,
+                    camera=self.keylook.update(game.camera, message),
                 )
         return game

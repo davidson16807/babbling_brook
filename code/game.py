@@ -3,6 +3,7 @@
 """Desktop composition root: Pygame window/timing, internal messages, MVU."""
 import argparse
 from dataclasses import replace
+from math import pi
 from pathlib import Path
 
 import moderngl
@@ -20,7 +21,8 @@ from .view.view.BillboardView import BillboardView
 from .view.view.GameView import GameView
 
 from .update.GameUpdater import GameUpdater
-from .update.HemisphereLookUpdater import HemisphereLookUpdater
+from .update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
+                                 VectorKeysUpdater, VectorMouseUpdater)
 from .update.MovementUpdater import MovementUpdater
 from .update.DirectionalKeysUpdater import DirectionalKeysUpdater
 from .update.actions import *
@@ -101,9 +103,29 @@ def main(argv=None):
         movement = MovementUpdater(CollisionQuery(), DirectionalKeysUpdater(*'wasd'))
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
+        azimuths = tuple(pi/4 + index*pi/2 for index in range(4))
+        elevations = (pi/6, pi/3)
+        mouselook = LockedLookUpdater(
+            BoundedVectorUpdater(
+                VectorMouseUpdater(-.01),
+                y0=pi/6,
+                y1=pi/3,
+            ),
+            azimuths,
+            elevations,
+        )
+        keylook = LockedLookUpdater(
+            BoundedVectorUpdater(
+                VectorKeysUpdater(*'ijkl', magnitude=(pi/2, pi/6)),
+                y0=pi/6,
+                y1=pi/3,
+            ),
+            azimuths,
+            elevations,
+        )
         updater = GameUpdater(
-            HemisphereLookUpdater(),
-            DirectionalKeysUpdater(*'ijkl'),
+            mouselook,
+            keylook,
             InteractionQuery(),
             ActionRegistry({'collect_apple': collect('apple'), 'collect_stick': collect('stick'), 'greet': greet})
         )
