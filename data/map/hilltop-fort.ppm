@@ -1,0 +1,19 @@
+P3
+# R: nearest whole height (h); G: tile_palette.txt; B: 0
+# One pixel per tile. Highest stored surface; half heights round up.
+# Source: https://ffhacktics.com/wiki/MAP115_Banished_Fort
+# Extracted from the user-supplied saved HTML tile table.
+# Columns increase x; rows increase numbered wiki y.
+8 11
+255
+2 11 0	2 11 0	2 11 0	2 11 0	2 11 0	2 8 0	2 8 0	2 8 0
+7 0 0	12 4 0	12 4 0	12 4 0	12 4 0	3 8 0	3 0 0	2 8 0
+9 0 0	11 8 0	11 8 0	10 11 0	12 4 0	4 8 0	4 0 0	2 8 0
+9 17 0	10 11 0	10 8 0	10 8 0	12 4 0	5 8 0	5 0 0	2 8 0
+8 17 0	10 11 0	8 8 0	10 11 0	12 4 0	7 8 0	7 11 0	2 8 0
+6 17 0	10 0 0	10 11 0	10 8 0	10 11 0	9 8 0	9 0 0	2 8 0
+5 0 0	5 0 0	10 11 0	10 0 0	10 8 0	9 8 0	9 11 0	2 8 0
+4 0 0	3 0 0	3 0 0	2 11 0	2 8 0	2 8 0	2 8 0	2 8 0
+2 0 0	2 0 0	1 0 0	2 0 0	2 0 0	4 4 0	4 4 0	4 4 0
+1 11 0	1 11 0	0 8 0	0 8 0	1 11 0	1 11 0	1 11 0	1 11 0
+1 11 0	1 11 0	0 8 0	0 8 0	0 8 0	0 11 0	1 11 0	1 11 0
