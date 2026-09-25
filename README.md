@@ -32,6 +32,18 @@ python -m babbling_brook data/world.game mod/weather.mod
 
 Use `--map /path/to/world.ppm` when the map is not `DATA/world.ppm`.
 
+The level editor takes the P3 PPM level to edit:
+
+```sh
+python -m babbling_brook.editor data/world.ppm
+```
+
+WASD moves the highlighted cursor; holding Shift selects a rectangular range.
+IJKL changes the camera in discrete steps, while middle-mouse dragging provides
+free camera movement. The wheel changes height, Ctrl+wheel changes tile ID, and
+Shift+wheel changes object ID. The equivalent keyboard pairs are `<`/`>`,
+`[`/`]`, and `9`/`0`. Ctrl+S or F5 saves the PPM.
+
 | Input | Action |
 | --- | --- |
 | WASD | Move relative to the camera |
