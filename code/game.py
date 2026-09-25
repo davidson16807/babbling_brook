@@ -24,7 +24,6 @@ from .update.GameUpdater import GameUpdater
 from .update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
                                  VectorKeysUpdater, VectorMouseUpdater)
 from .update.MovementUpdater import MovementUpdater
-from .update.DirectionalKeysUpdater import DirectionalKeysUpdater
 from .update.actions import *
 
 from .model.query.CollisionQuery import CollisionQuery
@@ -100,7 +99,7 @@ def main(argv=None):
         view = GameView(TileView(TileProgram(gl, textures)),
                         BillboardView(BillboardProgram(gl, textures)), 
                         PygameUiView(UiProgram(gl)))
-        movement = MovementUpdater(CollisionQuery(), DirectionalKeysUpdater(*'wasd'))
+        movement = MovementUpdater(CollisionQuery(), VectorKeysUpdater(*'wasd'))
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
         azimuths = tuple(pi/4 + index*pi/2 for index in range(4))
@@ -135,10 +134,6 @@ def main(argv=None):
         while model.running and (args.frames is None or frames < args.frames):
             elapsed = 1 / 60 if args.headless else min(clock.tick(60) / 1000.0, .25)
             messages = queue.poll()
-            pressed_keys = frozenset(
-                message.key for message in messages
-                if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.REPEAT
-            )
             for message in messages:
                 if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS and message.key in ('f5', 'f9'):
                     try:
@@ -156,7 +151,7 @@ def main(argv=None):
             accumulator += elapsed
             while accumulator >= 1 / 120:
                 seconds = 1 / 120
-                model = movement.update(model, seconds, pressed_keys)
+                model = movement.update(model, seconds, messages)
                 instances = model.instances
                 placements, physics = gravity.step(
                     instances.placements, instances.physics, model.map, seconds)

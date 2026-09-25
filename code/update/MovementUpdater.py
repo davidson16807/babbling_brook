@@ -3,24 +3,33 @@
 from dataclasses import replace
 from pyglm import glm
 
-class MovementUpdater:
-    def __init__(self, collisions, directional_keys):
-        self.collisions = collisions
-        self.directional_keys = directional_keys
+from ..messages import KeyboardAction, KeyboardMessage
 
-    def update(self, game, seconds, pressed_keys):
+class MovementUpdater:
+    def __init__(self, collisions, vector_updater):
+        self.collisions = collisions
+        self.vector_updater = vector_updater
+
+    def update(self, game, seconds, messages):
         placements = game.instances.placements
         characters = game.instances.characters
         objects = game.archetypes.objects
         map_ = game.map
-        axes = self.directional_keys.update(pressed_keys)
+        held = tuple(
+            message for message in messages
+            if isinstance(message, KeyboardMessage)
+            and message.action == KeyboardAction.REPEAT
+        )
+        axes = glm.vec2(0)
+        for message in held:
+            axes = self.vector_updater.update(axes, message)
         direction = (
             glm.normalize(game.camera.right().xy) * axes.x +
             glm.normalize(game.camera.forward().xy) * axes.y
         )
         if glm.length(direction) > 0:
             direction = glm.normalize(direction)
-        tries_running = 'shift' in pressed_keys or 'right shift' in pressed_keys
+        tries_running = any(message.key in ('shift', 'right shift') for message in held)
         before = placements['player'].position
         after = self.collisions.move(
             'player', before, direction * (4.0 if tries_running else 2.5) * seconds,
