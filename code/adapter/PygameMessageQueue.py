@@ -82,7 +82,10 @@ class PygameMessageQueue:
                 action = ButtonAction.PRESS if event.type == pygame.MOUSEBUTTONDOWN else ButtonAction.RELEASE
                 return MouseButtonMessage(button, action, _modifiers(pygame.key.get_mods()))
         if event.type == pygame.MOUSEWHEEL:
-            return ScrollMessage(glm.vec2(event.x, event.y))
+            return ScrollMessage(
+                glm.vec2(event.x, event.y),
+                _modifiers(pygame.key.get_mods()),
+            )
         if event.type in (pygame.WINDOWRESIZED, pygame.WINDOWSIZECHANGED):
             return WindowResizeMessage((max(1, event.x), max(1, event.y)))
         if event.type == pygame.WINDOWFOCUSLOST:

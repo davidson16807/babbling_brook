@@ -57,6 +57,7 @@ class MouseButtonMessage:
 @dataclass(frozen=True, slots=True)
 class ScrollMessage:
     offset: glm.vec2
+    modifiers: KeyboardModifiers = KeyboardModifiers.NONE
 
 
 @dataclass(frozen=True, slots=True)
