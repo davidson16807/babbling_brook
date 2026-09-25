@@ -20,7 +20,7 @@ class PygameEditorUiView:
         key = (state.viewport, tuple(state.cursor), red, green, blue, state.dirty, state.message)
         if key != self.cache_key:
             width = max(1, state.viewport[0] - 32)
-            tile = self.map_codec.tile_palette[green]
+            tile = self.map_codec.tile_palette[green] if green in self.map_codec.tile_palette else 'missing'
             object_ = self.object_palette.get(blue, 'none')
             lines = [
                 f'{self.filename} {"* unsaved" if state.dirty else "| saved"}   '

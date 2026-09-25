@@ -10,6 +10,7 @@ version	1
 
 # tile_archetypes
 # archetype	top_texture	side_texture	max_erosion	is_collidable
+missing	missing.svg	missing.svg	0	x
 rock	rock.svg	rock.svg	0.5	x
 sandy-rock	sand.svg	rock.svg	0.5	x
 snowy-rock	snow.svg	rock.svg	0.5	x

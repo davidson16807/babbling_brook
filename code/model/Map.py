@@ -17,6 +17,7 @@ leaving no deposits upon adjacent down-hill neighboring tiles.
 """
 
 from math import isfinite
+from collections import defaultdict
 
 from pyglm import glm
 
@@ -77,10 +78,7 @@ class Map:
             raise ValueError("Map fields must have matching dimensions")
         if any(not isfinite(height) for height in max_heights.contents):
             raise ValueError("Map heights must be finite")
-        try:
-            self._corner_heights = TileCornerHeightsField(max_heights, tiles)
-        except KeyError as error:
-            raise ValueError(f"Unknown tile archetype: {error.args[0]!r}") from error
+        self._corner_heights = TileCornerHeightsField(max_heights, tiles)
         self._tiles = tiles
 
     def _coordinate(self, position: glm.vec2) -> Coordinate:

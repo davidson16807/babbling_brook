@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg7"
+   sodipodi:docname="missing.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs7" />
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="26.406019"
+     inkscape:cx="19.408454"
+     inkscape:cy="14.371723"
+     inkscape:window-width="2560"
+     inkscape:window-height="1403"
+     inkscape:window-x="2560"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7" />
+  <title
+     id="title1">ashes — 1-840</title>
+  <rect
+     x="0"
+     y="0"
+     width="32"
+     height="32"
+     fill="#848c85"
+     id="rect1"
+     style="fill:#ff00ff;fill-opacity:1" />
+  <rect
+     x="0"
+     y="31"
+     width="32"
+     height="1"
+     fill="#a1a497"
+     id="rect2" />
+  <rect
+     x="31"
+     y="0"
+     width="1"
+     height="32"
+     fill="#a1a497"
+     id="rect3" />
+  <rect
+     x="-17.12454"
+     y="14.07364"
+     width="10.551465"
+     height="3.5171545"
+     fill="#a1a497"
+     id="rect5"
+     transform="rotate(-90)"
+     style="stroke-width:3.51715;fill:#ffff00;fill-opacity:1" />
+  <rect
+     x="-24.289883"
+     y="14.07364"
+     width="3.6426785"
+     height="3.5171545"
+     fill="#a1a497"
+     id="rect8"
+     transform="rotate(-90)"
+     style="stroke-width:2.06655;fill:#ffff00;fill-opacity:1" />
+</svg>

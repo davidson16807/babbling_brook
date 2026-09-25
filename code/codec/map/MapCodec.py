@@ -1,4 +1,5 @@
 from math import isfinite
+from collections import defaultdict
 
 from pyglm import glm
 
@@ -20,15 +21,15 @@ class MapCodec:
         self.height_scale = height_scale
 
     def decode(self, image: PpmImage) -> Map:
-        try:
-            tile_ids = tuple(self.tile_palette[g] for _, g, _ in image.pixels)
-        except KeyError as error:
-            raise ValueError(f"Unknown tile palette index: {error.args[0]}") from error
+        tile_ids = tuple(
+            (self.tile_palette[g] if g in self.tile_palette else 'missing') 
+            for _, g, _ in image.pixels
+        )
         dimensions = glm.ivec2(image.width, image.height)
         max_heights = RasterField(
             dimensions,
             tuple(red * self.height_scale for red, _, _ in image.pixels),
         )
         tile_archetype_ids = RasterField(dimensions, tile_ids)
-        tiles = IndexedField(self.tile_archetypes, tile_archetype_ids)
+        tiles = IndexedField(self.tile_archetypes, tile_archetype_ids, 'missing')
         return Map(dimensions, max_heights, tiles)

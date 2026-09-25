@@ -14,16 +14,20 @@ T = TypeVar('T')
 
 
 class IndexedField(Generic[K, T]):
-    def __init__(self, indexed: Mapping[K, T], index: RasterField[K]):
+    def __init__(self, indexed: Mapping[K, T], index: RasterField[K], fallback: T):
         self.indexed = indexed
         self.index = index
         self.dimensions = index.dimensions
+        self.fallback = fallback
 
     def __contains__(self, position: glm.vec2) -> bool:
         return position in self.index and self.index(position) in self.indexed
 
     def __getitem__(self, coordinate: Coordinate) -> T:
-        return self.indexed[self.index[coordinate]]
+        if coordinate not in self.index: return self.fallback
+        index = self.index[coordinate]
+        if index not in self.indexed: return self.fallback
+        return self.indexed[index]
 
     def __call__(self, position: glm.vec2) -> T:
         return self.indexed[self.index(position)]
