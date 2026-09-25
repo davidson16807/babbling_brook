@@ -92,7 +92,7 @@ villager	running	1	1	villager-back-1.svg	0.12
 
 # objects
 # entity	archetype	x	y	z
-player	child	8.5	8.5	0.5
+player	child	7	10	1
 
 # physics
 # entity	vertical_velocity	is_grounded
