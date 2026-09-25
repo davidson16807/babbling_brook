@@ -25,3 +25,19 @@ class PpmImageCodec:
             raise ValueError("PPM sample outside declared range")
         return PpmImage(width, height, maximum, tuple(zip(values[::3], values[1::3], values[2::3])))
 
+    def encode(self, image: PpmImage) -> str:
+        if image.width <= 0 or image.height <= 0 or not 1 <= image.maximum <= 65535:
+            raise ValueError("Invalid PPM dimensions or maximum")
+        if len(image.pixels) != image.width * image.height:
+            raise ValueError("PPM sample count does not match dimensions")
+        if any(
+            len(pixel) != 3
+            or any(value < 0 or value > image.maximum for value in pixel)
+            for pixel in image.pixels
+        ):
+            raise ValueError("PPM sample outside declared range")
+        rows = ["P3", f"{image.width} {image.height}", str(image.maximum)]
+        for y in range(image.height):
+            pixels = image.pixels[y * image.width:(y + 1) * image.width]
+            rows.append("  ".join(" ".join(map(str, pixel)) for pixel in pixels))
+        return "\n".join(rows) + "\n"
