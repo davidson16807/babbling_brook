@@ -30,4 +30,7 @@ class IndexedField(Generic[K, T]):
         return self.indexed[index]
 
     def __call__(self, position: glm.vec2) -> T:
-        return self.indexed[self.index(position)]
+        if position not in self.index: return self.fallback
+        index = self.index(position)
+        if index not in self.indexed: return self.fallback
+        return self.indexed[index]

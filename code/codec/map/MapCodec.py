@@ -31,5 +31,5 @@ class MapCodec:
             tuple(red * self.height_scale for red, _, _ in image.pixels),
         )
         tile_archetype_ids = RasterField(dimensions, tile_ids)
-        tiles = IndexedField(self.tile_archetypes, tile_archetype_ids, 'missing')
+        tiles = IndexedField(self.tile_archetypes, tile_archetype_ids, self.tile_archetypes['missing'])
         return Map(dimensions, max_heights, tiles)

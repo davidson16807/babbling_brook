@@ -26,7 +26,13 @@ grass	grass.svg	dirt.svg	1	x
 sand	sand.svg	sand.svg	2	x
 snow-bank	snow.svg	snow.svg	2	x
 water	water.svg	water.svg	10	x
+swamp	water.svg	water.svg	10	x
 ice	snow.svg	water.svg	0	x
+crate	crate2.svg	crate2.svg	0	x
+roof	wood.svg	wood.svg	1	x
+wood	wood.svg	wood.svg	0	x
+bridge-deck	wood.svg	wood.svg	0	x
+furniture	wood.svg	wood.svg	0	x
 
 # object_archetypes
 # archetype	texture	is_collidable	radius	height	width	has_gravity	action	label
@@ -82,6 +88,15 @@ villager	running	1	1	villager-back-1.svg	0.12
 13	snow-bank
 14	water
 15	ice
+16	roof
+17	wood
+18	missing
+19	books
+20	furniture
+21	crate
+22	swamp
+23	bridge-deck
+24	cutaway-edge
 
 # object_palette
 # index	archetype

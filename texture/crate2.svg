@@ -6,12 +6,15 @@
    shape-rendering="crispEdges"
    version="1.1"
    id="svg13"
-   sodipodi:docname="wood.svg"
+   sodipodi:docname="crate2.svg"
    inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs13" />
   <sodipodi:namedview
@@ -23,13 +26,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="13.75"
-     inkscape:cx="23.418182"
-     inkscape:cy="16.8"
+     inkscape:zoom="6.875"
+     inkscape:cx="13.090909"
+     inkscape:cy="26.763636"
      inkscape:window-width="1033"
      inkscape:window-height="1214"
-     inkscape:window-x="1181"
-     inkscape:window-y="186"
+     inkscape:window-x="1324"
+     inkscape:window-y="144"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg13" />
   <title
@@ -47,14 +50,16 @@
      width="32"
      height="1"
      fill="#d2a974"
-     id="rect2" />
+     id="rect2"
+     style="fill:#795a3b" />
   <rect
      x="31"
      y="0"
      width="1"
      height="32"
      fill="#d2a974"
-     id="rect3" />
+     id="rect3"
+     style="fill:#795a3b" />
   <rect
      x="5"
      y="8"
@@ -104,25 +109,53 @@
      height="1"
      fill="#795a3b"
      id="rect10" />
+  <path
+     id="rect13"
+     transform="rotate(-90)"
+     style="fill:#795a3b"
+     d="M -31.99091,0.00909091 H 0.00909042 V 1.0090909 H -31.99091 Z" />
   <rect
-     x="12"
-     y="0"
-     width="1"
-     height="8"
-     fill="#795a3b"
-     id="rect11" />
+     x="0"
+     y="-0.018181818"
+     width="32"
+     height="1"
+     fill="#d2a974"
+     id="rect14"
+     style="fill:#795a3b" />
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>wood — 1-430</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
   <rect
-     x="23"
-     y="8"
-     width="1"
-     height="8"
+     x="-21.940096"
+     y="20.36326"
+     width="43.044331"
+     height="4.2752304"
      fill="#795a3b"
-     id="rect12" />
+     id="rect11"
+     transform="matrix(0.709277,-0.70492988,0.709277,0.70492988,0,0)"
+     style="stroke-width:1.32073" />
   <rect
-     x="8"
-     y="16"
-     width="1"
-     height="8"
+     x="-21.940096"
+     y="20.36326"
+     width="43.044331"
+     height="4.2752304"
      fill="#795a3b"
-     id="rect13" />
+     id="rect12"
+     transform="matrix(0.709277,-0.70492988,0.709277,0.70492988,0,0)"
+     style="stroke-width:1.32073" />
+  <rect
+     x="-44.020897"
+     y="-2.4172218"
+     width="43.044331"
+     height="4.2752304"
+     fill="#795a3b"
+     id="rect15"
+     transform="matrix(-0.70492988,-0.709277,0.70492988,-0.709277,0,0)"
+     style="stroke-width:1.32073" />
 </svg>

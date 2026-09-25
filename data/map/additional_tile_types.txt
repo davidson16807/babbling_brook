@@ -1,7 +1,5 @@
 Additional green-channel codes
 
-16	roof
-17	wooden-floor
 18	tree
 19	books
 20	furniture
