@@ -76,8 +76,6 @@ class Map:
         self.dimensions = glm.ivec2(dimensions)
         if tuple(max_heights.dimensions) != tuple(self.dimensions) or tuple(tiles.dimensions) != tuple(self.dimensions):
             raise ValueError("Map fields must have matching dimensions")
-        if any(not isfinite(height) for height in max_heights.contents):
-            raise ValueError("Map heights must be finite")
         self._corner_heights = TileCornerHeightsField(max_heights, tiles)
         self._tiles = tiles
 
