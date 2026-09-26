@@ -16,6 +16,7 @@ from ..messages import KeyboardAction, KeyboardMessage, KeyboardModifiers
 from .EditorFiles import EditorFiles
 from ..update.CursorUpdater import CursorUpdater
 from .EditorUpdater import EditorUpdater
+from .AppHistoryTraversal import AppHistoryTraversal
 from ..update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater, DirectLookUpdater,
                                   VectorKeysUpdater, VectorMouseUpdater)
 from ..view.Textures import Textures
@@ -37,7 +38,8 @@ def make_updater(map_codec, object_palette):
     return EditorUpdater(map_codec, object_palette,
             CursorUpdater(VectorKeysUpdater(*'wasd')),
             DirectLookUpdater(BoundedVectorUpdater(VectorMouseUpdater(-.01), y0=0, y1=pi/2)),
-            keylook)
+            keylook,
+            AppHistoryTraversal(max_history_size=100))
 
 
 def main(argv=None):

@@ -17,18 +17,28 @@ class PygameEditorUiView:
     def draw(self, state):
         x, y = state.cursor[-1]
         red, green, blue = state.image.pixels[y*state.image.width + x]
-        key = (state.viewport, tuple(state.cursor), red, green, blue, state.dirty, state.message)
+        clipboard_size = ((state.clipboard.width, state.clipboard.height)
+                          if state.clipboard is not None else None)
+        key = (state.viewport, tuple(state.cursor), red, green, blue, state.dirty, state.message,
+               state.channel, state.camera.orthographic_scale, clipboard_size,
+               len(state.undo_history), len(state.redo_history))
         if key != self.cache_key:
             width = max(1, state.viewport[0] - 32)
             tile = self.map_codec.tile_palette[green] if green in self.map_codec.tile_palette else 'missing'
-            object_ = self.object_palette.get(blue, 'none')
+            object_ = self.object_palette.get(blue, 'none' if blue == 0 else 'missing')
+            mode = 'Zoom' if state.channel is None else ('Height [0]', 'Tile [1]', 'Object [2]')[state.channel]
+            clipboard = f'{clipboard_size[0]} x {clipboard_size[1]}' if clipboard_size else 'empty'
             lines = [
                 f'{self.filename} {"* unsaved" if state.dirty else "| saved"}   '
                 f'Cursor ({x}, {y})   |   {len(state.cursor)} selected',
                 f'Height {red*self.map_codec.height_scale:g}   |   Tile {green}: {tile}   |   Object {blue}: {object_}',
+                f'Mode: {mode}   |   Zoom span {state.camera.orthographic_scale:g}   |   '
+                f'Clipboard: {clipboard}   |   Undo {len(state.undo_history)} / Redo {len(state.redo_history)}',
                 'WASD Move   |   Shift+WASD Select rectangle   |   IJKL Rotate   |   Middle-drag Free look',
-                'Wheel Height   |   Ctrl+wheel Tile   |   Shift+wheel Object   |   < > Height   [ ] Tile   9 0 Object',
-                'Ctrl+S / F5 Save   |   Esc Quit' + (f'   |   {state.message}' if state.message else ''),
+                'Wheel / < > Adjust mode   |   + - Zoom   |   T Tile   Z Height   E Object   Esc Zoom',
+                '0-9 Set channel   |   Delete Zero   |   Ctrl+C Copy   Ctrl+V Paste',
+                'Ctrl+Z Undo   |   Ctrl+Shift+Z / Ctrl+Y Redo   |   Ctrl+S / F5 Save   |   Close window Quit',
+                state.message or 'Ready.',
             ]
             wrapped = []
             for line in lines:

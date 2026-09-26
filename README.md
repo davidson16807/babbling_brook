@@ -17,24 +17,51 @@ even when the PPM is elsewhere or the command runs from another directory.
 | WASD | Move one tile in the nearest camera-relative grid direction; hold to repeat |
 | Shift+WASD | Extend or shrink a rectangular selection from its anchor |
 | IJKL | Use the regular game's snapped camera controls |
-| Middle mouse drag | Free camera rotation; azimuth is bounded to 0–180°, elevation to 0–90° |
-| Wheel down / up | Lower / raise selected tiles by one PPM height step (0.5 world units) |
-| Ctrl+wheel down / up | Previous / next tile palette ID |
-| Shift+wheel down / up | Previous / next object palette ID |
-| `<` / `>` (also comma / period) | Lower / raise height |
-| `[` / `]` | Previous / next tile palette ID |
-| `9` / `0` | Previous / next object palette ID |
+| Middle mouse drag | Free camera rotation, with elevation bounded to 0–90° |
+| `+` / `-` (also `=` and keypad plus/minus) | Zoom in / out in every mode |
+| Wheel down / up, `<` / `>` (also comma / period) | Decrease / increase the selected mode; default is zoom out / in |
+| T / Z / E | Select tile / height / object channel editing |
+| Escape | Return to zoom mode (does not quit) |
+| `0`–`9` | Set the selected channel to that literal value on every selected tile |
+| Delete | Set the selected channel to zero |
+| Ctrl+C / Ctrl+V | Copy selection / paste clipboard |
+| Ctrl+Z | Undo the last PPM edit |
+| Ctrl+Shift+Z or Ctrl+Y | Redo a PPM edit |
 | Ctrl+S or F5 | Save to the PPM passed on the command line |
-| Escape or window close | Quit; repeat to discard unsaved edits when prompted |
+| Window close | Quit; close again to discard unsaved edits when prompted |
 
 The cursor is always a list of tile coordinates. Amber marks its moving end;
 cyan marks the rest of the selection. Releasing Shift retains the selection for
 editing; the next movement without Shift selects a single tile. All edits apply
-to every selected tile. Ctrl takes precedence if both wheel modifiers are held.
-Palette steps skip undefined IDs and stop at the ends; object ID zero removes
-the object. Heights cannot go below zero. The PPM maximum grows when needed,
+to every selected tile. Wheel modifiers no longer select a channel; square
+brackets no longer edit. `EditorState.channel` is `None` for zoom or the PPM
+channel index: height `0`, tile `1`, object `2`. Numbers and Delete do nothing
+in zoom mode. Numbers assign a single literal digit, not multi-digit entry.
+Palette steps skip undefined IDs and stop at the ends. Literal numeric input
+preserves unassigned IDs in the PPM: unknown tiles use the existing missing-tile
+artwork, and unknown objects are omitted from the preview and marked missing
+in the status. The editor uses `ObjectPlacementCodec(..., disable_validation=True)`
+to skip unknown object IDs and the image/map dimension check. The flag defaults
+to `False`, so game callers still validate both conditions.
+Object ID zero removes the object. Heights cannot go below zero. Zoom uses
+an orthographic span bounded to 1–128 world units. The PPM maximum grows when needed,
 up to the format's 65535 limit. Saving preserves sample values and dimensions,
 using normalized P3 whitespace (comments are not retained).
+
+The clipboard is a PPM rectangle stored on `EditorState`, with all three channels
+copied in northwest-to-southeast row order. A multi-tile paste starts at the
+yellow tile as its northwest corner, regardless of camera or selection direction;
+parts outside the map are clipped. A one-tile clipboard repeats across the
+selection. Paste replaces all channels in zoom mode or only the active channel
+in an edit mode. Copying never changes the source map or history.
+
+`AppHistoryTraversal` is ported from the supplied cdcraft implementation and
+injected into `EditorUpdater`. It keeps up to 100 PPM undo snapshots in the model;
+new edits clear redo, and no-op edits do not enter history. Undo/redo rebuild map
+geometry and object placements. Camera, selection, mode, and clipboard are not
+history snapshots and remain unchanged by traversal. Saves do not clear history;
+undo/redo mark the image unsaved, as in the reference. The reference's view-only
+and soft-traversal logic is intentionally omitted.
 
 `EditorState`, `EditorUpdater`, and `EditorView` form a separate MVU application.
 Editor-specific application modules live in `code/editor/`; regular-game
@@ -57,12 +84,11 @@ This revision adds the desktop MVP implementation to the supplied model and shad
 foundation. It preserves the `code/` source layout and exposes the package as
 `babbling_brook` to avoid Python's built-in `code` and `codecs` modules.
 
-**Validation status:** the six codec tests and Python compilation pass. Gameplay,
-Pygame event integration, and actual OpenGL rendering have not been executed in
-the delivery environment: PyGLM, Pygame-CE, and ModernGL were unavailable and the
-network did not permit installing them. This is an implementation for review,
-not a claim of a playtested build. See `review/REVIEW.md` for exact changes and
-remaining verification.
+**Editor validation:** all 30 tests pass with `BB_TEST_GL=1`, including OpenGL
+rendering. A scripted 22-frame Pygame/OpenGL session covers zoom, selection,
+mode changes, channel assignment, copy/paste, undo/redo, saving, and reload.
+The history port also matches the supplied JavaScript across 300 model-only
+operations. Interactive desktop play has not been manually tested.
 
 ## Run
 
