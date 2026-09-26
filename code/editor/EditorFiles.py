@@ -17,7 +17,7 @@ class EditorFiles:
     def load(self, filename: Path) -> EditorState:
         image = self.ppm_codec.decode(filename.read_text(encoding='ascii'))
         map_ = self.map_codec.decode(image)
-        placements = ObjectPlacementCodec(self.object_palette, map_).decode(image)
+        placements = ObjectPlacementCodec(self.object_palette, map_, disable_validation=True).decode(image)
         return EditorState(image, map_, placements, [(image.width // 2, image.height // 2)])
 
     def save(self, filename: Path, state: EditorState) -> None:
