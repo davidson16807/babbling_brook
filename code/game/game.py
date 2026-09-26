@@ -21,8 +21,8 @@ from ..view.view.BillboardView import BillboardView
 from .GameView import GameView
 
 from .GameUpdater import GameUpdater
-from ..update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater,
-                                  VectorKeysUpdater, VectorMouseUpdater)
+from ..update.LookUpdater import LockedLookUpdater
+from ..update.VectorUpdater import BoundedVectorUpdater, VectorKeysUpdater, VectorMouseUpdater
 from ..update.MovementUpdater import MovementUpdater
 from ..update.actions import *
 

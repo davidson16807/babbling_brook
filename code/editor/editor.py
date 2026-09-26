@@ -17,8 +17,8 @@ from .EditorFiles import EditorFiles
 from ..update.CursorUpdater import CursorUpdater
 from .EditorUpdater import EditorUpdater
 from .AppHistoryTraversal import AppHistoryTraversal
-from ..update.LookUpdater import (BoundedVectorUpdater, LockedLookUpdater, DirectLookUpdater,
-                                  VectorKeysUpdater, VectorMouseUpdater)
+from ..update.LookUpdater import LockedLookUpdater, DirectLookUpdater
+from ..update.VectorUpdater import BoundedVectorUpdater, VectorKeysUpdater, VectorMouseUpdater
 from ..view.Textures import Textures
 from ..view.program.BillboardProgram import BillboardProgram
 from ..view.program.HighlightProgram import HighlightProgram
