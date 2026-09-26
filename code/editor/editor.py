@@ -7,7 +7,7 @@ from pathlib import Path
 import moderngl
 import pygame
 
-from ..adapter.PygameEditorUiView import PygameEditorUiView
+from ..adapter.PygameUiView import PygameUiView
 from ..adapter.PygameImages import PygameImages
 from ..adapter.PygameMessageQueue import PygameMessageQueue
 from ..codec.GameStateCodec import PluginStringCodec
@@ -77,8 +77,8 @@ def main(argv=None):
         textures = Textures(gl, PygameImages(root / 'texture'))
         view = EditorView(TileView(TileProgram(gl, textures)), BillboardProgram(gl, textures),
                           HighlightProgram(gl),
-                          PygameEditorUiView(UiProgram(gl), filename.name, map_codec, plugin.object_palette),
-                          plugin.objects)
+                          PygameUiView(UiProgram(gl)), plugin.objects,
+                          filename.name, map_codec, plugin.object_palette)
         updater = make_updater(map_codec, plugin.object_palette)
         queue = PygameMessageQueue(monitored_keys='wasd')
         clock = pygame.time.Clock()

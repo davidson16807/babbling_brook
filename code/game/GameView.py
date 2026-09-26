@@ -1,6 +1,8 @@
 # HUMAN VETTED
 
 from pyglm import glm
+from .. import APPLICATION_TITLE
+from ..view.UiPanel import UiPanel, UiText
 from ..view.program.ViewState import ViewState
 
 
@@ -9,6 +11,23 @@ class GameView:
         self.tiles = tiles
         self.billboards = billboards
         self.ui = ui
+
+    def ui_panels(self, game):
+        def panel(title, lines, width):
+            return UiPanel(
+                (UiText(title, 32, 37, (243, 222, 166)),
+                 *(UiText(line, 23, 26, (239, 241, 223)) for line in lines)),
+                width, (22, 33, 37, 230), (147, 169, 146, 255), (16, 12, 16, 7))
+
+        lines = ['WASD Move   Shift Run   Space Jump   E Interact',
+                 'Tab Inventory   Middle-drag Rotate   F5 Save   F9 Load   Esc Quit']
+        if game.message:
+            lines.append(game.message)
+        panels = [panel(APPLICATION_TITLE, lines, 640)]
+        if game.show_inventory:
+            items = [f'{item}: {quantity}' for item, quantity in sorted(game.inventory.items())]
+            panels.append(panel('Inventory', items or ['Your pockets are empty.'], 300))
+        return tuple(panels)
 
     def draw(self, game):
         camera = game.camera
@@ -28,7 +47,7 @@ class GameView:
             game.character_animation_frames,
             view,
         )
-        self.ui.draw(game)
+        self.ui.draw(game.viewport, self.ui_panels(game))
 
     def release(self):
         self.tiles.release()

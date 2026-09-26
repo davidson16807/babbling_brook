@@ -162,9 +162,14 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 - `PygameMessageQueue` remains the event boundary. The loop consumes its internal
   messages and fixed 1/120-second ticks. Updaters map model/message to model;
   systems handle component collections. No Pygame polling is used in game logic.
-- `GameView` composes `TileView`, `BillboardView`, and `PygameUiView`. Programs
-  receive primitive sequences. Pygame font surfaces are rendered through the
-  OpenGL `UiProgram`; characters remain upright cylindrical billboards.
+- `GameView` and `EditorView` format their own UI content as immutable `UiPanel`
+  and `UiText` values (text, styles, widths, padding, and anchors). Both inject the
+  same `PygameUiView`, whose `draw(viewport, panels)` method handles font metrics,
+  wrapping, layout, rasterization, and atlas caching without reading application
+  state. Panels with the same anchor stack inward in order; bottom anchoring is
+  resolved after wrapping. Another backend can consume the same values without
+  separate game/editor adapters. `UiProgram` still receives textured rectangles;
+  characters remain upright cylindrical billboards.
 - Saves are sectioned TSV and contain all current static/dynamic object
   placements, inventory, globals, physics, and character states. Loading a save
   reads only tiles from the PPM and obtains object instances only from the save.

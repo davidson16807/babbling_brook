@@ -4,15 +4,46 @@ from collections import defaultdict
 from pyglm import glm
 
 from ..view.program.ViewState import ViewState
+from ..view.UiPanel import UiPanel, UiText
 
 
 class EditorView:
-    def __init__(self, tiles, billboards, highlights, ui, object_archetypes):
+    def __init__(self, tiles, billboards, highlights, ui, object_archetypes,
+                 filename, map_codec, object_palette):
         self.tiles = tiles
         self.billboards = billboards
         self.highlights = highlights
         self.ui = ui
         self.object_archetypes = object_archetypes
+        self.filename = filename
+        self.map_codec = map_codec
+        self.object_palette = object_palette
+
+    def ui_panels(self, state):
+        x, y = state.cursor[-1]
+        red, green, blue = state.image.pixels[y*state.image.width + x]
+        tile = self.map_codec.tile_palette.get(green, 'missing')
+        object_ = self.object_palette.get(blue, 'none' if blue == 0 else 'missing')
+        mode = 'Zoom' if state.channel is None else ('Height [0]', 'Tile [1]', 'Object [2]')[state.channel]
+        clipboard = (f'{state.clipboard.width} x {state.clipboard.height}'
+                     if state.clipboard is not None else 'empty')
+        lines = (
+            f'{self.filename} {"* unsaved" if state.dirty else "| saved"}   '
+            f'Cursor ({x}, {y})   |   {len(state.cursor)} selected',
+            f'Height {red*self.map_codec.height_scale:g}   |   Tile {green}: {tile}   |   Object {blue}: {object_}',
+            f'Mode: {mode}   |   Zoom span {state.camera.orthographic_scale:g}   |   '
+            f'Clipboard: {clipboard}   |   Undo {len(state.undo_history)} / Redo {len(state.redo_history)}',
+            'WASD Move   |   Shift+WASD Select rectangle   |   IJKL Rotate   |   Middle-drag Free look',
+            'Wheel / < > Adjust mode   |   + - Zoom   |   T Tile   Z Height   E Object   Esc Zoom',
+            '0-9 Set channel   |   Delete Zero   |   Ctrl+C Copy   Ctrl+V Paste',
+            'Ctrl+Z Undo   |   Ctrl+Shift+Z / Ctrl+Y Redo   |   Ctrl+S / F5 Save   |   Close window Quit',
+            state.message or 'Ready.',
+        )
+        return (UiPanel(
+            tuple(UiText(line, 22, 24, (243, 222, 166) if i < 2 else (239, 241, 223))
+                  for i, line in enumerate(lines)),
+            None, (22, 33, 37, 235), (147, 169, 146, 255), (12, 10, 12, 10),
+            anchor='bottom-left'),)
 
     def view_state(self, state):
         camera = state.camera
@@ -46,7 +77,7 @@ class EditorView:
                   else (.05, .65, 1.0, .35) for xy in state.cursor),
             view,
         )
-        self.ui.draw(state)
+        self.ui.draw(state.viewport, self.ui_panels(state))
 
     def release(self):
         self.tiles.release()
