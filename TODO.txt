@@ -1,0 +1,70 @@
+* an attribute, "can_grow", for tiles that can appear as grass when exposed to light
+
+* "Growable" archetype component:
+
+* "Liquid" archetype component:
+	freezing_temperature
+	frozen_texture
+	viscosity
+	when frozen, frozen_texture displays on all sides and tile acts as a solid
+	when not frozen, tile texture displays is animated by uv tricks
+	animations speed is linear to viscosity attribute
+	animations speed speeds up according to slope to portray motion going down hill
+	ground for liquid tiles is 1/2 unit below ground for other tiles, so that characters appear to "float" in it
+
+* liquid tiles:
+
+* tops of tiles should never have one triangle lying flat while the other slopes
+
+* new "Invisible" component
+	texture in-game
+	texture in-editor
+
+* new "Audible" components
+	sound filename
+
+* fractional ([0,1]) scalar global variables for:
+	phase of day
+	phase of moon
+	phase of year
+
+* draw methods for BillboardProgram and TileProgram now accept a light direction and light color
+* light direction during daytime varies by phase of day
+* light color during daytime varies by phase of day according to function that I provide
+* light direction during nighttime varies by phase of moon and phase of day
+* light color during nighttime is always greyscale but intensity varies by phase of moon
+
+* a new Map table in .game files that stores:
+	name
+	filename
+	north_map_id
+	south_map_id
+	east_map_id
+	west_map_id
+	summer_temperature
+	winter_temperature
+
+* new "Waypoint" component:
+	a flag to indicate if travel by waypoint is done by e key or if it simply needs collision
+	map_id
+	lexeme
+	by_radius
+	at_position
+	on_position
+	in_position
+	under_position
+	within_position
+	before_position
+	against_position
+
+* new "WaterLevel" component
+	map_id
+	high_tide_liquid_level
+	low_tide_liquid_level
+	liquid_id (or none if no liquid present)
+
+* new "fog of war" functionality
+	uses LineOfSightQuery
+	objects that are out-of-sight do not render
+	tiles that are out-of-sight appear shaded or desaturated, whichever easier
+

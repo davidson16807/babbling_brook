@@ -23,34 +23,45 @@ State of party members world model is controlled by statements made to them
 	Adjectives
 Frequency of emergent word usage tracked, tasks generated dynamically to test less used commands that come due by sm2 algorithm
 Vocab:
-	Wolf
-	House
-	Brother
-	Sister? Mother?
-	Enemy
-	Fight
-	Hurt
-	Go
-	Walk
-	Dog
-	Tree
-	Help?
-	Search?
-	Find
-	Forest
-	Brook
-	Village 
-	North/south/east/west
-	Stand
-	Give
-	Take
-	Have
-	Rock
-	Throw
-	Flag?
-	How many...
-	What is...
-	Where is...
+	speak
+	night
+	daytime
+	spring
+	summer
+	autumn
+	winter
+	wolf
+	house
+	brother
+	sister? Mother?
+	enemy
+	fight
+	hurt
+	go
+	walk
+	run
+	be able
+	dog
+	tree
+	help?
+	search?
+	find
+	forest
+	brook
+	village 
+	north/south/east/west
+	stand
+	give
+	take
+	have
+	rock
+	throw
+	asleep
+	mean
+	flag?
+	how many...
+	what is...
+	where is...
 Party members
 	Three friends
 	Each has a brother

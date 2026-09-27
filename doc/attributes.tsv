@@ -1,0 +1,40 @@
+attribute	description																																		
+male																																			
+lifestage	0=toddler, 1=child, 2=young adult, 3=middle age, 4=old, determines sizeclass, which determines the narrowest passages that character can move through																																		
+skin	true color assign by language-specific palette, 3 is default, 4 is darker in western languages																																		
+hair	true color assign by language-specific palette, 3 is player's, lower numbers indicate recessive genes																																		
+wealthclass	1 is default, 0=poor, 1=common, 2=rich																																		
+dwarf	whether rendered short, decrements sizeclass																																		
+strong	whether able to lift heavier objects																																		
+fat	whether rendered wide, increments sizeclass																																		
+attractive	whether able to act as love interest																																		
+loves	id for the character's love interest, may not be mutual																																		
+follows	id for item or character that this character follows																																		
+avoids	id for item or character that this character avoids																																		
+want	id for item that can be given in exchange for goods, escort, or favors																																		
+premise	id for map of character's premises																																		
+wanders	whether character wanders when not accompanied by party member																																		
+run_speed	scales linearly, 2 is default, 2 is player speed, 0 indicates the character cannot run																																		
+swims	whether character will traverse non-harmful liquid tiles																																		
+climbs	whether character can climb climbable tiles and objects																																		
+colorblind	whether character can select items by color, identify things by color, and report color accurately																																		
+deaf	whether character can answer questions and can only be commanded while being accompanied																																		
+blind	whether character cannot move without being accompanied																																		
+speaks_native	whether character is functionally deaf unless he and his converser speaks_foreign																																		
+speaks_foreign	whether character can command characters who speaks_foreign																																		
+places_known	0 is default, higher values indicate character can answer questions about more prestigious places when out-of-sight																																		
+people_known	0 is default, higher values indicate character can answer questions about more prestigious people when out-of-sight																																		
+reads	whether character can read signs, carvings, and letters																																		
+numerate_class	the order of magnitude of the highest number the character can report accurately																																		
+heals	"whether character can remove ""hurt"" status from characters in vicinity"																																		
+mends	whether character can fix broken items																																		
+cooks	whether character can create new food items																																		
+crafts	whether character can create new non-food items																																		
+respect_class	1 is default, indicates the highest class of people or premises that the person will be permitted to speak to or enter																																		
+respected_class	1 is default, indicates the lowest class of people that the person will tolerate on premises																																		
+picks_locks	whether character can unlock doors without their key if they have a lockpick																																		
+controls_weather	whether weather will be favorable for player in exchange for friendship, goods																																		
+animal_friend	whether nonhostile animals will follow the player																																		
+player_friend	whether character can accompany the player, trade, or perform favors without anything in return																																		
+unescortable	whether character cannot or will not accompany the player																																		
+selfish	whether character steals inventory items of party members																																		
