@@ -58,10 +58,7 @@ def main(argv=None):
         args.game_files = [args.data / 'world.game']
     map_filename = args.map or args.data / 'map' / 'world.ppm'
     game_files = GameFiles(PluginOps(), PluginStringCodec())
-    try:
-        model = game_files.load(map_filename, args.game_files, args.save if args.load else None)
-    except (OSError, ValueError) as error:
-        parser.exit(1, f'Cannot load game: {error}\n')
+    model = game_files.load(map_filename, args.game_files, args.save if args.load else None)
     gl = view = textures = framebuffer = None
     try:
         pygame.font.init()

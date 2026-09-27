@@ -53,7 +53,7 @@ def GameTableCodec(header, key_codec, value_codec,
 				item_count=1),
 		)
 
-def PluginStringCodec(table_delimiter='\n\n'):
+def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 	return ComposedCodec(
 		PluginListCodec(),
 		ZippedCodec(
@@ -137,5 +137,5 @@ def PluginStringCodec(table_delimiter='\n\n'):
 					('animation', PrimitiveListCodec(str)),
 					('elapsed', PrimitiveListCodec(float)))),
 		),
-		DelimitedStringsCodec(table_delimiter, postfixed=True),
+		DelimitedStringsCodec(table_delimiter, table_regex_delimiter, postfixed=True),
 	)
