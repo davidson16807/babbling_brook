@@ -98,6 +98,11 @@ class Map:
         coordinate = self._coordinate(position)
         h = self._corner_heights[coordinate]
         local = position - glm.vec2(*coordinate)
+        # The diagonal with the greater height change acts as the triangle seam.
+        # The tile mesh is represented with (h00,h11) as the diagonal, so we swap where appropriate.
+        if abs(h[1][0] - h[0][1]) > abs(h[0][0] - h[1][1]):
+            local = glm.vec2(local.y, 1 - local.x)
+            h = glm.mat2(h[1][0], h[0][0], h[1][1], h[0][1])
         if local.y <= local.x:
             weights = glm.vec3(1 - local.x, local.x - local.y, local.y)
             heights = glm.vec3(h[0][0], h[1][0], h[1][1])

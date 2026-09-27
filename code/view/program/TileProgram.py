@@ -65,27 +65,43 @@ in mat2 heights;
 in float base_height;
 out vec2 uv;
 out float lighting;
-flat out int fragment_is_top;
+flat out int is_top;
+
+ivec2 corner_rotate(ivec2 corner, bool is_rotated) {
+    return is_rotated ? ivec2(1 - corner.y, corner.x) : corner;
+}
+
+vec3 corner_point(ivec2 corner, bool is_rotated) {
+    corner = corner_rotate(corner, is_rotated);
+    return vec3(vec2(corner), heights[corner.x][corner.y]);
+}
 
 void main() {
-    float height = element_position.z == 0
-        ? base_height
-        : heights[element_position.x][element_position.y];
-    vec3 position = vec3(coordinate + vec2(element_position.xy), height);
 
-    vec3 southwest = vec3(0, 0, heights[0][0]);
-    vec3 northwest = vec3(0, 1, heights[0][1]);
-    vec3 southeast = vec3(1, 0, heights[1][0]);
-    vec3 northeast = vec3(1, 1, heights[1][1]);
-    fragment_is_top = element_normal.z;
-    vec3 normal = fragment_is_top == 0 ? vec3(element_normal)
-      : element_position.x > element_position.y?
-            cross(southeast - southwest, northeast - southwest)
-          : cross(northeast - southwest, northwest - southwest);
+    is_top = element_normal.z;
+    bool is_rotated = abs(heights[1][0] - heights[0][1])
+                    > abs(heights[0][0] - heights[1][1]);
+    ivec2 corner = is_top == 1? 
+        corner_rotate(element_position.xy, is_rotated)
+      : element_position.xy;
+    float height = element_position.z == 0? 
+        base_height
+      : heights[corner.x][corner.y];
+    vec3 position = vec3(coordinate + vec2(corner), height);
+
+    vec3 normal = vec3(element_normal);
+    if (is_top == 1) {
+        vec3 A = corner_point(ivec2(0, 0), is_rotated);
+        vec3 B = corner_point(ivec2(1, 1), is_rotated);
+        vec3 C = corner_point(gl_VertexID < 3? ivec2(1, 0): ivec2(0,1), is_rotated);
+        normal = cross(C - A, B - A);
+        normal = normal.z < 0? -normal : normal;
+    }
 
     gl_Position = clip_from_world * vec4(position, 1.0);
     lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(vec3(-0.5, -0.7, 1.0))), 0.0);
-    uv = element_uv;
+    uv = is_top == 1 ? vec2(corner) : element_uv;
+
 }
 """
 
@@ -94,11 +110,11 @@ uniform sampler2D top_image;
 uniform sampler2D side_image;
 in vec2 uv;
 in float lighting;
-flat in int fragment_is_top;
+flat in int is_top;
 out vec4 color;
 void main() {
     vec3 texture_color;
-    if (fragment_is_top == 1) {
+    if (is_top == 1) {
         texture_color = texture(top_image, uv).rgb;
     } else {
         texture_color = texture(side_image, uv).rgb;
@@ -151,7 +167,8 @@ void main() {
 
         Matrix columns are west/east and rows are south/north.
         Sides extend from their top edge to the tile's base height.
-        Top triangles share the southwest–northeast diagonal.
+        Top triangles share the diagonal with the greater absolute height change;
+        ties use southwest–northeast. Side geometry and texture orientation stay fixed.
         """
         if self.released:
             return

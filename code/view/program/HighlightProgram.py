@@ -14,8 +14,12 @@ in mat2 heights;
 in vec4 rgba;
 out vec4 tint;
 void main() {
-    vec3 position = vec3(coordinate + vec2(element_position),
-                         heights[element_position.x][element_position.y] + 0.01);
+    bool is_rotate = abs(heights[1][0] - heights[0][1])
+                   > abs(heights[0][0] - heights[1][1]);
+    ivec2 corner = is_rotate? 
+        ivec2(1 - element_position.y, element_position.x) 
+      : element_position;
+    vec3 position = vec3(coordinate + vec2(corner), heights[corner.x][corner.y] + 0.01);
     gl_Position = clip_from_world * vec4(position, 1.0);
     tint = rgba;
 }
@@ -46,7 +50,7 @@ void main() {
     def draw(self, coordinates, heights, colors, view):
         """Parallel coordinate, corner-height matrix, and RGBA sequences.
 
-        Draw after opaque terrain. Uses its same southwest–northeast diagonal,
+        Draw after opaque terrain. The corner diagonal with the greatest height change is the triangle seam.
         depth-tests with a small lift, blends alpha, and does not write depth.
         """
         if self.released:
