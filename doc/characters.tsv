@@ -1,64 +1,72 @@
-#tiles																																								
-#id	sedimented	irrigated	trodden	exposed																																				
-sand	x																																							
-dirt	x	x	x																																					
-grass	x	x		x																																				
-																																								
-# animal archetypes																																								
-	run_speed	colorblind	forages	hunts_alone	pack_hunts	eats_berries	eats_grass	eats_small_game	eats_big_game																															
-dog	3	x			x																																			
-wolf	3	x			x			x	x																															
-bear	2								x																															
-goat	0	x					x																																	
-																																								
-# character archetypes																																								
-#id	male	lifestage	skin	hair	wealth_class	dwarf	strong	fat	attractive	loves	follows	avoids	troubles	wants	wanders	run_speed	swims	climbs	colorblind	deaf	blind	speaks_native	speaks_foreign	places_known	people_known	reads	numerate_class	heals	mends	cooks	crafts	respect_class	respected_class	picks_locks	controls_weather	animal_friend	player_friend	unescortable	criminal	selfish
-player	x	1		3					x							2	x					x 															x			
-little-brother	x	0		3										ball	x							x 					0										x			
-big-brother	x	2		3			x		x	pretty-woman				work		3	x					x 					2				x	2					x	x		
-smart-friend	x	1		2												2						x 				x	2										x			
-color-blind-friend	x	1		1												3	x	x	x			x 															x			
-foreign-friend	x	1	4	4	0											2	x					x 	x										0				x			
-pretty-girl		1		2					x					flower		2	x					x 																		
-pretty-woman		2		1					x					gift		2						x 																		
-plain-woman		2		2						big-brother						2						x 				x														
-pretty-man	x	2		2			x		x	pretty-woman				work		3	x					x 					2				x	2					x	x		
-bully		2		4			x	x					player			2	x					x 					0												x	x
-henchman		2		2							bully					2	x					x 					1												x	x
-father	x	3		3			x			mother				work		2	x					x 									x	2					x	x		
-mother		3		2						father				flower		2						x 							x	x							x	x		
-sister		1		3										flower		2	x					x 														x				
-farfar	x	4		3						farmor				work								x 															x			
-farmor		4		1						farfar				work								x 															x			
-morfar	x	4		1						mormor				work								x 															x			
-mormor		4		2						morfar				work							x	x 				x											x			
-foreigner		3		4					x							2	x						x	2		x		x	x	x	x	0								
-blindman	x	4		2																	x	x	x	0																
-elder	x	4		2										work						x		x		2			2													
-wiseman	x	4		2										work						x		x				x	2													
-wisewoman		4		4										work								x						x	x									x		
-madman	x	3		4	0									bug	x	2	x					x										0			x					
-madwoman		4		2	0					smithy	smithy			bug	x							x							x			0			x	x				
-witch		4		4										flower								x						x	x	x		0			x					
-wizard		3		2										flower								x							x		x	0			x					
-thief	x	2		3	0				x					money	x	3	x	x				x					0					0		x					x	x
-beggarman	x	2		3	0									food								x		2	2							0								
-conman		2		3	2				x					money								x										0							x	x
-harlot		2		3					x					money								x										0							x	x
-genius	x	3		3										book		2						x	x	0		x	4							x				x		x
-savant	x	3		3										survey		2						x		3		x	3					3								x
-idiot-savant	x	3		3										ball		1						x					4													
-idiot	x	3		3			x	x								1											0									x				
-stableboy	x	1		3										work		2						x					0									x				
-shepherdboy	x	1		3										work		2						x		2			3									x				
-busybody		3		3				x						secret		1						x			2				x	x										x
-fatboy	x	1		3				x														x								x										
-smithy	x	2		3			x	x				madwoman		wood								x							x		x									
-mason	x	2		3			x	x				madwoman		wood								x							x		x									
-tyrion	x	3		3		x								money		1						x				x	2					3								
-hellen-keller		2		3										book		2				x	x	x				x	2													
-farmer-maggot		4		3												1						x											2			x				
-hetman	x	3		3										work								x			2							2	2							
-magistrate	x	3		3	2									soldiers,treasure		1						x			3							3	2							x
-																																								
-# instances	archetype	hungry	thirsty	hurt	mean		sad	panicked	befriended																															
+#tiles																																											
+#id	windswept	waterswept	disturbed	exposed																																							
+rock/stone																																											
+sand	x			x																																							
+dirt		x	x																																								
+grass		x		x																																							
+roof			x																																								
+																																											
+# animal archetypes																																											
+	run_speed	swims	flies	warm_blooded	colorblind	uv_vision	heat_vision	forages	hunts_alone	pack_hunts	eats_berries	eats_grass	eats_small_game	eats_big_game																													
+dog	3	x		x	x				x	x			x																														
+wolf	3			x	x				x	x			x	x																													
+bear	2			x				x	x					x																													
+goat	0			x	x			x				x																															
+bird	3		x	x				x			x																																
+fish	2	x			x	x																																					
+snake	3				x		x		x				x	x																													
+																																											
+# character archetypes																																											
+#id	male	lifestage	skin	hair	wealth_class	dwarf	strong	fat	attractive	thirsty	hungry	wants	loves	harasses	follows	avoids	guards	wanders	run_speed	swims	climbs	colorblind	deaf	blind	speaks_native	speaks_foreign	places_known	people_known	reads	numerate_class	heals	mends	cooks	crafts	respect_class	respected_class	picks_locks	controls_weather	animal_friend	player_friend	unescortable	criminal	selfish
+player	x	1		3					x										2	x					x 															x			
+little-brother	x	0		3								ball						x							x 					0										x			
+big-brother	x	2		3			x		x			work	pretty-woman						3	x					x 					2				x	2					x	x		
+smart-friend	x	1		2															2						x 				x	2										x			
+color-blind-friend	x	1		1															3	x	x	x			x 															x			
+foreign-friend	x	1	4	4	0														2	x					x 	x										0				x			
+pretty-girl		1		2					x			flower							2	x					x 																		
+pretty-woman		2		1					x			gift							2						x 																		
+plain-woman		2		2									big-brother						2						x 				x														
+pretty-man	x	2		2			x		x			work	pretty-woman						3	x					x 					2				x	2					x	x		
+bully		2		4			x	x						player					2	x					x 					0												x	x
+henchman		2		2											bully				2	x					x 					1												x	x
+father	x	3		3			x					work	mother						2	x					x 									x	2					x	x		
+mother		3		2								flower	father						2						x 							x	x							x	x		
+sister		1		3								flower							2	x					x 														x				
+farfar	x	4		3								work	farmor												x 															x			
+farmor		4		1								work	farfar												x 															x			
+morfar	x	4		1								work	mormor												x 															x			
+mormor		4		2								work	morfar											x	x 				x											x			
+foreigner		3		4					x										2	x						x	2		x		x	x	x	x	0								
+blindman	x	4		2																				x	x	x	0																
+elder	x	4		2								work											x		x		2			2													
+wiseman	x	4		2								work											x		x				x	2													
+wisewoman		4		4								work													x						x	x									x		
+madman	x	3		4	0							bug						x	2	x					x										0			x					
+madwoman		4		2	0							bug	smithy		smithy			x							x							x			0			x	x				
+witch		4		4								flower													x						x	x	x		0			x					
+wizard		3		2								flower													x							x		x	0			x					
+thief	x	2		3	0				x			money						x	3	x	x				x					0					0		x					x	x
+beggarman	x	2		3	0						x	food													x		2	2							0								
+conman		2		3	2				x			money													x										0							x	x
+harlot		2		3					x			money													x										0							x	x
+genius	x	3		3								book							2						x	x	0		x	4							x				x		x
+savant	x	3		3								survey							2						x		3		x	3					3								x
+idiot-savant	x	3		3								ball							1						x					4													
+idiot	x	3		3			x	x											1											0									x				
+stableboy	x	1		3								work							2						x					0									x				
+shepherdboy	x	1		3								work							2						x		2			3									x				
+busybody		3		3				x				secret							1						x			2				x	x										x
+fatboy	x	1		3				x																	x								x										
+wood-worker	x	2		3			x	x				wood				madwoman									x							x		x									
+metal-worker	x	2		3			x	x				wood				madwoman									x							x		x									
+stone-worker	x	2		3			x	x				rock				madwoman									x							x		x									
+tyrion	x	3		3		x						money							1						x				x	2					3								
+hellen-keller		2		3								book							2				x	x	x				x	2													
+farmer-maggot		4		3													maggot-farm		1						x											2			x				
+hetman	x	3		3								work					hetman-house								x			2		2					2	1							
+hetman-guard	x	2					x		x								hetman-house	x	3						x										2	2					x		
+magistrate	x	3		3	2							soldiers,treasure					court-house		1						x			3		2					3	2							x
+magistrate-guard	x	2		3			x		x								court-house	x	3						x										3	3					x		
+																																											
+# instances	archetype	hungry	thirsty	hurt	angry	sad	panicked	befriended																																			

@@ -1,0 +1,4 @@
+attribute	description		
+windswept	whether the tile collects particulates like sand and snow		
+waterswept	whether the tile is exposed to enough water that growth produces humus		
+disturbed	whether the tile is frequently disturbed or covered to prevent snow and growth		

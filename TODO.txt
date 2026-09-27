@@ -1,7 +1,5 @@
 * an attribute, "can_grow", for tiles that can appear as grass when exposed to light
 
-* "Growable" archetype component:
-
 * "Liquid" archetype component:
 	freezing_temperature
 	frozen_texture
@@ -11,8 +9,6 @@
 	animations speed is linear to viscosity attribute
 	animations speed speeds up according to slope to portray motion going down hill
 	ground for liquid tiles is 1/2 unit below ground for other tiles, so that characters appear to "float" in it
-
-* liquid tiles:
 
 * tops of tiles should never have one triangle lying flat while the other slopes
 

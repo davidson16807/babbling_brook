@@ -4,6 +4,9 @@ version	1
 
 # globals
 # key	value
+day_phase	0.5
+month_phase	0.5
+year_phase	0.5
 
 # inventory
 # item	quantity

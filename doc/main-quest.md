@@ -72,7 +72,7 @@ Given the name of the game, the overarching story could be to fix the bridge tha
 	* throw a rock at the magistrate, magistrate dies, guard escorts you to jail, bridge is never fixed
 	* throw a rock at the magistrate, magistrate dies, escape guard, return home, guards come to your house, father defends you, father dies, bridge is never fixed
 	* lie to the magistrate, magistrate says he knows, bridge is never fixed
-	* player asks savant what magistrate wants
+	* player asks savant what magistrate wants:
 		* savant: "The magistrate will not say this, but he wants a treasure. I have been working with him and I know how to find it. If you give the magistrate the treasure, he will fix the bridge." 
 		* go on quest by the moutain pass to find the treasure
 		* savant has relic from but cannot read language
@@ -86,8 +86,11 @@ Given the name of the game, the overarching story could be to fix the bridge tha
 		* carvings tell of another ruin with treasure
 		* go to second ruin
 		* treasure is guarded by monster (something real but exotic, like tiger or large boa), can either sneak past or throw a rock down from a cliff
-		* go to magistrate, player: "if I give you this treasure, will you fix the bridge?"
-		* magistrate takes treasure, bridge is fixed, father remains at home
+		* go to magistrate
+		* multiple endings:
+			* player: "I give you this treasure [thank you] Will you fix the bridge"? [no]
+			* player: "if I give you this treasure, will you fix the bridge?"
+				* magistrate takes treasure, bridge is fixed, father remains at home
 	[thank you all for playing: orphan crusher: the game!]
 
 * random encounters:
