@@ -1,44 +1,46 @@
-attribute	description																																		
-male	whether the character is male																																		
-lifestage	0=toddler, 1=child, 2=young adult, 3=middle age, 4=old, determines sizeclass, which determines the narrowest passages that character can move through																																		
-skin	true color assign by language-specific palette, 3 is default, 4 is darker in western languages																																		
-hair	true color assign by language-specific palette, 3 is player's, lower numbers indicate recessive genes																																		
-wealth_class	1 is default, 0=poor, 1=common, 2=rich																																		
-dwarf	whether rendered short, decrements sizeclass																																		
-strong	whether able to lift heavier objects																																		
-fat	whether rendered wide, increments sizeclass																																		
-attractive	whether able to act as love interest																																		
-hungry	whether the character will seek food, doesn't affect favors they ask for since this would cause game-breaking exploits																																		
-thirsty	whether the character will seek food, doesn't affect favors they ask for since this would cause game-breaking exploits																																		
-wants	id for item that can be given in exchange for goods, escort, or favors																																		
-loves	id for the character's love interest, may not be mutual, deoesn't affect favors they ask for, but character can agree to matchmaking as as a favor or [undecided] matchmaking will make them your friend																																		
-harasses	id for character that this character will follow and harass																																		
-follows	id for item or character that this character follows																																		
-avoids	id for item or character that this character avoids																																		
-guards	id for map of character's premises where this character will intercept and eject characters whose respect_class falls below this character's respected_class																																		
-wanders	whether character wanders when not accompanied by party member																																		
-run_speed	scales linearly, 2 is default, 2 is player speed, 0 indicates the character cannot run																																		
-swims	whether character will traverse non-harmful liquid tiles																																		
-climbs	whether character can climb climbable tiles and objects																																		
-colorblind	whether character can select items by color, identify things by color, and report color accurately																																		
-deaf	whether character can answer questions and can only be commanded while being accompanied																																		
-blind	whether character cannot move without being accompanied																																		
-speaks_native	whether character is functionally deaf unless he and his converser speaks_foreign																																		
-speaks_foreign	whether character can command characters who speaks_foreign																																		
-reads	whether character can answer commands to read things																																		
-math_known	indicates the order of magnitude of the highest number the character can report accurately																																		
-places_known	0 is default, higher values indicate character can answer questions about more prestigious places when out-of-sight																																		
-people_known	0 is default, higher values indicate character can answer questions about more prestigious people when out-of-sight																																		
-heals	"whether character can remove ""hurt"" status from characters in vicinity"																																		
-mends	whether character can fix broken items																																		
-cooks	whether character can create new food items																																		
-crafts	whether character can create new non-food items																																		
-respect_level	1 is default, indicates the highest class of people or premises that the person will be permitted to speak to or enter																																		
-respected_level	1 is default, indicates the lowest class of people that the person will tolerate on premises																																		
-picks_locks	whether character can unlock doors without their key if they have a lockpick																																		
-controls_weather	whether weather will be favorable for player in exchange for friendship, goods																																		
-animal_friend	whether nonhostile animals will follow the player																																		
-player_friend	whether character can accompany the player, trade, or perform favors without anything in return																																		
-likes_player	whether character likes the player, affects whether they will steal from player if criminal																																		
-unescortable	whether character cannot or will not accompany the player																																		
-criminal	whether character steals inventory items of party members																																		
+attribute	description
+male	whether the character is male
+lifestage	0=toddler, 1=child, 2=young adult, 3=middle age, 4=old, determines sizeclass, which determines the narrowest passages that character can move through
+skin	mapped to actual color by language-specific palette, 3 is default, 4 is darker in western languages
+hair	mapped to hair color as it would appear in youth according to language-specific palette, 3 is player's, lower numbers indicate recessive genes
+bald_prone	whether the character will be bald upon reaching a middle-age lifestage
+dwarf	whether rendered short, decrements sizeclass
+strong	whether able to lift heavier objects
+fat	whether rendered wide, increments sizeclass
+attractive	whether able to act as love interest
+hungry	whether the character will seek food, doesn't affect favors they ask for since this would cause game-breaking exploits
+thirsty	whether the character will seek food, doesn't affect favors they ask for since this would cause game-breaking exploits
+wants	id for item that can be given in exchange for goods, escort, or favors
+loves	id for the character's love interest, may not be mutual, deoesn't affect favors they ask for, but character can agree to matchmaking as as a favor
+harasses	id for character that this character will follow and harass
+follows	id for item or character that this character follows
+avoids	id for item or character that this character avoids
+guards	id for map where this character will intercept and eject characters whose respect_class falls below this character's respected_class
+wanders	whether character wanders when not accompanied by party member
+run_speed	scales linearly, 2 is default, 2 is player speed, 0 indicates the character cannot run
+swim_speed	scales linearly, 0 is default, 0 indicates the character cannot swim
+climb_speed	scales linearly, 0 is default, 0 indicates the character cannot climb
+colorblind	whether character can select items by color, identify things by color, and report color accurately
+deaf	whether character can answer questions and can only be commanded while being accompanied
+blind	whether character cannot move without being accompanied
+speaks_native	whether character is functionally deaf unless he and his converser speaks_foreign
+speaks_foreign	whether character can command characters who speaks_foreign
+numeracy	1 is default, indicates the order of magnitude of the highest number the character can report accurately
+literacy	0 to 3, 0 is default, 1 allows basic reading, 2 allows reading academic prose, 3 allows reading archaic prose
+places_known	0 to 3, 0 is default, higher values indicate character can answer questions about more obscure places
+people_known	0 to 3, 0 is default, indicates the maximum respect_level of people that the character can answer questions about
+respect_level	1 is default, indicates the highest class of people or premises that the person will be permitted to speak to or enter
+respects_level	1 is default, indicates the lowest class of people that the person will tolerate on guarded premises
+wealth_level	1 is default, 0=poor, 1=common, 2=rich
+heals	"whether character can remove ""hurt"" status from characters in vicinity"
+mends	whether character can fix broken items
+cooks	whether character can create new food items
+smiths	whether character can create and fix new metal items
+carpents	whether character can create and fix new wood items
+masons	whether character can create and fix new stone items
+picks_locks	whether character can unlock doors without their key if they have a lockpick
+controls_weather	whether weather will be favorable for player in exchange for friendship, goods
+animal_friend	whether nonhostile animals will follow the player
+owes_player	whether the character owes a favor for the player
+unescortable	whether character cannot or will not accompany the player
+criminal	whether character steals inventory items of party members

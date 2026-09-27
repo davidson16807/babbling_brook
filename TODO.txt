@@ -1,34 +1,61 @@
 * an attribute, "can_grow", for tiles that can appear as grass when exposed to light
 
+* new "Cycle" component:
+	phase 	[0,1] float
+	period 	seconds
+	method overload for Cycle+float, applying offset to phase
+
+* a Cycle table:
+	day_phase
+	month_phase
+	year_phase
+	temperature_phase
+	precipitation_phase
+	wave_phase
+	blink_phase
+
 * "Liquid" archetype component:
+	top_texture1
+	top_texture2
 	freezing_temperature
 	frozen_texture
 	viscosity
+	unpassable
 	when frozen, frozen_texture displays on all sides and tile acts as a solid
-	when not frozen, tile texture displays is animated by uv tricks
-	animations speed is linear to viscosity attribute
-	animations speed speeds up according to slope to portray motion going down hill
-	ground for liquid tiles is 1/2 unit below ground for other tiles, so that characters appear to "float" in it
+	when melted, tile texture displays is animated by uv tricks
+	when melted, and when temperature is greater than max_safe_temperature passed to a constructor for the class that stores tiles on application startup, tile is unpassable
+	animations speed is linear to viscosity attribute and greatest diagonal height difference of tile
+	ground for liquid tiles is calculated as an offset to ground for solid tiles, calcualted from a wave_depth, wave_depth_amplitude, wave_period, and wave_phase, so that characters appear to bob and float in it
+	wave_phase is stored in phase table, other wave_* variables are passed to the constructor to the class that calculates ground height
 
-* tops of tiles should never have one triangle lying flat while the other slopes
+* tweak inventory table so that it is represented as (character, item, quantity) tuples and allows representing inventories of arbitrary characters
 
-* new "Invisible" component
+* dynamic character generation
+	* edited svgs are created from template and stored for each character upon application startup along with entries in character animation table
+	* individual templates for toddlers, children, and adult body morphs
+	* middle-age adults have bags over eyes
+	* old people have liver warts on one temple of their head
+	* standing, walking, and running animations accomplished by shifting upper body layers along vertical axis
+	* blinking accomplished by horizontal eye rectangles
+	* anger accomplished by diagonal eye rectangles, lowered inward
+	* sadness accomplished by diagonal eye rectangles, raised inward
+	* happiness accomplished by pink blush on cheeks and diagonal eye rectangles, raised inward
+	* hurt status accomplished horizontal "sad" eye rectangles and rotating entire svg by 90 degrees
+	* scaling for fat and short people
+	* 4 skin colors, represented by id that maps to color according to id→color lookup passed at construction
+	* 4 genetic hair colors, represented by id that maps to color according to id→color lookup passed at construction
+	* old people are either bald or grey depending on sex and gene
+	* shirt color and pants color
+	* women wear long dresses
+	* soldiers wear armor, shield, and spear
+	* wealthy wear brighter vibrant colors, belt with gold buckle, and shirt with trim
+	* poor wear darker muted colors, and a patch on one pant leg
+
+* new "Waypoint" object archetype component
+	name: n, s, e, w, nw, sw, ne, se
 	texture in-game
 	texture in-editor
-
-* new "Audible" components
-	sound filename
-
-* fractional ([0,1]) scalar global variables for:
-	phase of day
-	phase of moon
-	phase of year
-
-* draw methods for BillboardProgram and TileProgram now accept a light direction and light color
-* light direction during daytime varies by phase of day
-* light color during daytime varies by phase of day according to function that I provide
-* light direction during nighttime varies by phase of moon and phase of day
-* light color during nighttime is always greyscale but intensity varies by phase of moon
+	a flag to indicate if travel by waypoint is done by e key or if it simply requires collision
 
 * a new Map table in .game files that stores:
 	name
@@ -40,18 +67,24 @@
 	summer_temperature
 	winter_temperature
 
-* new "Waypoint" component:
-	a flag to indicate if travel by waypoint is done by e key or if it simply needs collision
+* new "Landmark" component:
 	map_id
 	lexeme
 	by_radius
-	at_position
-	on_position
-	in_position
-	under_position
-	within_position
-	before_position
-	against_position
+	at_position	3d coordinate
+	on_position	3d coordinate
+	in_position	3d coordinate
+	under_position	3d coordinate
+	within_position	3d coordinate
+	before_position	3d coordinate
+	against_position	3d coordinate
+
+* draw methods for BillboardProgram and TileProgram now accept a light direction and light color
+* light direction during daytime varies by phase of day
+* light color during daytime varies by phase of day according to function that I provide
+* light direction during nighttime varies by phase of moon and phase of day
+* light color during nighttime is always greyscale but intensity varies by phase of moon
+* add overlay for snow and precipitation
 
 * new "WaterLevel" component
 	map_id
@@ -59,8 +92,10 @@
 	low_tide_liquid_level
 	liquid_id (or none if no liquid present)
 
-* new "fog of war" functionality
+* new line-of-sight functionality
 	uses LineOfSightQuery
 	objects that are out-of-sight do not render
-	tiles that are out-of-sight appear shaded or desaturated, whichever easier
+	[if performant] tiles that are out-of-sight appear shaded or desaturated, whichever easier
 
+* new "Audible" components
+	sound filename

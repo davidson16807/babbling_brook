@@ -100,6 +100,9 @@ python -m pip install -e '.[render]'
 python -m babbling_brook
 ```
 
+The top-level `babbling_brook.py` bootstraps the `code/` package, like `editor.py`,
+so `python -m babbling_brook` also runs directly from the checkout once its
+dependencies are available. `python babbling_brook.py` uses the same entry point.
 The equivalent installed command is `babbling-brook`. Keep `data/` and its
 sibling `texture/` in the working directory, or pass `--data /path/to/data`.
 To layer mods over the base game, list the files in load order; arguments without
