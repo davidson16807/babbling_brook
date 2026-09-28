@@ -2,7 +2,8 @@
 
 from dataclasses import dataclass, field
 
-from ..component.archetypes import CharacterArchetype, ObjectArchetype, TileArchetype
+from ..component.archetypes import (CharacterArchetype, ObjectArchetype, TileArchetype,
+                                    AnimalArchetype, Liquid, Waypoint)
 from ..identifiers import ArchetypeId
 
 '''
@@ -19,3 +20,6 @@ class ArchetypeComponentStores:
     objects: dict[ArchetypeId, ObjectArchetype] = field(default_factory=dict)
     characters: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
     tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
+    animals: dict[ArchetypeId, AnimalArchetype] = field(default_factory=dict)
+    liquids: dict[ArchetypeId, Liquid] = field(default_factory=dict)
+    waypoints: dict[ArchetypeId, Waypoint] = field(default_factory=dict)

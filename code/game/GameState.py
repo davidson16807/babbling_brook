@@ -4,7 +4,8 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 
 from ..model.CameraState import CameraState
-from ..model.identifiers import ArchetypeId
+from ..model.identifiers import ArchetypeId, EntityId
+from ..model.component.Map import Map as MapDefinition
 from ..model.Map import Map
 from ..model.store import ArchetypeComponentStores, InstanceComponentStores
 
@@ -16,7 +17,7 @@ class GameState:
     archetypes: ArchetypeComponentStores
     instances: InstanceComponentStores = field(default_factory=InstanceComponentStores)
 
-    inventory: defaultdict[str, int] = field(default_factory=lambda: defaultdict(int))
+    inventory: defaultdict[tuple[EntityId, str], int] = field(default_factory=lambda: defaultdict(int))
     camera: CameraState = field(default_factory=CameraState)
 
     viewport: tuple[int, int] = (1280, 720)
@@ -26,3 +27,4 @@ class GameState:
     character_animation_frames: dict[
         tuple[ArchetypeId, str, int, int], tuple[str, float]
     ] = field(default_factory=dict)
+    maps: dict[int, MapDefinition] = field(default_factory=dict)

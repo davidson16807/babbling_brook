@@ -17,7 +17,7 @@ class BillboardView:
             key, position = placement.archetype, placement.position
             definition = archetypes.objects[key]
             texture, mirrored = definition.texture, False
-            if key in archetypes.characters:
+            if entity in instances.characters:
                 state = instances.characters[entity]
                 animation = state.animation
                 if (key, animation, 0, 0) not in animation_frames:

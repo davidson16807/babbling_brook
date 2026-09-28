@@ -4,6 +4,9 @@ from dataclasses import dataclass, field
 
 from ..component.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
 from ..identifiers import EntityId
+from ..component.Cycle import Cycle
+from ..component.Landmark import Landmark
+from ..component.Waterlevel import Waterlevel
 
 '''
 A "store" is the name chosen for this application to represent
@@ -19,3 +22,6 @@ class InstanceComponentStores:
     placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
+    cycles: dict[str, Cycle] = field(default_factory=dict)
+    landmarks: dict[str, Landmark] = field(default_factory=dict)
+    waterlevels: dict[int, Waterlevel] = field(default_factory=dict)

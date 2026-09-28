@@ -1,123 +1,167 @@
-# format								
-# key	value							
-version	1							
-								
-# globals								
-# key	value							
-day_phase	0.5							
-month_phase	0.5							
-year_phase	0.5							
-precipitation_phase	0.5							
-temperature_phase	0.5							
-								
-# inventory								
-# item	quantity							
-								
-# tile_archetypes								
-# archetype	top_texture	side_texture	max_erosion	is_collidable				
-missing	missing.svg	missing.svg	0	x				
-rock	rock.svg	rock.svg	0.5	x				
-sandy-rock	sand.svg	rock.svg	0.5	x				
-snowy-rock	snow.svg	rock.svg	0.5	x				
-grassy-rock	grass.svg	rock.svg	0.5	x				
-stone	stone.svg	stone.svg	0	x				
-sandy-stone	sand.svg	stone.svg	0	x				
-snowy-stone	snow.svg	stone.svg	0	x				
-grassy-stone	grass.svg	stone.svg	0	x				
-dirt	dirt.svg	dirt.svg	1	x				
-path	sand.svg	dirt.svg	1	x				
-snow	snow.svg	dirt.svg	1	x				
-grass	grass.svg	dirt.svg	1	x				
-sand	sand.svg	sand.svg	2	x				
-snow-bank	snow.svg	snow.svg	2	x				
-water	water.svg	water.svg	10	x				
-swamp	water.svg	water.svg	10	x				
-ice	snow.svg	water.svg	0	x				
-crate	crate2.svg	crate2.svg	0	x				
-roof	wood.svg	wood.svg	1	x				
-wood	wood.svg	wood.svg	0	x				
-bridge-deck	wood.svg	wood.svg	0	x				
-furniture	wood.svg	wood.svg	0	x				
-								
-# object_archetypes								
-# archetype	texture	is_collidable	radius	height	width	has_gravity	action	label
-tree	tree.svg	x	0.35	2.0	1.0			Tree
-apple	apple.svg		0.15	0.32	0.32	x	collect_apple	Apple
-crate	crate.svg	x	0.45	0.9	0.9			Crate
-villager	villager-front-0.svg	x	0.28	1.3	0.7		greet	Villager
-stick	stick.svg		0.12	0.28	0.55	x	collect_stick	Stick
-child	child-front-0.svg	x	0.24	1.1	0.65	x		Player
-								
-# character_animation_frames								
-# archetype	animation	direction	frame	texture	seconds_per_frame			
-child	standing	0	0	child-front-0.svg	0.45			
-child	standing	0	1	child-front-1.svg	0.45			
-child	standing	1	0	child-back-0.svg	0.45			
-child	standing	1	1	child-back-1.svg	0.45			
-child	walking	0	0	child-front-0.svg	0.18			
-child	walking	0	1	child-front-1.svg	0.18			
-child	walking	1	0	child-back-0.svg	0.18			
-child	walking	1	1	child-back-1.svg	0.18			
-child	running	0	0	child-front-0.svg	0.12			
-child	running	0	1	child-front-1.svg	0.12			
-child	running	1	0	child-back-0.svg	0.12			
-child	running	1	1	child-back-1.svg	0.12			
-villager	standing	0	0	villager-front-0.svg	0.45			
-villager	standing	0	1	villager-front-1.svg	0.45			
-villager	standing	1	0	villager-back-0.svg	0.45			
-villager	standing	1	1	villager-back-1.svg	0.45			
-villager	walking	0	0	villager-front-0.svg	0.18			
-villager	walking	0	1	villager-front-1.svg	0.18			
-villager	walking	1	0	villager-back-0.svg	0.18			
-villager	walking	1	1	villager-back-1.svg	0.18			
-villager	running	0	0	villager-front-0.svg	0.12			
-villager	running	0	1	villager-front-1.svg	0.12			
-villager	running	1	0	villager-back-0.svg	0.12			
-villager	running	1	1	villager-back-1.svg	0.12			
-								
-# tile_palette								
-# index	archetype							
-0	rock							
-1	sandy-rock							
-2	snowy-rock							
-3	grassy-rock							
-4	stone							
-5	sandy-stone							
-6	snowy-stone							
-7	grassy-stone							
-8	dirt							
-9	path							
-10	snow							
-11	grass							
-12	sand							
-13	snow-bank							
-14	water							
-15	ice							
-16	roof							
-17	wood							
-18	missing							
-19	books							
-20	furniture							
-21	crate							
-22	swamp							
-23	bridge-deck							
-24	cutaway-edge							
-								
-# object_palette								
-# index	archetype							
-1	tree							
-2	apple							
-3	crate							
-4	villager							
-5	stick							
-								
-# objects								
-# entity	archetype	x	y	z				
-player	child	7	10	1				
-								
-# physics								
-# entity	vertical_velocity	is_grounded						
-								
-# character_states								
-# entity	facing_x	facing_y	animation	elapsed				
-								
+# format																																													
+# key	value																																												
+version	1																																												
+																																													
+# globals #UNUSED																																													
+# key	value																																												
+																																													
+# cycles #UNUSED																																													
+# id	phase	period																																											
+day_phase	0.5	86400																																											
+month_phase	0.5	2551443																																											
+year_phase	0.5	31557600																																											
+temperature_phase	0.5	86400																																											
+precipitation_phase	0.5	604800																																											
+wave_phase	0.5	4																																											
+blink_phase	0.5	5																																											
+																																													
+# maps #UNUSED																																													
+# id	name	filename	north_map_id	south_map_id	east_map_id	west_map_id	summer_temperature	winter_temperature																																					
+0	World	map/world.ppm					25	-5																																					
+																																													
+# inventory																																													
+# character	item	quantity																																											
+																																													
+# tile_archetypes																																													
+# archetype	top_texture	side_texture	max_erosion	is_collidable	windswept	waterswept	disturbed																																						
+missing	missing.svg	missing.svg	0	x																																									
+rock	rock.svg	rock.svg	0.5	x																																									
+sandy-rock	sand.svg	rock.svg	0.5	x	x																																								
+snowy-rock	snow.svg	rock.svg	0.5	x																																									
+grassy-rock	grass.svg	rock.svg	0.5	x		x																																							
+stone	stone.svg	stone.svg	0	x																																									
+sandy-stone	sand.svg	stone.svg	0	x	x																																								
+snowy-stone	snow.svg	stone.svg	0	x																																									
+grassy-stone	grass.svg	stone.svg	0	x		x																																							
+dirt	dirt.svg	dirt.svg	1	x		x	x																																						
+path	sand.svg	dirt.svg	1	x	x																																								
+snow	snow.svg	dirt.svg	1	x																																									
+grass	grass.svg	dirt.svg	1	x		x																																							
+sand	sand.svg	sand.svg	2	x	x																																								
+snow-bank	snow.svg	snow.svg	2	x																																									
+water	water.svg	water.svg	10	x																																									
+swamp	water.svg	water.svg	10	x																																									
+ice	snow.svg	water.svg	0	x																																									
+crate	crate2.svg	crate2.svg	0	x																																									
+roof	wood.svg	wood.svg	1	x			x																																						
+wood	wood.svg	wood.svg	0	x																																									
+bridge-deck	wood.svg	wood.svg	0	x																																									
+furniture	wood.svg	wood.svg	0	x																																									
+																																													
+# object_archetypes																																													
+# archetype	texture	is_collidable	radius	height	width	has_gravity	action	label																																					
+tree	tree.svg	x	0.35	2.0	1.0			Tree																																					
+apple	apple.svg		0.15	0.32	0.32	x	collect_apple	Apple																																					
+crate	crate.svg	x	0.45	0.9	0.9			Crate																																					
+villager	villager-front-0.svg	x	0.28	1.3	0.7		greet	Villager																																					
+stick	stick.svg		0.12	0.28	0.55	x	collect_stick	Stick																																					
+child	child-front-0.svg	x	0.24	1.1	0.65	x		Player																																					
+																																													
+# character_archetypes #UNUSED																																													
+# archetype	male	lifestage	skin	hair	bald_prone	dwarf	strong	fat	attractive	hungry	thirsty	wants	loves	harasses	follows	avoids	guards	wanders	run_speed	swim_speed	climb_speed	colorblind	deaf	blind	speaks_native	speaks_foreign	numeracy	literacy	places_known	people_known	respect_level	respects_level	wealth_level	heals	mends	cooks	smiths	carpents	masons	picks_locks	controls_weather	animal_friend	owes_player	unescortable	criminal
+child	x	1		3					x			friendship							2	1					x																				
+villager		2																							x																				
+																																													
+# animal_archetypes #UNUSED																																													
+# archetype	run_speed	swim_speed	climb_speed	warm_blooded	colorblind	uv_vision	heat_vision	forages	hunts_alone	pack_hunts	eats_berries	eats_grass	eats_small_game	eats_big_game																															
+dog	3	1		x	x				x	x			x																																
+wolf	3			x	x				x	x			x	x																															
+bear	2			x				x	x					x																															
+goat	0			x	x			x				x																																	
+bird	3		1	x				x			x																																		
+fish	2	1			x	x																																							
+snake	3				x		x		x				x	x																															
+																																													
+# liquid_archetypes #UNUSED																																													
+# archetype	top_texture1	top_texture2	freezing_temperature	frozen_texture	viscosity	unpassable																																							
+water	water.svg	water.svg	0	snow.svg	0.001																																								
+																																													
+# waypoints #UNUSED																																													
+# id	name	in_game_texture	in_editor_texture	is_door																																									
+n	n	waypoint-invisible.svg	waypoint-n.svg																																										
+s	s	waypoint-invisible.svg	waypoint-s.svg																																										
+e	e	waypoint-invisible.svg	waypoint-e.svg																																										
+w	w	waypoint-invisible.svg	waypoint-w.svg																																										
+ne	ne	waypoint-invisible.svg	waypoint-ne.svg																																										
+nw	nw	waypoint-invisible.svg	waypoint-nw.svg																																										
+se	se	waypoint-invisible.svg	waypoint-se.svg																																										
+sw	sw	waypoint-invisible.svg	waypoint-sw.svg																																										
+																																													
+# character_animation_frames																																													
+# archetype	animation	direction	frame	texture	seconds_per_frame																																								
+child	standing	0	0	child-front-0.svg	0.45																																								
+child	standing	0	1	child-front-1.svg	0.45																																								
+child	standing	1	0	child-back-0.svg	0.45																																								
+child	standing	1	1	child-back-1.svg	0.45																																								
+child	walking	0	0	child-front-0.svg	0.18																																								
+child	walking	0	1	child-front-1.svg	0.18																																								
+child	walking	1	0	child-back-0.svg	0.18																																								
+child	walking	1	1	child-back-1.svg	0.18																																								
+child	running	0	0	child-front-0.svg	0.12																																								
+child	running	0	1	child-front-1.svg	0.12																																								
+child	running	1	0	child-back-0.svg	0.12																																								
+child	running	1	1	child-back-1.svg	0.12																																								
+villager	standing	0	0	villager-front-0.svg	0.45																																								
+villager	standing	0	1	villager-front-1.svg	0.45																																								
+villager	standing	1	0	villager-back-0.svg	0.45																																								
+villager	standing	1	1	villager-back-1.svg	0.45																																								
+villager	walking	0	0	villager-front-0.svg	0.18																																								
+villager	walking	0	1	villager-front-1.svg	0.18																																								
+villager	walking	1	0	villager-back-0.svg	0.18																																								
+villager	walking	1	1	villager-back-1.svg	0.18																																								
+villager	running	0	0	villager-front-0.svg	0.12																																								
+villager	running	0	1	villager-front-1.svg	0.12																																								
+villager	running	1	0	villager-back-0.svg	0.12																																								
+villager	running	1	1	villager-back-1.svg	0.12																																								
+																																													
+# tile_palette																																													
+# index	archetype																																												
+0	rock																																												
+1	sandy-rock																																												
+2	snowy-rock																																												
+3	grassy-rock																																												
+4	stone																																												
+5	sandy-stone																																												
+6	snowy-stone																																												
+7	grassy-stone																																												
+8	dirt																																												
+9	path																																												
+10	snow																																												
+11	grass																																												
+12	sand																																												
+13	snow-bank																																												
+14	water																																												
+15	ice																																												
+16	roof																																												
+17	wood																																												
+18	missing																																												
+19	books																																												
+20	furniture																																												
+21	crate																																												
+22	swamp																																												
+23	bridge-deck																																												
+24	cutaway-edge																																												
+																																													
+# object_palette																																													
+# index	archetype																																												
+1	tree																																												
+2	apple																																												
+3	crate																																												
+4	villager																																												
+5	stick																																												
+																																													
+# objects																																													
+# entity	archetype	x	y	z																																									
+player	child	7	10	1																																									
+																																													
+# physics																																													
+# entity	vertical_velocity	is_grounded																																											
+																																													
+# character_states																																													
+# entity	facing_x	facing_y	animation	elapsed																																									
+																																													
+# landmarks #UNUSED																																													
+# id	map_id	lexeme	by_radius	at_position_x	at_position_y	at_position_z	on_position_x	on_position_y	on_position_z	in_position_x	in_position_y	in_position_z	under_position_x	under_position_y	under_position_z	within_position_x	within_position_y	within_position_z	before_position_x	before_position_y	before_position_z	against_position_x	against_position_y	against_position_z																					
+																																													
+# waterlevels #UNUSED																																													
+# id	map_id	high_tide_liquid_level	low_tide_liquid_level	liquid_id																																									

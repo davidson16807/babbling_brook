@@ -25,7 +25,9 @@ class GameView:
             lines.append(game.message)
         panels = [panel(APPLICATION_TITLE, lines, 640)]
         if game.show_inventory:
-            items = [f'{item}: {quantity}' for item, quantity in sorted(game.inventory.items())]
+            items = [f'{item}: {quantity}'
+                     for (character, item), quantity in sorted(game.inventory.items())
+                     if character == 'player']
             panels.append(panel('Inventory', items or ['Your pockets are empty.'], 300))
         return tuple(panels)
 

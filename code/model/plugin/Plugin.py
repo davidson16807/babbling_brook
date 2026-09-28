@@ -4,7 +4,12 @@ from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from typing import ClassVar, overload
 
-from ..component.archetypes import ObjectArchetype, TileArchetype
+from ..component.archetypes import (ObjectArchetype, TileArchetype, CharacterArchetype,
+                                    AnimalArchetype, Liquid, Waypoint)
+from ..component.Cycle import Cycle
+from ..component.Map import Map
+from ..component.Landmark import Landmark
+from ..component.Waterlevel import Waterlevel
 from ..component.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
 from ..identifiers import ArchetypeId, EntityId
 
@@ -27,28 +32,44 @@ class Plugin(Sequence[dict]):
 
     format: dict[str, int] = field(default_factory=dict)
     globals: dict[str, float] = field(default_factory=dict)
-    inventory: dict[str, int] = field(default_factory=dict)
+    cycles: dict[str, Cycle] = field(default_factory=dict)
+    maps: dict[int, Map] = field(default_factory=dict)
+    inventory: dict[tuple[EntityId, str], int] = field(default_factory=dict)
     tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
     objects: dict[ArchetypeId, ObjectArchetype] = field(default_factory=dict)
+    character_archetypes: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
+    animals: dict[ArchetypeId, AnimalArchetype] = field(default_factory=dict)
+    liquids: dict[ArchetypeId, Liquid] = field(default_factory=dict)
+    waypoints: dict[ArchetypeId, Waypoint] = field(default_factory=dict)
     animation_frames: dict[AnimationFrameId, AnimationFrame] = field(default_factory=dict)
     tile_palette: dict[int, ArchetypeId] = field(default_factory=dict)
     object_palette: dict[int, ArchetypeId] = field(default_factory=dict)
     placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
+    landmarks: dict[str, Landmark] = field(default_factory=dict)
+    waterlevels: dict[int, Waterlevel] = field(default_factory=dict)
 
     table_fields: ClassVar[tuple[str, ...]] = (
         'format',
         'globals',
+        'cycles',
+        'maps',
         'inventory',
         'tiles',
         'objects',
+        'character_archetypes',
+        'animals',
+        'liquids',
+        'waypoints',
         'animation_frames',
         'tile_palette',
         'object_palette',
         'placements',
         'physics',
         'characters',
+        'landmarks',
+        'waterlevels',
     )
 
     @classmethod

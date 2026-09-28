@@ -46,7 +46,11 @@ class PluginOps:
 
         archetypes = ArchetypeComponentStores(
             objects=dict(plugin.objects),
-            characters={key: CharacterArchetype() for key in character_keys},
+            characters={**{key: CharacterArchetype() for key in character_keys},
+                        **plugin.character_archetypes},
+            animals=dict(plugin.animals),
+            liquids=dict(plugin.liquids),
+            waypoints=dict(plugin.waypoints),
             tiles=dict(plugin.tiles),
         )
 
@@ -57,7 +61,7 @@ class PluginOps:
             if definition.has_gravity:
                 ground = map_.height(glm.vec2(position))
                 physics[entity] = VerticalPhysics(0.0, abs(position.z - ground) < 1e-5)
-            if key in archetypes.characters:
+            if key in character_keys:
                 characters[entity] = CharacterAnimationState()
 
         instances = InstanceComponentStores(dict(plugin.placements), physics, characters)
@@ -65,6 +69,9 @@ class PluginOps:
             instances,
             physics={**instances.physics, **plugin.physics},
             characters={**instances.characters, **plugin.characters},
+            cycles=dict(plugin.cycles),
+            landmarks=dict(plugin.landmarks),
+            waterlevels=dict(plugin.waterlevels),
         )
 
         return GameState(
@@ -74,6 +81,7 @@ class PluginOps:
             character_animation_frames=dict(plugin.animation_frames),
             instances=instances,
             inventory=defaultdict(int, plugin.inventory),
+            maps=dict(plugin.maps),
         )
 
     def save(self, state: GameState) -> Plugin:
@@ -83,6 +91,14 @@ class PluginOps:
             inventory=dict(state.inventory),
             tiles=dict(state.archetypes.tiles),
             objects=dict(state.archetypes.objects),
+            character_archetypes=dict(state.archetypes.characters),
+            animals=dict(state.archetypes.animals),
+            liquids=dict(state.archetypes.liquids),
+            waypoints=dict(state.archetypes.waypoints),
+            maps=dict(state.maps),
+            cycles=dict(state.instances.cycles),
+            landmarks=dict(state.instances.landmarks),
+            waterlevels=dict(state.instances.waterlevels),
             animation_frames=dict(state.character_animation_frames),
             placements=dict(state.instances.placements),
             physics=dict(state.instances.physics),
