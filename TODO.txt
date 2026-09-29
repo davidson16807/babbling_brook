@@ -13,7 +13,21 @@
 	ground for liquid tiles is calculated as an offset to ground for solid tiles, calcualted from a wave_depth, wave_depth_amplitude, wave_period, and wave_phase, so that characters appear to bob and float in it
 	wave_phase is stored in phase table, other wave_* variables are passed to the constructor to the class that calculates ground height
 
-* tweak inventory table so that it is represented as (character, item, quantity) tuples and allows representing inventories of arbitrary characters
+* new "WaterLevel" component
+	map_id
+	high_tide_liquid_level
+	low_tide_liquid_level
+	liquid_id (or none if no liquid present)
+
+* add behavior that seasonally changes grass, leaves, trees, and snow
+
+* add overlay for snow and precipitation
+
+* behavior for "Waypoint" object archetype components:
+	game state is updated so:
+		map is newly loaded from file for the map component that's referred to by the activated waypoint
+		view only displays object placements for the new map
+		player position is updated to the opposite waypoint marker of the adjacent map indicated by the waypoint that was activated
 
 * dynamic character generation
 	* edited svgs are created from template and stored for each character upon application startup along with entries in character animation table
@@ -35,47 +49,6 @@
 	* soldiers wear armor, shield, and spear
 	* wealthy wear brighter vibrant colors, belt with gold buckle, and shirt with trim
 	* poor wear darker muted colors, and a patch on one pant leg
-
-* new "Waypoint" object archetype component
-	name: n, s, e, w, nw, sw, ne, se
-	texture in-game
-	texture in-editor
-	a flag to indicate if travel by waypoint is done by e key or if it simply requires collision
-
-* a new Map table in .game files that stores:
-	name
-	filename
-	north_map_id
-	south_map_id
-	east_map_id
-	west_map_id
-	summer_temperature
-	winter_temperature
-
-* new "Landmark" component:
-	map_id
-	lexeme
-	by_radius
-	at_position	3d coordinate
-	on_position	3d coordinate
-	in_position	3d coordinate
-	under_position	3d coordinate
-	within_position	3d coordinate
-	before_position	3d coordinate
-	against_position	3d coordinate
-
-* draw methods for BillboardProgram and TileProgram now accept a light direction and light color
-* light direction during daytime varies by phase of day
-* light color during daytime varies by phase of day according to function that I provide
-* light direction during nighttime varies by phase of moon and phase of day
-* light color during nighttime is always greyscale but intensity varies by phase of moon
-* add overlay for snow and precipitation
-
-* new "WaterLevel" component
-	map_id
-	high_tide_liquid_level
-	low_tide_liquid_level
-	liquid_id (or none if no liquid present)
 
 * new line-of-sight functionality
 	uses LineOfSightQuery

@@ -8,9 +8,9 @@ haunted	0
 																																													
 # cycles																																													
 # id	phase	period	warp	warp_until_phase																																									
-day	0.5	12	1.0	1.0																																									
-month	0.5	48	1.0	1.0																																									
-year	0.5	576	1.0	1.0																																									
+day	0.5	24	1.0	1.0																																									
+month	0.5	96	1.0	1.0																																									
+year	0.5	1152	1.0	1.0																																									
 wind	0.5	14.832847	1.0	1.0																																									
 precipitation	0.5	38.832792	1.0	1.0																																									
 temperature	0.5	62.830176	1.0	1.0																																									
