@@ -19,7 +19,9 @@ even when the PPM is elsewhere or the command runs from another directory.
 | IJKL | Use the regular game's snapped camera controls |
 | Middle mouse drag | Free camera rotation, with elevation bounded to 0–90° |
 | `+` / `-` (also `=` and keypad plus/minus) | Zoom in / out in every mode |
-| Wheel down / up, `<` / `>` (also comma / period) | Decrease / increase the selected mode; default is zoom out / in |
+| Wheel down / up, comma / period | Decrease / increase the selected mode; default is zoom out / in |
+| `<` / `>` (Shift+comma / period) | Slow / speed the preview timestep using cycle periods as factors |
+| `/` | Reset the preview timestep to 1x |
 | T / Z / E | Select tile / height / object channel editing |
 | Escape | Return to zoom mode (does not quit) |
 | `0`–`9` | Set the selected channel to that literal value on every selected tile |

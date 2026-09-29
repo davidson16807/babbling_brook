@@ -1,6 +1,7 @@
 # HUMAN VETTED
 
 from pyglm import glm
+from ..model.query.LightQuery import Light
 from .. import APPLICATION_TITLE
 from ..view.UiPanel import UiPanel, UiText
 from ..view.program.ViewState import ViewState
@@ -31,7 +32,8 @@ class GameView:
             panels.append(panel('Inventory', items or ['Your pockets are empty.'], 300))
         return tuple(panels)
 
-    def draw(self, game):
+    def draw(self, game, light=None):
+        light = light if light is not None else Light()
         camera = game.camera
         target = game.instances.placements['player'].position + glm.vec3(0, 0, .4)
         aspect = game.viewport[0] / game.viewport[1]
@@ -39,7 +41,7 @@ class GameView:
         projection = glm.ortho(-scale * aspect, scale * aspect, -scale, scale, .1, 100.0)
         view = ViewState(
             projection * glm.lookAt(target + -camera.forward() * 30, target, glm.vec3(0, 0, 1)), 
-            camera.right()
+            camera.right(), light.direction, light.color
         )
         self.tiles.draw(game.map, view)
         self.billboards.draw(

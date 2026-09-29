@@ -27,6 +27,8 @@ from ..update.MovementUpdater import MovementUpdater
 from ..update.actions import *
 
 from ..model.query.CollisionQuery import CollisionQuery
+from ..model.query.LightQuery import LightQuery
+from ..model.system.CycleSystem import CycleSystem
 from ..model.query.InteractionQuery import InteractionQuery
 from ..model.system.GravitySystem import GravitySystem
 from ..model.system.CharacterAnimationSystem import CharacterAnimationSystem
@@ -59,6 +61,9 @@ def main(argv=None):
     map_filename = args.map or args.data / 'map' / 'world.ppm'
     game_files = GameFiles(PluginOps(), PluginStringCodec())
     model = game_files.load(map_filename, args.game_files, args.save if args.load else None)
+    light_query = LightQuery(max_moon_brightness=.15)
+    light = light_query.query(model.instances.cycles)
+    cycles = CycleSystem()
     gl = view = textures = framebuffer = None
     try:
         pygame.font.init()
@@ -140,6 +145,7 @@ def main(argv=None):
                         else:
                             restored = game_files.load(map_filename, args.game_files, args.save)
                             model = replace(restored, viewport=model.viewport, camera=model.camera, message='Game loaded.')
+                            light = light_query.query(model.instances.cycles)
                             accumulator = 0.0
                     except (OSError, ValueError) as error:
                         model = replace(model, message=f'Save/load failed: {error}')
@@ -160,13 +166,15 @@ def main(argv=None):
                         placements=placements,
                         physics=physics,
                         characters=characters,
+                        cycles=cycles.step(instances.cycles, seconds / 60),
                     ),
                 )
+                light = light_query.query(model.instances.cycles)
                 accumulator -= seconds
             gl.viewport = (0, 0, *model.viewport)
             gl.fbo.depth_mask = True
-            gl.clear(.16, .23, .25, 1.0, depth=1.0)
-            view.draw(model)
+            gl.clear(*light.background, 1.0, depth=1.0)
+            view.draw(model, light)
             frames += 1
             if args.screenshot and (not model.running or args.frames is not None and frames >= args.frames):
                 target = framebuffer if framebuffer is not None else gl.screen

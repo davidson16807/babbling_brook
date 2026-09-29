@@ -6,9 +6,9 @@ version	1
 # key	value																																												
 haunted	0																																												
 																																													
-# cycles #UNUSED																																													
+# cycles																																													
 # id	phase	period	warp	warp_until_phase																																									
-day	0.5	24	1.0	1.0																																									
+day	0.5	12	1.0	1.0																																									
 month	0.5	48	1.0	1.0																																									
 year	0.5	576	1.0	1.0																																									
 wind	0.5	14.832847	1.0	1.0																																									

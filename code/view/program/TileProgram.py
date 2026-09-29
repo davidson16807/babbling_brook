@@ -57,6 +57,7 @@ class TileProgram:
 
     VERTEX_SHADER = """#version 330 core
 uniform mat4 clip_from_world;
+uniform vec3 light_direction;
 in ivec3 element_position;
 in vec2 element_uv;
 in ivec3 element_normal;
@@ -99,7 +100,7 @@ void main() {
     }
 
     gl_Position = clip_from_world * vec4(position, 1.0);
-    lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(vec3(-0.5, -0.7, 1.0))), 0.0);
+    lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(light_direction)), 0.0);
     uv = is_top == 1 ? vec2(corner) : element_uv;
 
 }
@@ -107,6 +108,7 @@ void main() {
 
     FRAGMENT_SHADER = """#version 330 core
 uniform sampler2D top_image;
+uniform vec3 light_color;
 uniform sampler2D side_image;
 in vec2 uv;
 in float lighting;
@@ -119,7 +121,7 @@ void main() {
     } else {
         texture_color = texture(side_image, uv).rgb;
     }
-    color = vec4(texture_color * lighting, 1.0);
+    color = vec4(texture_color * lighting * light_color, 1.0);
 }
 """
 
@@ -182,6 +184,8 @@ void main() {
         self.gl.fbo.depth_mask = True
         self.gl.depth_func = "<="
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
+        self.program["light_direction"].value = tuple(view.light_direction)
+        self.program["light_color"].value = tuple(view.light_color)
         self.program["top_image"].value = 0
         self.program["side_image"].value = 1
 

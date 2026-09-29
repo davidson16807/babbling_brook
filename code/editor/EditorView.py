@@ -2,6 +2,7 @@
 from collections import defaultdict
 
 from pyglm import glm
+from ..model.query.LightQuery import Light
 
 from ..view.program.ViewState import ViewState
 from ..view.UiPanel import UiPanel, UiText
@@ -34,7 +35,8 @@ class EditorView:
             f'Mode: {mode}   |   Zoom span {state.camera.orthographic_scale:g}   |   '
             f'Clipboard: {clipboard}   |   Undo {len(state.undo_history)} / Redo {len(state.redo_history)}',
             'WASD Move   |   Shift+WASD Select rectangle   |   IJKL Rotate   |   Middle-drag Free look',
-            'Wheel / < > Adjust mode   |   + - Zoom   |   T Tile   Z Height   E Object   Esc Zoom',
+            'Wheel / , . Adjust mode   |   + - Zoom   |   T Tile   Z Height   E Object   Esc Zoom',
+            f'< > Time slower / faster   |   / Reset time   |   Time warp {state.time_warp:g}x',
             '0-9 Set channel   |   Delete Zero   |   Ctrl+C Copy   Ctrl+V Paste',
             'Ctrl+Z Undo   |   Ctrl+Shift+Z / Ctrl+Y Redo   |   Ctrl+S / F5 Save   |   Close window Quit',
             state.message or 'Ready.',
@@ -45,7 +47,8 @@ class EditorView:
             None, (22, 33, 37, 235), (147, 169, 146, 255), (12, 10, 12, 10),
             anchor='bottom-left'),)
 
-    def view_state(self, state):
+    def view_state(self, state, light=None):
+        light = light if light is not None else Light()
         camera = state.camera
         xy = glm.vec2(*state.cursor[-1]) + glm.vec2(.5)
         target = glm.vec3(xy, state.map.height(xy))
@@ -55,10 +58,11 @@ class EditorView:
         forward, right = camera.forward(), camera.right()
         # A camera-derived up vector stays valid at the allowed overhead angle.
         up = glm.cross(right, forward)
-        return ViewState(projection * glm.lookAt(target - forward*30, target, up), right)
+        return ViewState(projection * glm.lookAt(target - forward*30, target, up), right,
+                         light.direction, light.color)
 
-    def draw(self, state):
-        view = self.view_state(state)
+    def draw(self, state, light=None):
+        view = self.view_state(state, light)
         self.tiles.draw(state.map, view)
         batches = defaultdict(lambda: ([], []))
         for placement in state.placements.values():

@@ -86,7 +86,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				PrimitiveListCodec(float),
 			),
 			GameTableCodec(
-				'# cycles #UNUSED\n# id\tphase\tperiod\twarp\twarp_until_phase',
+				'# cycles\n# id\tphase\tperiod\twarp\twarp_until_phase',
 				PrimitiveListCodec(str),
 				ObjectListCodec(Cycle,
 					('phase', PrimitiveListCodec(float)),

@@ -20,6 +20,8 @@ from .AppHistoryTraversal import AppHistoryTraversal
 from ..update.LookUpdater import LockedLookUpdater, DirectLookUpdater
 from ..update.VectorUpdater import BoundedVectorUpdater, VectorKeysUpdater, VectorMouseUpdater
 from ..view.Textures import Textures
+from ..model.query.LightQuery import LightQuery
+from ..model.system.CycleSystem import CycleSystem
 from ..view.program.BillboardProgram import BillboardProgram
 from ..view.program.HighlightProgram import HighlightProgram
 from ..view.program.TileProgram import TileProgram
@@ -39,7 +41,8 @@ def make_updater(map_codec, object_palette):
             CursorUpdater(VectorKeysUpdater(*'wasd')),
             DirectLookUpdater(BoundedVectorUpdater(VectorMouseUpdater(-.01), y0=0, y1=pi/2)),
             keylook,
-            AppHistoryTraversal(max_history_size=100))
+            AppHistoryTraversal(max_history_size=100), 
+            CycleSystem())
 
 
 def main(argv=None):
@@ -59,10 +62,11 @@ def main(argv=None):
             raise ValueError('Object palette refers to an unknown archetype')
         map_codec = MapCodec(plugin.tile_palette, plugin.tiles)
         files = EditorFiles(map_codec, plugin.object_palette)
-        state = files.load(filename)
+        state = replace(files.load(filename), cycles=dict(plugin.cycles))
     except (OSError, ValueError, KeyError) as error:
         parser.exit(1, f'Cannot open level: {error}\n')
 
+    light_query = LightQuery(max_moon_brightness=.15)
     gl = textures = view = None
     try:
         pygame.display.init()
@@ -102,11 +106,12 @@ def main(argv=None):
             held = [message for message in messages
                     if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.REPEAT]
             state = updater.step(state, seconds, held)
+            light = light_query.query(state.cycles)
             pygame.display.set_caption(f'Level editor - {filename.name}{" *" if state.dirty else ""}')
             gl.viewport = (0, 0, *state.viewport)
             gl.fbo.depth_mask = True
-            gl.clear(.16, .23, .25, 1, depth=1)
-            view.draw(state)
+            gl.clear(*light.background, 1, depth=1)
+            view.draw(state, light)
             pygame.display.flip()
     finally:
         if view is not None:

@@ -1,6 +1,7 @@
 """Editor MVU transitions. Input and persistence remain outside the model."""
 from bisect import bisect_left, bisect_right
 from dataclasses import replace
+from math import isfinite
 
 from ..codec.map.PpmImageCodec import PpmImage
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
@@ -10,13 +11,14 @@ from ..messages import (FocusLostMessage, KeyboardAction, KeyboardMessage,
 
 
 class EditorUpdater:
-    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history):
+    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history, cycle_system):
         self.map_codec = map_codec
         self.object_palette = object_palette
         self.cursor = cursor
         self.mouselook = mouselook  # A vector updater, with no angle locking.
         self.keylook = keylook      # The regular game's composed look updater.
         self.history = history
+        self.cycle_system = cycle_system
         self.tile_ids = sorted(map_codec.tile_palette)
         self.object_ids = sorted({0, *object_palette})
 
@@ -34,12 +36,23 @@ class EditorUpdater:
 
     def step(self, state, seconds, messages):
         """Rate-limit live held-key messages; never retain a held-input cache."""
+        state = replace(state, cycles=self.cycle_system.step(state.cycles, seconds / 60 * state.time_warp))
         if not messages:
             return replace(state, cursor_delay=0.0)
         delay = max(0.0, state.cursor_delay - seconds)
         if delay > 0:
             return replace(state, cursor_delay=delay)
         return replace(self._move(state, messages), cursor_delay=.12)
+
+    def _warp(self, state, faster):
+        # At factor period/1min, that cycle takes one real minute. Include 1x so
+        # normal time is reachable even when no configured period equals one.
+        factors = sorted({1.0, *(c.period for c in state.cycles.values()
+                                if isfinite(c.period) and c.period > 0)})
+        index = (bisect_right(factors, state.time_warp) if faster
+                 else bisect_left(factors, state.time_warp)-1)
+        factor = factors[max(0, min(len(factors)-1, index))]
+        return replace(state, time_warp=factor, message=f'Time warp: {factor:g}x.')
 
     def _rebuild(self, state):
         map_ = self.map_codec.decode(state.image)
@@ -177,7 +190,11 @@ class EditorUpdater:
                 return self._zoom(state, 1)
             if key in ('-', '[-]', 'kp -'):
                 return self._zoom(state, -1)
-            if key in (',', '[', '.', ']'):
+            if key in (',', '<', '.', '>') and message.modifiers:
+                return self._warp(state, key in ('>', '.'))
+            if key == '/':
+                return replace(state, time_warp=1.0, message='Time warp: 1x.')
+            if key in ('[', ']'):
                 return self._adjust(state, -1 if key in (',', '[') else 1)
             if key == 'delete':
                 return self._set(state, 0)

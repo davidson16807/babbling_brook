@@ -1,4 +1,4 @@
-"""A periodic phase, with period measured in seconds."""
+"""A periodic phase, with period measured in minutes."""
 from dataclasses import dataclass, replace
 from math import isfinite
 

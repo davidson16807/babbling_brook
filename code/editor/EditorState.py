@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 from ..codec.map.PpmImageCodec import PpmImage
 from ..model.CameraState import CameraState
+from ..model.component.Cycle import Cycle
 from ..model.Map import Map
 from ..model.component.instances import ObjectPlacement
 from ..model.identifiers import Coordinate, EntityId
@@ -27,3 +28,5 @@ class EditorState:
     clipboard: PpmImage | None = None
     undo_history: list[PpmImage] = field(default_factory=list)
     redo_history: list[PpmImage] = field(default_factory=list)
+    cycles: dict[str, Cycle] = field(default_factory=dict)
+    time_warp: float = 1.0

@@ -43,11 +43,18 @@ void main() {
 
     FRAGMENT_SHADER = """#version 330 core
 uniform sampler2D image;
+uniform vec3 light_direction;
+uniform vec3 light_color;
+uniform vec3 camera_right;
 in vec2 uv;
 out vec4 color;
 void main() {
     color = texture(image, uv);
     if (color.a < 0.5) discard;
+    vec3 normal = normalize(cross(camera_right, vec3(0.0, 0.0, 1.0)));
+    // A sprite is two-sided; use the lit side of its vertical plane.
+    float lighting = 0.60 + 0.40 * abs(dot(normal, normalize(light_direction)));
+    color.rgb *= lighting * light_color;
 }
 """
 
@@ -98,6 +105,8 @@ void main() {
         self.gl.depth_func = "<="
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
         self.program["camera_right"].value = tuple(view.camera_right)
+        self.program["light_direction"].value = tuple(view.light_direction)
+        self.program["light_color"].value = tuple(view.light_color)
         self.program["image"].value = 0
 
         self.textures.get(texture).use(0)
