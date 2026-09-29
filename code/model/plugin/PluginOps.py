@@ -52,6 +52,8 @@ class PluginOps:
             liquids=dict(plugin.liquids),
             waypoints=dict(plugin.waypoints),
             tiles=dict(plugin.tiles),
+            seasonal_tiles=dict(plugin.seasonal_tiles),
+            seasonal_objects=dict(plugin.seasonal_objects),
         )
 
         physics, characters = {}, {}
@@ -90,6 +92,8 @@ class PluginOps:
             globals=dict(state.globals),
             inventory=dict(state.inventory),
             tiles=dict(state.archetypes.tiles),
+            seasonal_tiles=dict(state.archetypes.seasonal_tiles),
+            seasonal_objects=dict(state.archetypes.seasonal_objects),
             objects=dict(state.archetypes.objects),
             character_archetypes=dict(state.archetypes.characters),
             animals=dict(state.archetypes.animals),

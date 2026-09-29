@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48" viewBox="0 0 32 48" shape-rendering="crispEdges">
+<title>winter-tree</title>
+<rect x="13" y="20" width="6" height="28" fill="#715640"/>
+<path d="M16 32L7 23L4 14M16 27L24 19L27 9M16 24L13 13L16 2M7 23L2 22M13 13L6 8M24 19L30 17M13 16L21 10L22 4" fill="none" stroke="#715640" stroke-width="3"/>
+<path d="M13 14L7 9M23 20L29 18" fill="none" stroke="#d9ded5" stroke-width="1"/>
+
+</svg>

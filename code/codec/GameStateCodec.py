@@ -18,7 +18,7 @@ from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
 from ..model.plugin.Plugin import Plugin
 from ..model.component.archetypes import (TileArchetype, ObjectArchetype, CharacterArchetype,
-                                         AnimalArchetype, Liquid, Waypoint)
+                                         AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
 from ..model.component.Cycle import Cycle
 from ..model.component.Map import Map
 from ..model.component.Landmark import Landmark
@@ -34,20 +34,21 @@ class PluginListCodec:
     def decode(self, code):
         return Plugin.from_tables(code)
 
-def _codec(encode, decode, item_count=1):
-	return SimpleNamespace(encode=encode, decode=decode, item_count=item_count)
-
-
 def _optional(type):
     """An empty cell represents an absent reference (including map ID zero)."""
-    return _codec(lambda value: ['' if value is None else str(value)],
-                  lambda code: None if code[0] == '' else type(code[0]))
-
+    return SimpleNamespace(
+    	encode = lambda value: ['' if value is None else str(value)],
+        decode = lambda code: None if code[0] == '' else type(code[0]),
+        item_count=1
+    )
 
 def _defaulted(type, default):
     """Spreadsheet trait cells may omit a numeric value to use its default."""
-    return _codec(lambda value: [str(value)],
-                  lambda code: default if code[0] == '' else type(code[0]))
+    return SimpleNamespace(
+    	encode = lambda value: [str(value)],
+        decode = lambda code: default if code[0] == '' else type(code[0]),
+        item_count=1
+    )
 
 def GameRowCodec(key_codec, value_codec, column_delimiter='\t'):
 	return ComposedCodec(
@@ -80,20 +81,22 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				PrimitiveListCodec(int),
 			),
 			GameTableCodec(
-				'# globals\n #'+'\t'.join('key value'.split()),
+				'# globals #UNUSED\n #'+'\t'.join('key value'.split()),
 				PrimitiveListCodec(str),
 				PrimitiveListCodec(float),
 			),
 			GameTableCodec(
-				'# cycles #UNUSED\n# id\tphase\tperiod',
+				'# cycles #UNUSED\n# id\tphase\tperiod\twarp\twarp_until_phase',
 				PrimitiveListCodec(str),
 				ObjectListCodec(Cycle,
 					('phase', PrimitiveListCodec(float)),
 					('period', PrimitiveListCodec(float)),
+					('warp', PrimitiveListCodec(float)),
+					('warp_until_phase', PrimitiveListCodec(float)),
 				),
 			),
 			GameTableCodec(
-				'# maps #UNUSED\n# id\tname\tfilename\tnorth_map_id\tsouth_map_id\teast_map_id\twest_map_id\tsummer_temperature\twinter_temperature',
+				'# maps #UNUSED\n# id\tname\tfilename\tnorth_map_id\tsouth_map_id\teast_map_id\twest_map_id\tsummer_temperature\twinter_temperature\twild\tleaf_state\tgrass_state\tsnowy',
 				PrimitiveListCodec(int),
 				ObjectListCodec(Map,
 					('name', PrimitiveListCodec(str)),
@@ -104,29 +107,68 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 					('west_map_id', _optional(int)),
 					('summer_temperature', PrimitiveListCodec(float)),
 					('winter_temperature', PrimitiveListCodec(float)),
+					('wild', BooleanListCodec()),
+					('leaf_state', _defaulted(int, 1)),
+					('grass_state', _defaulted(int, 1)),
+					('snowy', BooleanListCodec()),
 				),
 			),
+            ComposedCodec(
+                SimpleNamespace(
+                    encode=lambda levels: {key: (value.high_tide_liquid_level,
+                                          value.low_tide_liquid_level, value.liquid_id)
+                                    for key, value in levels.items()},
+                    decode=lambda rows: {key: Waterlevel(key, *value) for key, value in rows.items()},
+                    item_count=1
+                ),
+                GameTableCodec(
+                    '# waterlevels #UNUSED\n# map\thigh_tide_liquid_level\tlow_tide_liquid_level\tliquid_id',
+                    PrimitiveListCodec(str),
+                    ConcatenatedContainerCodec(tuple,
+                        PrimitiveListCodec(float),
+                        PrimitiveListCodec(float),
+                        _optional(str),
+                    ),
+                ),
+            ),
 			GameTableCodec(
-				'# inventory\n #'+'\t'.join('character item quantity'.split()),
-				ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(str)),
-				PrimitiveListCodec(int),
-			),
-			GameTableCodec(
-				'# tile_archetypes\n #'+'\t'.join('archetype top_texture side_texture max_erosion is_collidable windswept waterswept disturbed'.split()),
+				'# tile_archetypes\n #'+'\t'.join('archetype top_texture side_texture max_erosion windswept waterswept disturbed'.split()),
 				PrimitiveListCodec(str),
 				ObjectListCodec(TileArchetype,
 					('top_texture', PrimitiveListCodec(str)),
 					('side_texture', PrimitiveListCodec(str)),
 					('max_erosion', PrimitiveListCodec(float)),
-					('is_collidable', BooleanListCodec()),
 					('windswept', BooleanListCodec()),
 					('waterswept', BooleanListCodec()),
 					('disturbed', BooleanListCodec()),
 				),
 			),
 			GameTableCodec(
+				'# liquid_archetypes #UNUSED\n# archetype\ttop_texture1\ttop_texture2\tside_texture\tfreezing_temperature\tfrozen_texture\tviscosity\tunpassable',
+				PrimitiveListCodec(str),
+				ObjectListCodec(Liquid,
+					('top_texture1', PrimitiveListCodec(str)),
+					('top_texture2', PrimitiveListCodec(str)),
+					('side_texture', PrimitiveListCodec(str)),
+					('freezing_temperature', PrimitiveListCodec(float)),
+					('frozen_texture', PrimitiveListCodec(str)),
+					('viscosity', PrimitiveListCodec(float)),
+					('unpassable', BooleanListCodec()),
+				),
+			),
+            GameTableCodec(
+                '# seasonal_tile_archetypes #UNUSED\n# id\tdefault\tfallen_leaves\tdead_grass\tsnowy',
+                PrimitiveListCodec(str),
+                ObjectListCodec(SeasonalTileArchetype,
+                    ('default', PrimitiveListCodec(str)),
+                    ('fallen_leaves', PrimitiveListCodec(str)),
+                    ('dead_grass', PrimitiveListCodec(str)),
+                    ('snowy', PrimitiveListCodec(str)),
+                ),
+            ),
+			GameTableCodec(
 				'# object_archetypes\n'+
-				'\t'.join('archetype texture is_collidable radius height width has_gravity action label'.split()),
+				'\t'.join('archetype texture is_collidable radius height width has_gravity action lexeme'.split()),
 				PrimitiveListCodec(str),
 				ObjectListCodec(ObjectArchetype,
 					('texture', PrimitiveListCodec(str)),
@@ -136,11 +178,16 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 					('width', PrimitiveListCodec(float)),
 					('has_gravity', BooleanListCodec()),
 					('action', PrimitiveListCodec(str)),
-					('label', PrimitiveListCodec(str)),
+					('lexeme', PrimitiveListCodec(str)),
 				),
 			),
+            GameTableCodec(
+                '# seasonal_object_archetypes #UNUSED\n# archetype\tleaf_state\ttexture',
+                ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(int)),
+                PrimitiveListCodec(str),
+            ),
 			GameTableCodec(
-				'# character_archetypes #UNUSED\n# id\tmale\tlifestage\tskin\thair\tbald_prone\tdwarf\tstrong\tfat\tattractive\thungry\tthirsty\twants\tloves\tharasses\tfollows\tavoids\tguards\twanders\trun_speed\tswim_speed\tclimb_speed\tcolorblind\tdeaf\tblind\tspeaks_native\tspeaks_foreign\tnumeracy\tliteracy\tplaces_known\tpeople_known\trespect_level\trespects_level\twealth_level\theals\tmends\tcooks\tsmiths\tcarpents\tmasons\tpicks_locks\tcontrols_weather\tanimal_friend\towes_player\tunescortable\tcriminal',
+				'# character_archetypes #UNUSED\n# archetype\tmale\tlifestage\tskin\thair\tbald_prone\tdwarf\tstrong\tfat\tattractive\thungry\tthirsty\twants\tloves\tharasses\tfollows\tavoids\tguards\twanders\trun_speed\tswim_speed\tclimb_speed\tcolorblind\tdeaf\tblind\tspeaks_native\tspeaks_foreign\tnumeracy\tliteracy\tplaces_known\tpeople_known\trespect_level\trespects_level\twealth_level\theals\tmends\tcooks\tsmiths\tcarpents\tmasons\tpicks_locks\tcontrols_weather\tanimal_friend\towes_player\tunescortable\tcriminal',
 				PrimitiveListCodec(str),
 				ObjectListCodec(CharacterArchetype,
 					('male', BooleanListCodec()),
@@ -191,12 +238,13 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				),
 			),
 			GameTableCodec(
-				'# animal_archetypes #UNUSED\n# id\trun_speed\tswim_speed\tclimb_speed\twarm_blooded\tcolorblind\tuv_vision\theat_vision\tnight_vision\tnocturnal\tforages\thunts_alone\tpack_hunts\teats_berries\teats_grass\teats_small_game\teats_big_game',
+				'# animal_archetypes #UNUSED\n# archetype\trun_speed\tswim_speed\tclimb_speed\tfly_speed\twarm_blooded\tcolorblind\tuv_vision\theat_vision\tforages\thunts_alone\tpack_hunts\teats_berries\teats_seeds\teats_grass\teats_fish\teats_small_game\teats_big_game',
 				PrimitiveListCodec(str),
 				ObjectListCodec(AnimalArchetype,
 					('run_speed', _defaulted(float, 0.0)),
 					('swim_speed', _defaulted(float, 0.0)),
 					('climb_speed', _defaulted(float, 0.0)),
+					('fly_speed', _defaulted(float, 0.0)),
 					('warm_blooded', BooleanListCodec()),
 					('colorblind', BooleanListCodec()),
 					('uv_vision', BooleanListCodec()),
@@ -205,21 +253,11 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 					('hunts_alone', BooleanListCodec()),
 					('pack_hunts', BooleanListCodec()),
 					('eats_berries', BooleanListCodec()),
+					('eats_seeds', BooleanListCodec()),
 					('eats_grass', BooleanListCodec()),
+					('eats_fish', BooleanListCodec()),
 					('eats_small_game', BooleanListCodec()),
 					('eats_big_game', BooleanListCodec()),
-				),
-			),
-			GameTableCodec(
-				'# liquid_archetypes #UNUSED\n# id\ttop_texture1\ttop_texture2\tfreezing_temperature\tfrozen_texture\tviscosity\tunpassable',
-				PrimitiveListCodec(str),
-				ObjectListCodec(Liquid,
-					('top_texture1', PrimitiveListCodec(str)),
-					('top_texture2', PrimitiveListCodec(str)),
-					('freezing_temperature', PrimitiveListCodec(float)),
-					('frozen_texture', PrimitiveListCodec(str)),
-					('viscosity', PrimitiveListCodec(float)),
-					('unpassable', BooleanListCodec()),
 				),
 			),
 			GameTableCodec(
@@ -230,6 +268,22 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 					('in_game_texture', PrimitiveListCodec(str)),
 					('in_editor_texture', PrimitiveListCodec(str)),
 					('is_door', BooleanListCodec()),
+				),
+			),
+			GameTableCodec(
+				'# landmarks #UNUSED\n# id\tmap\tlexeme\tby_radius\tat_position_x\tat_position_y\tat_position_z\ton_position_x\ton_position_y\ton_position_z\tin_position_x\tin_position_y\tin_position_z\tunder_position_x\tunder_position_y\tunder_position_z\twithin_position_x\twithin_position_y\twithin_position_z\tbefore_position_x\tbefore_position_y\tbefore_position_z\tagainst_position_x\tagainst_position_y\tagainst_position_z',
+				PrimitiveListCodec(str),
+				ObjectListCodec(Landmark,
+					('map_id', PrimitiveListCodec(str)),
+					('lexeme', PrimitiveListCodec(str)),
+					('by_radius', PrimitiveListCodec(float)),
+					('at_position', ContainerListCodec(glm.vec3, float, 3)),
+					('on_position', ContainerListCodec(glm.vec3, float, 3)),
+					('in_position', ContainerListCodec(glm.vec3, float, 3)),
+					('under_position', ContainerListCodec(glm.vec3, float, 3)),
+					('within_position', ContainerListCodec(glm.vec3, float, 3)),
+					('before_position', ContainerListCodec(glm.vec3, float, 3)),
+					('against_position', ContainerListCodec(glm.vec3, float, 3)),
 				),
 			),
 			GameTableCodec(
@@ -265,37 +319,27 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				ObjectListCodec(VerticalPhysics,
 					('vertical_velocity', PrimitiveListCodec(float)),
 					('is_grounded', BooleanListCodec()))),
-			GameTableCodec('# character_states\n #'+'\t'.join('entity facing_x facing_y animation elapsed'.split()), 
+			GameTableCodec('# character_states\n #'+'\t'.join('entity facing_x facing_y animation elapsed hurt tired asleep hot cold angry sad afraid happy'.split()), 
 				PrimitiveListCodec(str),
 				ObjectListCodec(CharacterAnimationState,
 					('facing', ContainerListCodec(glm.vec2, float, 2)),
 					('animation', PrimitiveListCodec(str)),
-					('elapsed', PrimitiveListCodec(float)))),
+					('elapsed', PrimitiveListCodec(float)),
+                    ('hurt', BooleanListCodec()),
+                    ('tired', BooleanListCodec()),
+                    ('asleep', BooleanListCodec()),
+                    ('hot', BooleanListCodec()),
+                    ('cold', BooleanListCodec()),
+                    ('angry', BooleanListCodec()),
+                    ('sad', BooleanListCodec()),
+                    ('afraid', BooleanListCodec()),
+                    ('happy', BooleanListCodec()),
+                ),
+            ),
 			GameTableCodec(
-				'# landmarks #UNUSED\n# id\tmap_id\tlexeme\tby_radius\tat_point_x\tat_point_y\tat_point_z\ton_point_x\ton_point_y\ton_point_z\tin_point_x\tin_point_y\tin_point_z\tunder_point_x\tunder_point_y\tunder_point_z\twithin_point_x\twithin_point_y\twithin_point_z\tbefore_point_x\tbefore_point_y\tbefore_point_z\tagainst_point_x\tagainst_point_y\tagainst_point_z',
-				PrimitiveListCodec(str),
-				ObjectListCodec(Landmark,
-					('map_id', PrimitiveListCodec(int)),
-					('lexeme', PrimitiveListCodec(str)),
-					('by_radius', PrimitiveListCodec(float)),
-					('at_point', ContainerListCodec(glm.vec3, float, 3)),
-					('on_point', ContainerListCodec(glm.vec3, float, 3)),
-					('in_point', ContainerListCodec(glm.vec3, float, 3)),
-					('under_point', ContainerListCodec(glm.vec3, float, 3)),
-					('within_point', ContainerListCodec(glm.vec3, float, 3)),
-					('before_point', ContainerListCodec(glm.vec3, float, 3)),
-					('against_point', ContainerListCodec(glm.vec3, float, 3)),
-				),
-			),
-			GameTableCodec(
-				'# waterlevels #UNUSED\n# id\tmap_id\thigh_tide_liquid_level\tlow_tide_liquid_level\tliquid_id',
+				'# inventory\n #'+'\t'.join('character item quantity'.split()),
+				ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(str)),
 				PrimitiveListCodec(int),
-				ObjectListCodec(Waterlevel,
-					('map_id', PrimitiveListCodec(int)),
-					('high_tide_liquid_level', PrimitiveListCodec(float)),
-					('low_tide_liquid_level', PrimitiveListCodec(float)),
-					('liquid_id', _optional(str)),
-				),
 			),
 		),
 		DelimitedStringsCodec(table_delimiter, table_regex_delimiter, postfixed=True),

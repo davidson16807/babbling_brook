@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+<title>leaves</title>
+<rect x="0" y="0" width="32" height="32" fill="#795f3d"/>
+<path d="M2 4l3 -2l3 2l-2 3l-3 1z" fill="#c17c43"/>
+<path d="M11 3l3 -2l3 2l-2 3l-3 1z" fill="#ab563d"/>
+<path d="M24 5l3 -2l3 2l-2 3l-3 1z" fill="#c5a155"/>
+<path d="M6 12l3 -2l3 2l-2 3l-3 1z" fill="#855d3d"/>
+<path d="M18 11l3 -2l3 2l-2 3l-3 1z" fill="#c17c43"/>
+<path d="M28 16l3 -2l3 2l-2 3l-3 1z" fill="#ab563d"/>
+<path d="M1 24l3 -2l3 2l-2 3l-3 1z" fill="#c5a155"/>
+<path d="M12 21l3 -2l3 2l-2 3l-3 1z" fill="#855d3d"/>
+<path d="M23 26l3 -2l3 2l-2 3l-3 1z" fill="#c17c43"/>
+<path d="M9 31l3 -2l3 2l-2 3l-3 1z" fill="#ab563d"/>
+<path d="M30 31l3 -2l3 2l-2 3l-3 1z" fill="#c5a155"/>
+
+</svg>

@@ -12,3 +12,7 @@ class Map:
     west_map_id: int | None = None
     summer_temperature: float = 20.0
     winter_temperature: float = 0.0
+    wild: bool = False
+    leaf_state: int = 1
+    grass_state: int = 1
+    snowy: bool = False

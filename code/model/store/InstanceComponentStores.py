@@ -24,4 +24,4 @@ class InstanceComponentStores:
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
     cycles: dict[str, Cycle] = field(default_factory=dict)
     landmarks: dict[str, Landmark] = field(default_factory=dict)
-    waterlevels: dict[int, Waterlevel] = field(default_factory=dict)
+    waterlevels: dict[str, Waterlevel] = field(default_factory=dict)

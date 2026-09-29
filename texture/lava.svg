@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+<title>lava</title>
+<rect x="0" y="0" width="32" height="32" fill="#d56838"/>
+<path d="M0 7L9 10L15 4L23 8L32 3M0 25L9 21L17 25L25 18L32 21" fill="none" stroke="#efb451" stroke-width="2"/>
+<path d="M1 1H10L8 6L0 4Z" fill="#66443a"/>
+<path d="M17 1H29L23 5L18 3Z" fill="#66443a"/>
+<path d="M2 13L10 12L14 17L8 20L0 18Z" fill="#66443a"/>
+<path d="M21 10L32 8V16L26 15Z" fill="#66443a"/>
+<path d="M1 29L10 25L17 29V32H0Z" fill="#66443a"/>
+<path d="M22 25L31 24V32H21Z" fill="#66443a"/>
+
+</svg>

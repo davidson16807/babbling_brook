@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+<title>chimney</title>
+<rect x="0" y="0" width="32" height="32" fill="#a86049"/>
+<rect x="3" y="3" width="26" height="26" fill="#d0b08b"/>
+<rect x="6" y="6" width="20" height="20" fill="#62493e"/>
+<rect x="8" y="8" width="16" height="16" fill="#282b29"/>
+<path d="M0 16H6M26 16H32M16 0V6M16 26V32" fill="none" stroke="#62493e" stroke-width="1"/>
+
+</svg>

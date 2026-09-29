@@ -4,88 +4,177 @@ version	1
 																																													
 # globals #UNUSED																																													
 # key	value																																												
+haunted	0																																												
 																																													
 # cycles #UNUSED																																													
-# id	phase	period																																											
-day_phase	0.5	86400																																											
-month_phase	0.5	2551443																																											
-year_phase	0.5	31557600																																											
-temperature_phase	0.5	86400																																											
-precipitation_phase	0.5	604800																																											
-wave_phase	0.5	4																																											
-blink_phase	0.5	5																																											
+# id	phase	period	warp	warp_until_phase																																									
+day	0.5	24	1.0	1.0																																									
+month	0.5	48	1.0	1.0																																									
+year	0.5	576	1.0	1.0																																									
+wind	0.5	14.832847	1.0	1.0																																									
+precipitation	0.5	38.832792	1.0	1.0																																									
+temperature	0.5	62.830176	1.0	1.0																																									
+wave	0.5	0.1618033	1.0	1.0																																									
+breeze	0.5	0.2618033	1.0	1.0																																									
+blink	0.5	0.1	1.0	1.0																																									
 																																													
-# maps #UNUSED																																													
-# id	name	filename	north_map_id	south_map_id	east_map_id	west_map_id	summer_temperature	winter_temperature																																					
-0	World	map/world.ppm					25	-5																																					
+# maps #UNUSED									UNUSED	UNUSED	UNUSED	UNUSED																																	
+# id	name	filename	north_map_id	south_map_id	east_map_id	west_map_id	summer_temperature	winter_temperature	wild	leaf_state	grass_state	snowy																																	
+0	world	map/world.ppm					25	-5		1	1																																		
 																																													
-# inventory																																													
-# character	item	quantity																																											
+# waterlevels #UNUSED																																													
+# map	high_tide_liquid_level	low_tide_liquid_level	liquid_id																																										
+tidal-flat	0	2	ocean																																										
 																																													
-# tile_archetypes																																													
-# archetype	top_texture	side_texture	max_erosion	is_collidable	windswept	waterswept	disturbed																																						
-missing	missing.svg	missing.svg	0	x																																									
-rock	rock.svg	rock.svg	0.5	x																																									
-sandy-rock	sand.svg	rock.svg	0.5	x	x																																								
-snowy-rock	snow.svg	rock.svg	0.5	x																																									
-grassy-rock	grass.svg	rock.svg	0.5	x		x																																							
-stone	stone.svg	stone.svg	0	x																																									
-sandy-stone	sand.svg	stone.svg	0	x	x																																								
-snowy-stone	snow.svg	stone.svg	0	x																																									
-grassy-stone	grass.svg	stone.svg	0	x		x																																							
-dirt	dirt.svg	dirt.svg	1	x		x	x																																						
-path	sand.svg	dirt.svg	1	x	x																																								
-snow	snow.svg	dirt.svg	1	x																																									
-grass	grass.svg	dirt.svg	1	x		x																																							
-sand	sand.svg	sand.svg	2	x	x																																								
-snow-bank	snow.svg	snow.svg	2	x																																									
-water	water.svg	water.svg	10	x																																									
-swamp	water.svg	water.svg	10	x																																									
-ice	snow.svg	water.svg	0	x																																									
-crate	crate2.svg	crate2.svg	0	x																																									
-roof	wood.svg	wood.svg	1	x			x																																						
-wood	wood.svg	wood.svg	0	x																																									
-bridge-deck	wood.svg	wood.svg	0	x																																									
-furniture	wood.svg	wood.svg	0	x																																									
+# tile_archetypes				UNUSED	UNUSED	UNUSED																																							
+# archetype	top_texture	side_texture	max_erosion	windswept	waterswept	disturbed																																							
+missing	missing.svg	missing.svg	0																																										
+rock	rock.svg	rock.svg	0.5																																										
+sandy-rock	sand.svg	rock.svg	0.5	x																																									
+dirty-rock	dirt.svg	rock.svg	0.5		x	x																																							
+grassy-rock	grass.svg	rock.svg	0.5		x																																								
+stone	stone.svg	stone.svg	0																																										
+sandy-stone	sand.svg	stone.svg	0	x																																									
+dirty-rock	dirt.svg	stone.svg	0		x	x																																							
+grassy-stone	grass.svg	stone.svg	0		x																																								
+stone	stone.svg	stone.svg	0																																										
+sandy-ruin	sand.svg	stone.svg	0.5	x																																									
+dirty-ruin	dirt.svg	stone.svg	0.5		x	x																																							
+grassy-ruin	grass.svg	stone.svg	0.5		x																																								
+dirt	dirt.svg	dirt.svg	1		x	x																																							
+path	sand.svg	dirt.svg	1	x																																									
+grass	grass.svg	dirt.svg	1		x																																								
+sand	sand.svg	sand.svg	2	x																																									
+snow	snow.svg	snow.svg	2	x	x																																								
+stream	water.svg	water.svg	10		x	x																																							
+river	water.svg	water.svg	10		x	x																																							
+ocean	ocean.svg	ocean.svg	10		x	x																																							
+swamp	water.svg	water.svg	10		x	x																																							
+ice	snow.svg	water.svg	0		x																																								
+crate	crate2.svg	crate2.svg	0			x																																							
+wood	wood.svg	wood.svg	0			x																																							
+stone-house	tile.svg	stone.svg	1			x																																							
+wood-house	thatch.svg	wood.svg	1			x																																							
+chimney	chimney.svg	brick.svg	0			x																																							
+bridge-deck	wood.svg	wood.svg	0			x																																							
+furniture	wood.svg	wood.svg	0			x																																							
+																																													
+# liquid_archetypes #UNUSED																																													
+# archetype	top_texture1	top_texture2	side_texture	freezing_temperature	frozen_texture	viscosity	unpassable																																						
+ocean	water.svg	water.svg	water.svg	0	ice.svg	2	x																																						
+river	water.svg	water.svg	water.svg	0	ice.svg	2	x																																						
+stream	water.svg	water.svg	water.svg	0	ice.svg	2																																							
+swamp	swamp.svg	swamp.svg	swamp.svg	0	ice.svg	3																																							
+lava	lava.svg	lava.svg	lava.svg	1000	basalt.svg	4	x																																						
+																																													
+# seasonal_tile_archetypes																																													
+# id	default	fallen_leaves	dead_grass	snowy																																									
+sandy-rock	sand.svg	leaves.svg	sand.svg	snow.svg																																									
+grassy-rock	grass.svg	leaves.svg	grass-dead.svg	snow.svg																																									
+sandy-stone	sand.svg	leaves.svg	sand.svg	snow.svg																																									
+grassy-ruin	grass.svg	leaves.svg	grass-dead.svg	snow.svg																																									
+sandy-ruin	sand.svg	leaves.svg	sand.svg	snow.svg																																									
+grassy-ruin	grass.svg	leaves.svg	grass-dead.svg	snow.svg																																									
+sand	sand.svg	leaves.svg	sand.svg	snow.svg																																									
+grass	grass.svg	leaves.svg	grass-dead.svg	snow.svg																																									
 																																													
 # object_archetypes																																													
-# archetype	texture	is_collidable	radius	height	width	has_gravity	action	label																																					
-tree	tree.svg	x	0.35	2.0	1.0			Tree																																					
-apple	apple.svg		0.15	0.32	0.32	x	collect_apple	Apple																																					
-crate	crate.svg	x	0.45	0.9	0.9			Crate																																					
-villager	villager-front-0.svg	x	0.28	1.3	0.7		greet	Villager																																					
-stick	stick.svg		0.12	0.28	0.55	x	collect_stick	Stick																																					
-child	child-front-0.svg	x	0.24	1.1	0.65	x		Player																																					
+# archetype	texture	is_collidable	radius	height	width	has_gravity	action	lexeme																																					
+tree	tree.svg	x	0.35	3.0	1.0			tree																																					
+apple	apple.svg		0.15	0.32	0.32	x	collect_apple	apple																																					
+crate	crate.svg	x	0.45	0.9	0.9			crate																																					
+villager	villager-front-0.svg	x	0.28	1.3	0.7		greet	villager																																					
+stick	stick.svg		0.12	0.28	0.55	x	collect_stick	stick																																					
+child	child-front-0.svg	x	0.24	1.1	0.65	x		you																																					
+																																													
+# seasonal_object_archetypes																																													
+# archetype	leaf_state	texture																																											
+tree	0	spring-tree.svg																																											
+tree	1	tree.svg																																											
+tree	2	autumn-tree.svg																																											
+tree	3	winter-tree.svg																																											
 																																													
 # character_archetypes #UNUSED																																													
 # archetype	male	lifestage	skin	hair	bald_prone	dwarf	strong	fat	attractive	hungry	thirsty	wants	loves	harasses	follows	avoids	guards	wanders	run_speed	swim_speed	climb_speed	colorblind	deaf	blind	speaks_native	speaks_foreign	numeracy	literacy	places_known	people_known	respect_level	respects_level	wealth_level	heals	mends	cooks	smiths	carpents	masons	picks_locks	controls_weather	animal_friend	owes_player	unescortable	criminal
 child	x	1		3					x			friendship							2	1					x																				
-villager		2																							x																				
+villager		2		3																					x																				
+protagonist	x	1		3					x			friendship							2	1					x 																				
+little-brother	x	0		3								ball						x							x 			0																	
+big-brother	x	2		3			x		x			harvest,love	pretty-woman						3	1					x 			2			2						1	1	1					x	
+smart-friend	x	1		2								friendship							2						x 		1	2																	
+athletic-friend	x	1		1								friendship							3	1	1	x			x 																				
+foreign-friend	x	1	4	4								friendship							2	1					x 	x						0	0												
+fat-friend	x	1		4				x				friendship													x											1									
+sister		1		3								flower							2	1					x 																	x			
+pretty-girl		1		2					x			flower							2	1					x 																				
+pretty-woman		2		1					x			gift							2						x 																				
+plain-woman		2		2								book,love	big-brother						2						x 		1																		
+pretty-man	x	2		2			x		x			love	pretty-woman						3	1					x 			2			2						1	1	1					x	
+bully		2		4			x	x						player					2	1					x 			0																	x
+henchman		2		2											bully				2	1					x 			1																	x
+father	x	3		3			x					harvest	mother						2	1					x 						2							1						x	
+mother		3		2								flower	father						2						x 										1	1								x	
+farfar	x	4		3								work	farmor												x 																				
+farmor		4		1								work	farfar												x 																				
+morfar	x	4		1								work	mormor												x 																				
+mormor		4		2								work	morfar											x	x 		1																	x	
+foreigner		3		4					x			friendship							2	1						x	3		2		0			1	1	1	1	1	1						
+blindman	x	4		2								friendship												x	x	x			0																
+elder	x	4		2								work											x		x			2	2																
+wiseman	x	4		2								work											x		x		1	2																	
+wisewoman		4		4								work													x									1	1									x	
+madman	x	3		4								bug						x	2	1					x						0		0								x				
+madwoman		4		2								bug	smithy		smithy			x							x						0		0		1						x	x			
+witch		4		4								flower													x						0			1	1	1					x				
+wizard		3		2								book													x		3				0				1						x				
+artificer		3		2								book													x		2				0				1	1	1	1	1						
+thief	x	2		3					x			money						x	3	1	1				x			0			0		0							1					x
+beggar	x	2		3							x	food													x				2	2	0		0												
+grifter		2		3					x			money													x						0		2												x
+harlot		2		3					x			money													x						0														x
+genius	x	3		3								book							2						x	x	3	4												1				x	
+savant	x	3		3								survey							2		1				x	x	2	3	3	3	3													x	
+idiot-savant	x	3		3								ball							1						x			4																	
+idiot	x	3		3			x	x				friendship							1									0														x			
+stableboy	x	1		3								work							2						x			0														x			
+shepherdboy	x	1		3								work							2						x			3	2													x			
+busybody		3		3				x				secret							1						x					2					1	1									
+carpenter	x	2		3			x	x				log				madwoman									x										1		1	1	1						
+smith	x	2		3			x	x				log				madwoman									x										1		1	1	1						
+mason	x	2		3			x	x				rock				madwoman									x										1		1	1	1						
+tyrion	x	3		3		x						money							1						x		2	2			3														
+hellen-keller		2		3								book							2				x	x	x		2	2																	
+farmer-maggot		4		3													maggot-farm		1						x							2										x			
+hetman	x	3		3								work					hetman-house								x			2		2	2	1													
+hetman-guard	x	2					x		x			money					hetman-house	x	3						x						2	2												x	
+magistrate	x	3		3								soldiers,treasure					court-house		1						x			2		3	3	2	2												
+magistrate-guard	x	2		3			x		x								court-house	x	3						x						3	3												x	
 																																													
 # animal_archetypes #UNUSED																																													
-# archetype	run_speed	swim_speed	climb_speed	warm_blooded	colorblind	uv_vision	heat_vision	forages	hunts_alone	pack_hunts	eats_berries	eats_grass	eats_small_game	eats_big_game																															
-dog	3	1		x	x				x	x			x																																
-wolf	3			x	x				x	x			x	x																															
-bear	2			x				x	x					x																															
-goat	0			x	x			x				x																																	
-bird	3		1	x				x			x																																		
-fish	2	1			x	x																																							
-snake	3				x		x		x				x	x																															
-																																													
-# liquid_archetypes #UNUSED																																													
-# archetype	top_texture1	top_texture2	freezing_temperature	frozen_texture	viscosity	unpassable																																							
-water	water.svg	water.svg	0	snow.svg	0.001																																								
+# archetype	run_speed	swim_speed	climb_speed	fly_speed	warm_blooded	colorblind	uv_vision	heat_vision	forages	hunts_alone	pack_hunts	eats_berries	eats_seeds	eats_grass	eats_fish	eats_small_game	eats_big_game																												
+mouse	2				x	x			x				x																																
+goat	0				x	x			x					x																															
+cat	3				x	x				x					x	x																													
+dog	3	1			x	x				x	x					x																													
+wolf	3				x	x				x	x					x	x																												
+bear	2	1			x				x	x					x		x																												
+bird	3		1	2	x				x			x																																	
+snake	3					x		x		x						x	x																												
+fish	2	2				x	x		x				x																																
 																																													
 # waypoints #UNUSED																																													
 # id	name	in_game_texture	in_editor_texture	is_door																																									
-n	n	waypoint-invisible.svg	waypoint-n.svg																																										
-s	s	waypoint-invisible.svg	waypoint-s.svg																																										
-e	e	waypoint-invisible.svg	waypoint-e.svg																																										
-w	w	waypoint-invisible.svg	waypoint-w.svg																																										
-ne	ne	waypoint-invisible.svg	waypoint-ne.svg																																										
-nw	nw	waypoint-invisible.svg	waypoint-nw.svg																																										
-se	se	waypoint-invisible.svg	waypoint-se.svg																																										
-sw	sw	waypoint-invisible.svg	waypoint-sw.svg																																										
+n	north	waypoint-invisible.svg	waypoint-n.svg																																										
+s	south	waypoint-invisible.svg	waypoint-s.svg																																										
+e	east	waypoint-invisible.svg	waypoint-e.svg																																										
+w	west	waypoint-invisible.svg	waypoint-w.svg																																										
+ne	northeast	waypoint-invisible.svg	waypoint-ne.svg																																										
+nw	northwest	waypoint-invisible.svg	waypoint-nw.svg																																										
+se	southeast	waypoint-invisible.svg	waypoint-se.svg																																										
+sw	southwest	waypoint-invisible.svg	waypoint-sw.svg																																										
+																																													
+# landmarks #UNUSED																																													
+# id	map	lexeme	by_radius	at_position_x	at_position_y	at_position_z	on_position_x	on_position_y	on_position_z	in_position_x	in_position_y	in_position_z	under_position_x	under_position_y	under_position_z	within_position_x	within_position_y	within_position_z	before_position_x	before_position_y	before_position_z	against_position_x	against_position_y	against_position_z																					
 																																													
 # character_animation_frames																																													
 # archetype	animation	direction	frame	texture	seconds_per_frame																																								
@@ -118,23 +207,23 @@ villager	running	1	1	villager-back-1.svg	0.12
 # index	archetype																																												
 0	rock																																												
 1	sandy-rock																																												
-2	snowy-rock																																												
+2	dirty-rock																																												
 3	grassy-rock																																												
 4	stone																																												
 5	sandy-stone																																												
-6	snowy-stone																																												
+6	dirty-rock																																												
 7	grassy-stone																																												
 8	dirt																																												
 9	path																																												
-10	snow																																												
+10	dirt																																												
 11	grass																																												
 12	sand																																												
-13	snow-bank																																												
-14	water																																												
-15	ice																																												
-16	roof																																												
+13	stream																																												
+14	river																																												
+15	ocean																																												
+16	wood-house																																												
 17	wood																																												
-18	missing																																												
+18	stone-house																																												
 19	books																																												
 20	furniture																																												
 21	crate																																												
@@ -157,11 +246,8 @@ player	child	7	10	1
 # physics																																													
 # entity	vertical_velocity	is_grounded																																											
 																																													
-# character_states																																													
-# entity	facing_x	facing_y	animation	elapsed																																									
+# character_states					UNUSED	UNUSED	UNUSED	UNUSED	UNUSED	UNUSED	UNUSED	UNUSED	UNUSED																																
+# entity	facing_x	facing_y	animation	elapsed	hurt	tired	asleep	hot	cold	angry	sad	afraid	happy																																
 																																													
-# landmarks #UNUSED																																													
-# id	map_id	lexeme	by_radius	at_position_x	at_position_y	at_position_z	on_position_x	on_position_y	on_position_z	in_position_x	in_position_y	in_position_z	under_position_x	under_position_y	under_position_z	within_position_x	within_position_y	within_position_z	before_position_x	before_position_y	before_position_z	against_position_x	against_position_y	against_position_z																					
-																																													
-# waterlevels #UNUSED																																													
-# id	map_id	high_tide_liquid_level	low_tide_liquid_level	liquid_id																																									
+# inventory																																													
+# character	item	quantity																																											

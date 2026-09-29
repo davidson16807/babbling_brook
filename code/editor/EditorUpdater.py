@@ -177,8 +177,8 @@ class EditorUpdater:
                 return self._zoom(state, 1)
             if key in ('-', '[-]', 'kp -'):
                 return self._zoom(state, -1)
-            if key in (',', '<', '.', '>'):
-                return self._adjust(state, -1 if key in (',', '<') else 1)
+            if key in (',', '[', '.', ']'):
+                return self._adjust(state, -1 if key in (',', '[') else 1)
             if key == 'delete':
                 return self._set(state, 0)
             if key in '0123456789' and len(key) == 1:

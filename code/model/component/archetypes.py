@@ -88,6 +88,7 @@ class ObjectArchetype:
     has_gravity: bool = True
     action: str = ""
     label: str = "Object"
+    lexeme: str = ""
 
 
 @dataclass(frozen=True)
@@ -106,6 +107,9 @@ class AnimalArchetype:
     eats_grass: bool = False
     eats_small_game: bool = False
     eats_big_game: bool = False
+    fly_speed: float = 0.0
+    eats_seeds: bool = False
+    eats_fish: bool = False
 
 
 @dataclass(frozen=True)
@@ -116,6 +120,7 @@ class Liquid:
     frozen_texture: str
     viscosity: float
     unpassable: bool = False
+    side_texture: str = ""
 
 
 @dataclass(frozen=True)
@@ -124,3 +129,11 @@ class Waypoint:
     in_game_texture: str
     in_editor_texture: str
     is_door: bool = False
+
+
+@dataclass(frozen=True)
+class SeasonalTileArchetype:
+    default: str
+    fallen_leaves: str
+    dead_grass: str
+    snowy: str

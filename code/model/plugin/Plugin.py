@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import ClassVar, overload
 
 from ..component.archetypes import (ObjectArchetype, TileArchetype, CharacterArchetype,
-                                    AnimalArchetype, Liquid, Waypoint)
+                                    AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
 from ..component.Cycle import Cycle
 from ..component.Map import Map
 from ..component.Landmark import Landmark
@@ -48,28 +48,33 @@ class Plugin(Sequence[dict]):
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
     landmarks: dict[str, Landmark] = field(default_factory=dict)
-    waterlevels: dict[int, Waterlevel] = field(default_factory=dict)
+    waterlevels: dict[str, Waterlevel] = field(default_factory=dict)
+
+    seasonal_tiles: dict[ArchetypeId, SeasonalTileArchetype] = field(default_factory=dict)
+    seasonal_objects: dict[tuple[ArchetypeId, int], str] = field(default_factory=dict)
 
     table_fields: ClassVar[tuple[str, ...]] = (
         'format',
         'globals',
         'cycles',
         'maps',
-        'inventory',
+        'waterlevels',
         'tiles',
+        'liquids',
+        'seasonal_tiles',
         'objects',
+        'seasonal_objects',
         'character_archetypes',
         'animals',
-        'liquids',
         'waypoints',
+        'landmarks',
         'animation_frames',
         'tile_palette',
         'object_palette',
         'placements',
         'physics',
         'characters',
-        'landmarks',
-        'waterlevels',
+        'inventory',
     )
 
     @classmethod
@@ -78,7 +83,7 @@ class Plugin(Sequence[dict]):
             raise ValueError(
                 f"A plugin must contain {len(cls.table_fields)} tables; got {len(tables)}"
             )
-        return cls(*(dict(table) for table in tables))
+        return cls(**{name: dict(table) for name, table in zip(cls.table_fields, tables)})
 
     def to_tables(self) -> list[dict]:
         return [getattr(self, name) for name in self.table_fields]

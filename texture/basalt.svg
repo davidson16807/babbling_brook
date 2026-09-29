@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+<title>basalt</title>
+<rect x="0" y="0" width="32" height="32" fill="#535954"/>
+<path d="M0 9L9 11L16 5L25 9L32 5M9 11L12 23L3 32M12 23L27 24L32 20M25 9L27 24M16 5L14 0" fill="none" stroke="#383f3d" stroke-width="1"/>
+<rect x="4" y="5" width="3" height="1" fill="#6b7169"/>
+<rect x="20" y="18" width="3" height="1" fill="#6b7169"/>
+<rect x="16" y="29" width="4" height="1" fill="#6b7169"/>
+
+</svg>

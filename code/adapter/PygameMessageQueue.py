@@ -53,7 +53,7 @@ class PygameMessageQueue:
     def poll(self) -> list:
         messages = [message for event in self.events()
                     if (message := self._translate(event)) is not None]
-        if pygame.key.get_focused():
+        if self.monitored_keys and pygame.display.get_init() and pygame.key.get_focused():
             held = pygame.key.get_pressed()
             modifiers = _modifiers(pygame.key.get_mods())
             messages += [
