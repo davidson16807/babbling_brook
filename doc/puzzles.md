@@ -1,3 +1,5 @@
+<!-- HUMAN WRITTEN -->
+
 I need to brainstorm puzzles and scenarios for a computer game.
 
 It is a 1p 3d game. The setting is a non-descript pre-industrial society. There may be several locations, but the central location is a village, "Babbling Brook", that's set in a karst forest around a flowing river that is uncrossable in certain seasons. There may also a location where farming is done. The player is a child who lives in a village and is at least old enough to have friends and go out on their own. The player interacts with the game strictly through dialog and commands, similar to a text adventure. The player character commands a party. Party members need not occupy the same map as the player character and are only distinguished by complying with certain commands. The player character has a line-of-sight, and cannot see characters or items outside their line-of-sight. There is no HP system - at most, characters may be "hurt" in which case they cannot walk or run until healed.

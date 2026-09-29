@@ -1,3 +1,5 @@
+<!-- HUMAN WRITTEN -->
+
 # Babbling Brook design notes
 
 Off-screen State of play is communicated strictly through scouts within the party

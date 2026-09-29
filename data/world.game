@@ -61,11 +61,11 @@ furniture	wood.svg	wood.svg	0			x
 																																													
 # liquid_archetypes #UNUSED																																													
 # archetype	top_texture1	top_texture2	side_texture	freezing_temperature	frozen_texture	viscosity	unpassable																																						
-ocean	water.svg	water.svg	water.svg	0	ice.svg	2	x																																						
-river	water.svg	water.svg	water.svg	0	ice.svg	2	x																																						
-stream	water.svg	water.svg	water.svg	0	ice.svg	2																																							
-swamp	swamp.svg	swamp.svg	swamp.svg	0	ice.svg	3																																							
-lava	lava.svg	lava.svg	lava.svg	1000	basalt.svg	4	x																																						
+ocean	water.svg	water.svg	water.svg	0	ice.svg	1	x																																						
+river	water.svg	water.svg	water.svg	0	ice.svg	1	x																																						
+stream	water.svg	water.svg	water.svg	0	ice.svg	1																																							
+swamp	swamp.svg	swamp.svg	swamp.svg	0	ice.svg	2																																							
+lava	lava.svg	lava.svg	lava.svg	1000	basalt.svg	2	x																																						
 																																													
 # seasonal_tile_archetypes																																													
 # id	default	fallen_leaves	dead_grass	snowy																																									

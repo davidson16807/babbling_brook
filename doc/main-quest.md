@@ -1,3 +1,4 @@
+<!-- HUMAN WRITTEN -->
 
 Given the name of the game, the overarching story could be to fix the bridge that makes the river unpassable in the wet seasons and winter. Only the magistrate in the big city can arrange the fix. He'll need a favor, then to get access to him you'll need the hetman, and he'll need a favor, and to get access to him you'll need your father to speak with him. But our vocabulary and sentence structure must be limited. How might we introduce this story, and convey it?
 

@@ -1,3 +1,5 @@
+<!-- HUMAN WRITTEN -->
+
 ideas are only listed here if they serve a purpose for demonstrating language, either declension, conjugation, or vocab from the Buck list
 
 times of day	a town or market where certain people are only available at certain times of day

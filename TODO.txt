@@ -1,26 +1,11 @@
-* an attribute, "can_grow", for tiles that can appear as grass when exposed to light
-
-* new "Cycle" component:
-	phase 	[0,1] float
-	period 	seconds
-	method overload for Cycle+float, applying offset to phase
-
-* a Cycle table:
-	day_phase
-	month_phase
-	year_phase
-	temperature_phase
-	precipitation_phase
-	wave_phase
-	blink_phase
 
 * "Liquid" archetype component:
 	top_texture1
 	top_texture2
 	freezing_temperature
 	frozen_texture
-	viscosity
-	unpassable
+	viscosity 	indicates the factor by which a character's swim_speed is slowed when traversing this liquid
+	unpassable 	whether path finding is forbidden from moving across tiles of this liquid
 	when frozen, frozen_texture displays on all sides and tile acts as a solid
 	when melted, tile texture displays is animated by uv tricks
 	when melted, and when temperature is greater than max_safe_temperature passed to a constructor for the class that stores tiles on application startup, tile is unpassable
