@@ -13,13 +13,13 @@ from pyglm import glm
 
 @dataclass(frozen=True)
 class Light:
-    direction: glm.vec3 = field(default_factory=lambda: glm.vec3(-.5, -.7, 1))
-    color: glm.vec3 = field(default_factory=lambda: glm.vec3(1))
-    background: glm.vec3 = field(default_factory=lambda: glm.vec3(.16, .23, .25))
+    direction: glm.dvec3 = field(default_factory=lambda: glm.dvec3(-.5, -.7, 1))
+    color: glm.dvec3 = field(default_factory=lambda: glm.dvec3(1))
+    background: glm.dvec3 = field(default_factory=lambda: glm.dvec3(.16, .23, .25))
 
 class LightQuery:
 
-    def __init__(self, max_moon_brightness):
+    def __init__(self, full_moon_color, sun_color):
         self.tiny = 1e-20
         self.huge = 1e20
         self.gamma = 2.2
@@ -29,8 +29,9 @@ class LightQuery:
         self.surface_air_rayleigh_scattering_coefficients = glm.dvec3(5.20e-6, 1.21e-5, 2.96e-5)
         self.surface_air_mie_scattering_coefficients = glm.dvec3(2.1e-8)
         self.surface_air_absorption_coefficients = glm.dvec3(0)
-        self.max_moon_brightness = max_moon_brightness
-        self.exposure_intensity = 15.0  # W/m^2, as in mainImage.
+        self.sun_color = sun_color
+        self.full_moon_color = full_moon_color
+        self.exposure_intensity = 10.0  # W/m^2
         self.beta_sum = (self.surface_air_rayleigh_scattering_coefficients
                          + self.surface_air_mie_scattering_coefficients
                          + self.surface_air_absorption_coefficients)
@@ -41,7 +42,7 @@ class LightQuery:
                          * glm.dvec4(0, 0, -1, 0))
 
     def distances_along_3d_line_to_sphere(self, 
-            A0 :glm.vec3, A  :glm.vec3, B0 :glm.vec3, r  : float):
+            A0 :glm.dvec3, A  :glm.dvec3, B0 :glm.dvec3, r  : float):
         t = glm.dot(B0 - A0, A);
         At = A0 + A*t - B0;
         y2 = r*r - glm.dot(At,At);
@@ -239,17 +240,17 @@ class LightQuery:
             raise ValueError('View ray does not intersect the atmosphere ahead')
         return intersections.y
 
-    def light_color(self, light_direction):
+    def light_color(self, light_direction, max_color=glm.dvec3(1)):
         """Gamma-encoded transmission along the ray toward the sun."""
         march_origin = glm.dvec3(0, 0, self.planet_radius + 1.0)
         march_direction = glm.normalize(light_direction)
         march_stop = self.march_stop(march_origin, march_direction)
-        light = self.rgb_fraction_of_light_transmitted_through_atmosphere(
+        transmitted = self.rgb_fraction_of_light_transmitted_through_atmosphere(
             march_origin, march_direction, 0.0, march_stop, glm.dvec3(0),
             self.planet_radius, self.atmosphere_scale_height, self.beta_sum)
-        return glm.vec3(glm.pow(light, glm.dvec3(1/self.gamma)))
+        return max_color * transmitted
 
-    def background_color(self, light_direction):
+    def background_color(self, light_direction, max_color=glm.dvec3(1)):
         """Display RGB looking horizontally, 90 degrees from solar azimuth."""
         view_origin = glm.dvec3(0, 0, self.planet_radius + 1.0)
         light_direction = glm.normalize(light_direction)
@@ -266,17 +267,33 @@ class LightQuery:
             self.surface_air_rayleigh_scattering_coefficients,
             self.surface_air_mie_scattering_coefficients,
             self.surface_air_absorption_coefficients)
-        intensity = self.solar_rgb_intensity() * scattered
-        background = glm.dvec3(1) - glm.exp(-intensity / self.exposure_intensity)
-        return glm.vec3(glm.pow(background, glm.dvec3(1/self.gamma)))
+        return max_color * scattered
+
+    def mix_color(self, light1, light2):
+        direction1, color1 = light1
+        direction2, color2 = light2
+        brightness1 = glm.length(color1)
+        brightness2 = glm.length(color2)
+        interpolant = glm.smoothstep(-0.2, 0.2, (brightness2 - brightness1) / (brightness2 + brightness1)) if brightness2 + brightness1 else 1.0
+        return (
+            direction1 if interpolant < 0.5 else direction2, 
+            glm.mix(color1, color2, interpolant)
+        )
 
     def query(self, cycles):
         day = cycles['day'].phase
+        month = cycles['month'].phase % 1
         sun = self.direction(day)
-        if sun.z > 0:
-            return Light(glm.vec3(sun), self.light_color(sun), self.background_color(sun))
-        else:
-            month = cycles['month'].phase % 1
-            moon = self.direction(day + month)
-            brightness = self.max_moon_brightness * sin(pi*month)
-            return Light(glm.vec3(moon), glm.vec3(brightness), glm.vec3(brightness*.1))
+        moon = self.direction(day + month)
+        moon_color = self.full_moon_color * sin(pi*(month))
+        sun_occlusion = glm.smoothstep(-0.1, 0.0, sun.z)
+        moon_occlusion = glm.smoothstep(-0.1, 0.0, moon.z)
+        direction, light_color = self.mix_color(
+            (sun, self.light_color(sun, self.sun_color) * sun_occlusion),
+            (moon, self.light_color(moon, moon_color) * moon_occlusion),
+        )
+        _, background_color = self.mix_color(
+            (sun, self.background_color(sun, self.sun_color*10) * sun_occlusion),
+            (moon, self.background_color(moon, moon_color) * moon_occlusion),
+        )
+        return Light(direction, glm.dvec3(light_color), glm.dvec3(background_color))

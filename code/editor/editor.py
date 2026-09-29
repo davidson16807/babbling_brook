@@ -66,7 +66,7 @@ def main(argv=None):
     except (OSError, ValueError, KeyError) as error:
         parser.exit(1, f'Cannot open level: {error}\n')
 
-    light_query = LightQuery(max_moon_brightness=.15)
+    light_query = LightQuery(full_moon_color=.15, sun_color=1)
     gl = textures = view = None
     try:
         pygame.display.init()
