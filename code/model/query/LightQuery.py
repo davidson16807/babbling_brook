@@ -33,7 +33,8 @@ class LightQuery:
         self.scatterers = [
             Scatterer(8_000.0, glm.dvec3(5.20e-6, 1.21e-5, 2.96e-5)), #rayleigh
             Scatterer(1_200.0, glm.dvec3(1e-7)), #mie, use 1e-3 to 1.5e-3 for light to heavy rain
-            Scatterer(1_200.0, glm.dvec3(0)), # absorption, need to confirm 
+            Scatterer(1_200.0, glm.dvec3(1e-10, 1e-8, 3e-7)), # fire soot
+            Scatterer(1_200.0, glm.dvec3(1e-10, 3e-9, 1e-8)), # dust storm
         ]
         self.atmosphere_height = 35_000
         self.sun_color = sun_color
@@ -113,13 +114,13 @@ class LightQuery:
 
     def rgb_fraction_of_light_transmitted_through_atmosphere(
         self, view_origin, view_direction, view_start_length, view_stop_length,
-        world_position, world_radius
+        world_position, world_radius, scatterer_multipliers
     ):
         F = 1.0
-        for scatterer in self.scatterers:
+        for scatterer, multiplier in zip(self.scatterers, scatterer_multipliers):
             h = scatterer.atmosphere_scale_height
             r = world_radius / h
-            beta = scatterer.rgb_surface_air_scattering_coefficient * h
+            beta = scatterer.rgb_surface_air_scattering_coefficient * multiplier * h
             V0 = (view_origin + view_direction * view_start_length - world_position) / h
             V1 = (view_origin + view_direction * view_stop_length - world_position) / h
             V = view_direction  # unit vector pointing to pixel being viewed
@@ -182,7 +183,7 @@ class LightQuery:
     def rgb_fraction_of_distant_light_scattered_by_atmosphere(
         self, view_origin, view_direction, view_start_length, view_stop_length,
         world_position, world_radius,
-        light_direction
+        light_direction, scatterer_multipliers
     ):
         F = 0.0
         V = view_direction  # unit vector pointing to pixel being viewed
@@ -195,12 +196,12 @@ class LightQuery:
             self.fraction_of_mie_scattered_light_scattered_by_angle(VL),
         ]
         beta_sum = sum(
-            scatterer.atmosphere_scale_height * scatterer.rgb_surface_air_scattering_coefficient
-            for scatterer in self.scatterers
+            scatterer.atmosphere_scale_height * scatterer.rgb_surface_air_scattering_coefficient * multiplier
+            for scatterer, multiplier in zip(self.scatterers, scatterer_multipliers)
         )
         beta_gamma = sum(
-            scatterer.atmosphere_scale_height * scatterer.rgb_surface_air_scattering_coefficient * gamma
-            for scatterer, gamma in zip(self.scatterers, gammas)
+            scatterer.atmosphere_scale_height * scatterer.rgb_surface_air_scattering_coefficient * multiplier * gamma
+            for scatterer, multiplier, gamma in zip(self.scatterers, scatterer_multipliers, gammas)
         )
         for scatterer in self.scatterers:
             h = scatterer.atmosphere_scale_height
@@ -256,7 +257,7 @@ class LightQuery:
             raise ValueError('View ray does not intersect the atmosphere ahead')
         return intersections.y
 
-    def light_color(self, light_direction, max_color, water_vapor_multiplier=1):
+    def light_color(self, light_direction, max_color, scatterer_multipliers):
         """Gamma-encoded transmission along the ray toward the sun."""
         march_origin = glm.dvec3(0, 0, self.world_radius + 1.0)
         march_direction = glm.normalize(light_direction)
@@ -265,10 +266,11 @@ class LightQuery:
             march_origin, march_direction, 0.0, march_stop, 
             glm.dvec3(0), # world position
             self.world_radius, 
+            scatterer_multipliers
         )
         return max_color * transmitted
 
-    def background_color(self, light_direction, max_color, water_vapor_multiplier=1):
+    def background_color(self, light_direction, max_color, scatterer_multipliers):
         """Display RGB looking horizontally, 90 degrees from solar azimuth."""
         view_origin = glm.dvec3(0, 0, self.world_radius + 1.0)
         light_direction = glm.normalize(light_direction)
@@ -281,6 +283,7 @@ class LightQuery:
         scattered = self.rgb_fraction_of_distant_light_scattered_by_atmosphere(
             view_origin, view_direction, 0.0, view_stop,
             glm.dvec3(0), self.world_radius, light_direction,
+            scatterer_multipliers,
         )
         return max_color * scattered
 
@@ -295,20 +298,23 @@ class LightQuery:
             glm.mix(color1, color2, interpolant)
         )
 
-    def query(self, cycles):
+    def query(self, cycles, precipitation_factor=1):
         day = cycles['day'].phase
         month = cycles['month'].phase % 1
+        water_vapor_multiplier = precipitation_factor * 10**(4*sin(pi*(cycles['precipitation'].phase % 1)))
+        print(water_vapor_multiplier)
         sun = self.direction(day)
         moon = self.direction(day + month)
         moon_color = self.full_moon_color * sin(pi*(month))
         sun_occlusion = glm.smoothstep(-0.1, 0.0, sun.z)
         moon_occlusion = glm.smoothstep(-0.1, 0.0, moon.z)
+        scatterer_multipliers = (1, water_vapor_multiplier)
         direction, light_color = self.mix_color(
-            (sun, self.light_color(sun, self.sun_color) * sun_occlusion),
-            (moon, self.light_color(moon, moon_color) * moon_occlusion),
+            (sun, self.light_color(sun, self.sun_color, scatterer_multipliers) * sun_occlusion),
+            (moon, self.light_color(moon, moon_color, scatterer_multipliers) * moon_occlusion),
         )
         _, background_color = self.mix_color(
-            (sun, self.background_color(sun, self.sun_color*2) * sun_occlusion),
-            (moon, self.background_color(moon, moon_color) * moon_occlusion),
+            (sun, self.background_color(sun, self.sun_color, scatterer_multipliers) * sun_occlusion),
+            (moon, self.background_color(moon, moon_color, scatterer_multipliers) * moon_occlusion),
         )
         return Light(direction, glm.dvec3(light_color), glm.dvec3(background_color))
