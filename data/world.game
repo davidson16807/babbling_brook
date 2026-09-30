@@ -53,9 +53,10 @@ swamp	water.svg	water.svg	10		x	x
 ice	snow.svg	water.svg	0		x																																								
 crate	crate2.svg	crate2.svg	0			x																																							
 wood	wood.svg	wood.svg	0			x																																							
-stone-house	tile.svg	stone.svg	1			x																																							
+stone-house	tile.svg	stucco.svg	1			x																																							
 wood-house	thatch.svg	wood.svg	1			x																																							
-chimney	chimney.svg	brick.svg	0			x																																							
+rubble-chimney	stone-chimney.svg	stone.svg	0																																										
+brick-chimney	brick-chimney.svg	brick.svg	0			x																																							
 bridge-deck	wood.svg	wood.svg	0			x																																							
 furniture	wood.svg	wood.svg	0			x																																							
 																																													
@@ -224,12 +225,13 @@ villager	running	1	1	villager-back-1.svg	0.12
 16	wood-house																																												
 17	wood																																												
 18	stone-house																																												
-19	books																																												
-20	furniture																																												
-21	crate																																												
-22	swamp																																												
-23	bridge-deck																																												
-24	cutaway-edge																																												
+19	brick-chimney																																												
+20	books																																												
+21	furniture																																												
+22	crate																																												
+23	swamp																																												
+24	bridge-deck																																												
+25	cutaway-edge																																												
 																																													
 # object_palette																																													
 # index	archetype																																												

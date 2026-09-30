@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="fish.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="19.445436"
+     inkscape:cx="12.059385"
+     inkscape:cy="20.390388"
+     inkscape:window-width="2494"
+     inkscape:window-height="1371"
+     inkscape:window-x="66"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9" />
+  <title
+     id="title1">fish</title>
+  <polygon
+     points="15,9 20,12 22,16 13,15 "
+     fill="#848c85"
+     id="polygon2"
+     transform="matrix(1.0651341,0,0,1.0651341,-2.2208392,-1.8952978)" />
+  <polygon
+     points="10,21 10,16 2,11 3,17 1,21 "
+     fill="#626d67"
+     id="polygon1"
+     transform="matrix(1.0651341,0,0,1.0651341,0.48032041,-0.50094043)" />
+  <polygon
+     points="25,26 18,26 10,22 8,16 15,12 23,15 29,21 "
+     fill="#728b88"
+     id="polygon3"
+     transform="matrix(0.98951419,0,0,1.0651341,-0.19288119,-0.42347614)" />
+  <polygon
+     points="18,20 11,19 8,16 15,12 23,15 25,19 "
+     fill="#a1b1a0"
+     id="polygon4"
+     transform="matrix(0.96260783,0,0,1.0651341,0.17729831,-0.42347614)" />
+  <polygon
+     points="28,21 25,26 18,26 11,21 18,23 25,23 "
+     fill="#b8b8a7"
+     id="polygon5"
+     transform="matrix(1.0651341,0,0,1.0651341,-2.3858586,-0.42347614)" />
+  <polygon
+     points="22,20 20,25 16,23 17,20 "
+     fill="#626d67"
+     id="polygon6"
+     transform="matrix(1.0651341,0,0,1.0651341,-5.9492163,1.2807384)" />
+  <path
+     d="m 19.710832,20.240126 -1.065134,3.195402 2.130269,3.195402"
+     fill="none"
+     stroke="#52694f"
+     stroke-width="1.06513"
+     id="path6" />
+  <rect
+     x="24.494251"
+     y="20.956669"
+     width="1.065134"
+     height="2.1302681"
+     fill="#282b29"
+     id="rect6"
+     style="stroke-width:1.06513" />
+  <rect
+     x="12.526019"
+     y="16.618668"
+     width="2.1302681"
+     height="1.065134"
+     fill="#c5c5b2"
+     id="rect8"
+     style="stroke-width:1.06513" />
+  <rect
+     x="16.786554"
+     y="17.683802"
+     width="2.1302681"
+     height="1.065134"
+     fill="#c5c5b2"
+     id="rect9"
+     style="stroke-width:1.06513" />
+  <rect
+     x="21.434412"
+     y="20.956669"
+     width="1.065134"
+     height="2.1302681"
+     fill="#282b29"
+     id="rect10"
+     style="stroke-width:1.06513" />
+  <rect
+     x="29.018021"
+     y="23.428707"
+     width="1.5184457"
+     height="1.4399067"
+     fill="#c5c5b2"
+     id="rect11"
+     style="stroke-width:1.06513" />
+  <rect
+     x="26.965216"
+     y="24.668139"
+     width="0.97619563"
+     height="0.92570364"
+     fill="#c5c5b2"
+     id="rect12"
+     style="stroke-width:0.684765" />
+</svg>
