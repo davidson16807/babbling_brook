@@ -61,7 +61,7 @@ def main(argv=None):
     map_filename = args.map or args.data / 'map' / 'world.ppm'
     game_files = GameFiles(PluginOps(), PluginStringCodec())
     model = game_files.load(map_filename, args.game_files, args.save if args.load else None)
-    light_query = LightQuery(max_moon_brightness=.15)
+    light_query = LightQuery(full_moon_color=.15, sun_color=1)
     light = light_query.query(model.instances.cycles)
     cycles = CycleSystem()
     gl = view = textures = framebuffer = None

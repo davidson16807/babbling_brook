@@ -6,7 +6,7 @@ Ray geometry, scattering weights, and sky display conversion follow the shader.
 Directions point from the scene towards the source, with world Z pointing up.
 """
 from dataclasses import dataclass, field
-from math import exp, pi, sin, sqrt
+from math import exp, pi, sin, cos, sqrt
 
 from pyglm import glm
 
@@ -302,7 +302,6 @@ class LightQuery:
         day = cycles['day'].phase
         month = cycles['month'].phase % 1
         water_vapor_multiplier = precipitation_factor * 10**(4*sin(pi*(cycles['precipitation'].phase % 1)))
-        print(water_vapor_multiplier)
         sun = self.direction(day)
         moon = self.direction(day + month)
         moon_color = self.full_moon_color * sin(pi*(month))
