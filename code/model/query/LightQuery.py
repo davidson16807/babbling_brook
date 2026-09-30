@@ -17,24 +17,28 @@ class Light:
     color: glm.dvec3 = field(default_factory=lambda: glm.dvec3(1))
     background: glm.dvec3 = field(default_factory=lambda: glm.dvec3(.16, .23, .25))
 
+@dataclass(frozen=True)
+class Scatterer:
+    atmosphere_scale_height: float
+    rgb_surface_air_scattering_coefficient: glm.dvec3
+
 class LightQuery:
 
     def __init__(self, full_moon_color, sun_color):
-        self.tiny = 1e-20
-        self.huge = 1e20
+        self.tiny = 1e-14
+        self.huge = 1e14
         self.gamma = 2.2
-        self.planet_radius = 6_360_000.0
-        self.atmosphere_scale_height = 7_994.0
-        self.atmosphere_scale_height_count = 4
-        self.surface_air_rayleigh_scattering_coefficients = glm.dvec3(5.20e-6, 1.21e-5, 2.96e-5)
-        self.surface_air_mie_scattering_coefficients = glm.dvec3(2.1e-8)
-        self.surface_air_absorption_coefficients = glm.dvec3(0)
+        self.step_count = 32
+        self.world_radius = 6_360_000.0
+        self.scatterers = [
+            Scatterer(8_000.0, glm.dvec3(5.20e-6, 1.21e-5, 2.96e-5)), #rayleigh
+            Scatterer(1_200.0, glm.dvec3(1e-7)), #mie, use 1e-3 to 1.5e-3 for light to heavy rain
+            Scatterer(1_200.0, glm.dvec3(0)), # absorption, need to confirm 
+        ]
+        self.atmosphere_height = 35_000
         self.sun_color = sun_color
         self.full_moon_color = full_moon_color
         self.exposure_intensity = 10.0  # W/m^2
-        self.beta_sum = (self.surface_air_rayleigh_scattering_coefficients
-                         + self.surface_air_mie_scattering_coefficients
-                         + self.surface_air_absorption_coefficients)
 
     @staticmethod
     def direction(phase):
@@ -73,7 +77,7 @@ class LightQuery:
     All distances are recorded in scale heights.
     "a" and "b" are distances along the ray from closest approach.
       The ray is fired in the positive direction.
-      If there is no intersection with the planet, 
+      If there is no intersection with the world, 
       a and b are distances from the closest approach to the upper bound.
     "z2" is the closest distance from the ray to the center of the world, squared.
     "r0" is the radius of the world.
@@ -109,19 +113,22 @@ class LightQuery:
 
     def rgb_fraction_of_light_transmitted_through_atmosphere(
         self, view_origin, view_direction, view_start_length, view_stop_length,
-        world_position, world_radius, atmosphere_scale_height, beta_sum,
+        world_position, world_radius
     ):
-        h = atmosphere_scale_height
-        r = world_radius / h
-        V0 = (view_origin + view_direction * view_start_length - world_position) / h
-        V1 = (view_origin + view_direction * view_stop_length - world_position) / h
-        V = view_direction  # unit vector pointing to pixel being viewed
-        v0 = glm.dot(V0, V)
-        v1 = glm.dot(V1, V)
-        zv2 = max(0.0, glm.dot(V0, V0) - v0*v0)
-        beta = beta_sum * h
-        sigma = self.approx_air_column_density_ratio_through_atmosphere(v0, v1, zv2, r)
-        return glm.exp(-sigma * beta)
+        F = 1.0
+        for scatterer in self.scatterers:
+            h = scatterer.atmosphere_scale_height
+            r = world_radius / h
+            beta = scatterer.rgb_surface_air_scattering_coefficient * h
+            V0 = (view_origin + view_direction * view_start_length - world_position) / h
+            V1 = (view_origin + view_direction * view_stop_length - world_position) / h
+            V = view_direction  # unit vector pointing to pixel being viewed
+            v0 = glm.dot(V0, V)
+            v1 = glm.dot(V1, V)
+            zv2 = max(0.0, glm.dot(V0, V0) - v0*v0)
+            sigma = self.approx_air_column_density_ratio_through_atmosphere(v0, v1, zv2, r)
+            F *= glm.exp(-sigma * beta)
+        return F
 
     '''
     For an excellent introduction to what we're try to do here, see Alan Zucconi: 
@@ -159,12 +166,11 @@ class LightQuery:
     '''
     def _rgb_fraction_of_distant_light_scattered_by_atmosphere(
             self, v0, v1, y2, zv2, l0, VL, r, beta_sum):
-        steps = 64  # STEP_COUNT in the supplied shader.
-        dv = (v1-v0) / steps
+        dv = (v1-v0) / self.step_count
         if dv == 0: return glm.dvec3(0)
         if dv < 0: raise ValueError('The view-ray endpoint must follow its start')
         result = glm.dvec3(0)
-        for i in range(steps):
+        for i in range(self.step_count):
             vi = dv*i + v0
             li = VL*(vi-v0) + l0
             zl2 = max(0, vi*vi + zv2 - li*li)
@@ -176,36 +182,46 @@ class LightQuery:
     def rgb_fraction_of_distant_light_scattered_by_atmosphere(
         self, view_origin, view_direction, view_start_length, view_stop_length,
         world_position, world_radius,
-        light_direction, atmosphere_scale_height,
-        beta_ray, beta_mie, beta_abs,
+        light_direction
     ):
-        h = atmosphere_scale_height
-        r = world_radius / h
-        V0 = (view_origin + view_direction * view_start_length - world_position) / h
-        V1 = (view_origin + view_direction * view_stop_length - world_position) / h
+        F = 0.0
         V = view_direction  # unit vector pointing to pixel being viewed
-        v0 = glm.dot(V0, V)
-        v1 = glm.dot(V1, V)
         L = light_direction  # unit vector pointing to light source
         VL = max(-1.0, min(1.0, glm.dot(V, L)))
-        # "gamma_*" indicates the fraction of scattered sunlight that scatters to a given angle (indicated by its cosine, A.K.A. "VL").
+        # "gammas" indicates the fraction of scattered sunlight that scatters to a given angle (indicated by its cosine, A.K.A. "VL").
         # It only accounts for a portion of the sunlight that's lost during the scatter, which is irrespective of wavelength or density
-        gamma_ray = self.fraction_of_rayleigh_scattered_light_scattered_by_angle(VL)
-        gamma_mie = self.fraction_of_mie_scattered_light_scattered_by_angle(VL)
-        # "beta_*" indicates the rest of the fractional loss.
-        # it is dependant on wavelength, and the density ratio, which is dependant on height
-        # So all together, the fraction of sunlight that scatters to a given angle is: beta(wavelength) * gamma(angle) * density_ratio(height)
-        beta_sum = h*(beta_ray + beta_mie + beta_abs)
-        beta_gamma = h*(beta_ray * gamma_ray + beta_mie * gamma_mie)
+        gammas = [
+            self.fraction_of_rayleigh_scattered_light_scattered_by_angle(VL),
+            self.fraction_of_mie_scattered_light_scattered_by_angle(VL),
+        ]
+        beta_sum = sum(
+            scatterer.atmosphere_scale_height * scatterer.rgb_surface_air_scattering_coefficient
+            for scatterer in self.scatterers
+        )
+        beta_gamma = sum(
+            scatterer.atmosphere_scale_height * scatterer.rgb_surface_air_scattering_coefficient * gamma
+            for scatterer, gamma in zip(self.scatterers, gammas)
+        )
+        for scatterer in self.scatterers:
+            h = scatterer.atmosphere_scale_height
+            r = world_radius / h
+            V0 = (view_origin + view_direction * view_start_length - world_position) / h
+            V1 = (view_origin + view_direction * view_stop_length - world_position) / h
+            v0 = glm.dot(V0, V)
+            v1 = glm.dot(V1, V)
+            # "beta_*" indicates the rest of the fractional loss.
+            # it is dependant on wavelength, and the density ratio, which is dependant on height
+            # So all together, the fraction of sunlight that scatters to a given angle is: beta(wavelength) * gamma(angle) * density_ratio(height)
 
-        l0 = glm.dot(V0, L)
-        # Only y2 + zv2 and y2 + zl2 enter the integral. Fold the
-        # perpendicular-plane distance into zv2 to avoid a singular cross
-        # product when view and light are parallel (or antiparallel).
-        y2 = 0.0
-        zv2 = max(0.0, glm.dot(V0, V0) - v0*v0)
+            l0 = glm.dot(V0, L)
+            # Only y2 + zv2 and y2 + zl2 enter the integral. Fold the
+            # perpendicular-plane distance into zv2 to avoid a singular cross
+            # product when view and light are parallel (or antiparallel).
+            y2 = 0.0
+            zv2 = max(0.0, glm.dot(V0, V0) - v0*v0)
 
-        return self._rgb_fraction_of_distant_light_scattered_by_atmosphere(v0, v1, y2, zv2, l0, VL, r, beta_sum) * beta_gamma
+            F += self._rgb_fraction_of_distant_light_scattered_by_atmosphere(v0, v1, y2, zv2, l0, VL, r, beta_sum) * beta_gamma
+        return F
 
     @staticmethod
     def solar_rgb_intensity():
@@ -234,39 +250,38 @@ class LightQuery:
 
     def march_stop(self, origin, direction):
         # Positions and distances here are in metres.
-        atmosphere_radius = (self.planet_radius + self.atmosphere_scale_height * self.atmosphere_scale_height_count)
+        atmosphere_radius = (self.world_radius + self.atmosphere_height)
         intersections = self.distances_along_3d_line_to_sphere(origin, direction, glm.dvec3(0), atmosphere_radius)
         if intersections is None or intersections.y < 0:
             raise ValueError('View ray does not intersect the atmosphere ahead')
         return intersections.y
 
-    def light_color(self, light_direction, max_color=glm.dvec3(1)):
+    def light_color(self, light_direction, max_color, water_vapor_multiplier=1):
         """Gamma-encoded transmission along the ray toward the sun."""
-        march_origin = glm.dvec3(0, 0, self.planet_radius + 1.0)
+        march_origin = glm.dvec3(0, 0, self.world_radius + 1.0)
         march_direction = glm.normalize(light_direction)
         march_stop = self.march_stop(march_origin, march_direction)
         transmitted = self.rgb_fraction_of_light_transmitted_through_atmosphere(
-            march_origin, march_direction, 0.0, march_stop, glm.dvec3(0),
-            self.planet_radius, self.atmosphere_scale_height, self.beta_sum)
+            march_origin, march_direction, 0.0, march_stop, 
+            glm.dvec3(0), # world position
+            self.world_radius, 
+        )
         return max_color * transmitted
 
-    def background_color(self, light_direction, max_color=glm.dvec3(1)):
+    def background_color(self, light_direction, max_color, water_vapor_multiplier=1):
         """Display RGB looking horizontally, 90 degrees from solar azimuth."""
-        view_origin = glm.dvec3(0, 0, self.planet_radius + 1.0)
+        view_origin = glm.dvec3(0, 0, self.world_radius + 1.0)
         light_direction = glm.normalize(light_direction)
         horizontal = glm.normalize(glm.dvec3(-light_direction.y, light_direction.x, 0))
         # Azimuth is undefined at zenith/nadir; any horizontal ray suffices.
         view_direction = (glm.normalize(horizontal) 
-                          if glm.length(horizontal) > 1e-12
+                          if glm.length(horizontal) > self.tiny
                           else glm.dvec3(0, 1, 0))
         view_stop = self.march_stop(view_origin, view_direction)
         scattered = self.rgb_fraction_of_distant_light_scattered_by_atmosphere(
             view_origin, view_direction, 0.0, view_stop,
-            glm.dvec3(0), self.planet_radius, light_direction,
-            self.atmosphere_scale_height,
-            self.surface_air_rayleigh_scattering_coefficients,
-            self.surface_air_mie_scattering_coefficients,
-            self.surface_air_absorption_coefficients)
+            glm.dvec3(0), self.world_radius, light_direction,
+        )
         return max_color * scattered
 
     def mix_color(self, light1, light2):
@@ -293,7 +308,7 @@ class LightQuery:
             (moon, self.light_color(moon, moon_color) * moon_occlusion),
         )
         _, background_color = self.mix_color(
-            (sun, self.background_color(sun, self.sun_color*10) * sun_occlusion),
+            (sun, self.background_color(sun, self.sun_color*2) * sun_occlusion),
             (moon, self.background_color(moon, moon_color) * moon_occlusion),
         )
         return Light(direction, glm.dvec3(light_color), glm.dvec3(background_color))
