@@ -90,7 +90,7 @@ def main(argv=None):
         names = {
             texture
             for item in model.archetypes.tiles.values()
-            for texture in (item.top_texture, item.side_texture)
+            for texture in (item.top_texture, item.ns_texture, item.we_texture)
         } | {item.texture for item in model.archetypes.objects.values()}
         names.update(
             texture

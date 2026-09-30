@@ -1,4 +1,13 @@
 
+* new textures:
+	stone-door-stone-frame tile
+	wood-door-stone-frame tile
+	wood-door-wood-frame tile
+	wood-door-stucco-frame tile
+	archway-stone-frame tile
+	archway-wood-frame tile
+	archway-stucco-frame tile
+
 * "Liquid" archetype component:
 	top_texture1
 	top_texture2
