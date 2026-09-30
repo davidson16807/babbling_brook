@@ -101,7 +101,7 @@ void main() {
 
     gl_Position = clip_from_world * vec4(position, 1.0);
     lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(light_direction)), 0.0);
-    uv = is_top == 1 ? vec2(corner) : element_uv;
+    uv = is_top == 1 ? vec2(corner) : vec2(element_uv.x, height);
     if (is_top == 1 && dot(normal.xy, normal.xy) > 0.0) {
         // Texture +V points uphill; fit the rotated tile within [0, 1].
         vec2 uphill = -normal.xy / (abs(normal.x) + abs(normal.y));
@@ -124,7 +124,7 @@ void main() {
     if (is_top == 1) {
         texture_color = texture(top_image, uv).rgb;
     } else {
-        texture_color = texture(side_image, uv).rgb;
+        texture_color = texture(side_image, vec2(uv.x, fract(uv.y))).rgb;
     }
     color = vec4(texture_color * lighting * light_color, 1.0);
 }
@@ -177,6 +177,7 @@ void main() {
         Top triangles share the diagonal with the greater absolute height change;
         ties use southwest–northeast. Side geometry and texture orientation stay fixed.
         Sloped top textures point uphill independently on each triangle.
+        Side textures repeat once per world height unit, cropping partial units.
         """
         if self.released:
             return
