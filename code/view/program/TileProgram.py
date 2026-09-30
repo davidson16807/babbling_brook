@@ -102,6 +102,11 @@ void main() {
     gl_Position = clip_from_world * vec4(position, 1.0);
     lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(light_direction)), 0.0);
     uv = is_top == 1 ? vec2(corner) : element_uv;
+    if (is_top == 1 && dot(normal.xy, normal.xy) > 0.0) {
+        // Texture +V points uphill; fit the rotated tile within [0, 1].
+        vec2 uphill = -normal.xy / (abs(normal.x) + abs(normal.y));
+        uv = mat2(uphill.y, uphill.x, -uphill.x, uphill.y) * (uv - 0.5) + 0.5;
+    }
 
 }
 """
@@ -171,6 +176,7 @@ void main() {
         Sides extend from their top edge to the tile's base height.
         Top triangles share the diagonal with the greater absolute height change;
         ties use southwest–northeast. Side geometry and texture orientation stay fixed.
+        Sloped top textures point uphill independently on each triangle.
         """
         if self.released:
             return
