@@ -32,6 +32,9 @@ class EditorUpdater:
         if modifiers & KeyboardModifiers.CTRL:
             return state
         if state.object_step is not None:
+            center = state.content.object_center(state.selected_objects)
+            if center is None:
+                return replace(state, message='No objects selected. Highlight objects, then press E or Ctrl+E.')
             axes = glm.vec3(0)
             quadrant = floor(state.camera.look_azimuth / (pi / 2) + .5) % 4
             forward = glm.vec3(*((-1, 0), (0, -1), (1, 0), (0, 1))[quadrant], 0)
@@ -39,7 +42,13 @@ class EditorUpdater:
             for message in messages:
                 axes += {'w': forward, 's': -forward, 'a': -right, 'd': right,
                          'q': glm.vec3(0, 0, 1), 'z': glm.vec3(0, 0, -1)}.get(message.key, glm.vec3(0))
-            return self._move_objects(state, axes * state.object_step)
+            state = self._move_objects(state, axes * state.object_step)
+            moved = state.content.object_center(state.selected_objects)
+            # Follow crossed tile boundaries, not key presses: fine movement
+            # must not move the cursor ten times faster than the objects.
+            delta = glm.ivec2(glm.floor(moved.xy) - glm.floor(center.xy))
+            cursor = self.cursor.translate(state.cursor, state.map.dimensions, delta)
+            return replace(state, cursor=cursor, quit_requested=False)
         cursor = self.cursor.update(
             state.cursor, state.map.dimensions, state.camera, messages,
             bool(modifiers & KeyboardModifiers.SHIFT),

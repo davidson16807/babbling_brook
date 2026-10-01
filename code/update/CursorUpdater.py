@@ -8,6 +8,14 @@ class CursorUpdater:
     def __init__(self, vector_updater):
         self.vector_updater = vector_updater
 
+    def translate(self, cursor, dimensions, offset):
+        """Move a selected group together, keeping its shape inside the map."""
+        dx = max(-min(x for x, _ in cursor),
+                 min(dimensions.x - 1 - max(x for x, _ in cursor), int(offset.x)))
+        dy = max(-min(y for _, y in cursor),
+                 min(dimensions.y - 1 - max(y for _, y in cursor), int(offset.y)))
+        return [(x + dx, y + dy) for x, y in cursor]
+
     def update(self, cursor, dimensions, camera, messages, extend=False):
         axes = glm.vec2(0)
         for message in messages:

@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass, field
 
+from pyglm import glm
+
 from ..codec.map.PpmImageCodec import PpmImage
 from ..model.component.instances import BillboardPlacement, BoxPlacement
 from ..model.identifiers import EntityId
@@ -17,3 +19,8 @@ class EditorContent:
     # Named character placements retain their ECS entity IDs and are always
     # serialized in the game's billboards table.
     character_instances: dict[EntityId, BillboardPlacement] = field(default_factory=dict)
+
+    def object_center(self, entities):
+        positions = [item.position for table in (self.billboards, self.boxes, self.character_instances)
+                     for key, item in table.items() if key in entities]
+        return sum(positions, glm.vec3(0)) / len(positions) if positions else None

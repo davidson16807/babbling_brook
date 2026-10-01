@@ -58,6 +58,10 @@ class EditorView:
         camera = state.camera
         xy = glm.vec2(*state.cursor[-1]) + glm.vec2(.5)
         target = glm.vec3(xy, state.map.height(xy))
+        if state.object_step is not None:
+            center = state.content.object_center(state.selected_objects)
+            if center is not None:
+                target = center
         aspect = state.viewport[0] / state.viewport[1]
         scale = camera.orthographic_scale / 2
         projection = glm.ortho(-scale*aspect, scale*aspect, -scale, scale, .1, 100.0)
