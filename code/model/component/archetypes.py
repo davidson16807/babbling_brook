@@ -8,8 +8,11 @@ Component tables are ordinary dictionaries. Treat stored GLM vectors as values:
 systems/updaters replace them, never mutate their coordinates in place.
 """
 
-from dataclasses import dataclass
-from math import isnan
+from dataclasses import dataclass, field
+from math import isfinite, isnan
+from pyglm import glm
+
+from .Bounds import Bounds
 
 
 @dataclass(frozen=True)
@@ -76,6 +79,20 @@ class TileArchetype:
     def __post_init__(self):
         if isnan(self.max_erosion) or self.max_erosion < 0:
             raise ValueError("max_erosion must be nonnegative")
+
+
+@dataclass(frozen=True)
+class BoxArchetype:
+    """Shared material, dimensions, and collision setting for a kind of box."""
+    top_texture: str
+    side_texture: str
+    scale: glm.vec3 = field(default_factory=lambda: glm.vec3(1))
+    is_collidable: bool = True
+
+    def bounds(self, position):
+        """World bounds at a placement's bottom-center."""
+        return Bounds(position - glm.vec3(self.scale.xy * .5, 0),
+                      position + glm.vec3(self.scale.xy * .5, self.scale.z))
 
 
 @dataclass(frozen=True)

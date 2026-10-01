@@ -18,10 +18,10 @@ from .EditorContent import EditorContent
 
 
 class EditorFiles:
-    def __init__(self, map_codec, object_palette, boxes=None, *, game_filename=None, plugin=None):
+    def __init__(self, map_codec, object_palette, box_archetypes=None, *, game_filename=None, plugin=None):
         self.map_codec = map_codec
         self.object_palette = object_palette
-        self.box_templates = boxes or {}
+        self.box_archetypes = box_archetypes or {}
         self.ppm_codec = PpmImageCodec()
         self.game_codec = PluginStringCodec()
         self.game_filename = Path(game_filename) if game_filename is not None else None
@@ -33,9 +33,7 @@ class EditorFiles:
         map_ = self.map_codec.decode(image)
         billboards, boxes = ObjectPlacementCodec(
             self.object_palette, map_, disable_validation=True,
-            boxes=self.box_templates).decode_components(image)
-        fixed = {key: box for key, box in self.box_templates.items()
-                 if key not in self.object_palette.values()}
+            box_archetypes=self.box_archetypes).decode_components(image)
         characters = {key: item for key, item in self.plugin.billboards.items()
                       if key in self.plugin.characters or item.archetype in self.plugin.character_archetypes
                       or any(frame[0] == item.archetype for frame in self.plugin.animation_frames)}
@@ -43,7 +41,7 @@ class EditorFiles:
         # Explicit ECS IDs take precedence over generated map IDs, as in GameFiles.
         for key in characters:
             billboards.pop(key, None)
-        content = EditorContent(image, billboards, {**boxes, **fixed}, characters)
+        content = EditorContent(image, billboards, {**boxes, **self.plugin.boxes}, characters)
         return EditorState(content, map_, [(image.width // 2, image.height // 2)])
 
     def _pack(self, state):
@@ -51,7 +49,7 @@ class EditorFiles:
         content = state.content
         pixels = list(content.image.pixels)
         mapped = ObjectPlacementCodec(self.object_palette, state.map, disable_validation=True,
-                                      boxes=self.box_templates).decode(content.image)
+                                      box_archetypes=self.box_archetypes).decode(content.image)
         tables = [dict(content.billboards), dict(content.boxes)]
         explicit = [{}, {}]
         renamed = {}
@@ -75,11 +73,8 @@ class EditorFiles:
                 palette_id = None
                 if can_pack:
                     for number, archetype in sorted(self.object_palette.items()):
-                        template = self.box_templates.get(archetype)
-                        if (isinstance(item, BoxPlacement) and template is not None
-                                and item.archetype == template.archetype and item.scale == template.scale
-                                or not isinstance(item, BoxPlacement) and template is None
-                                and item.archetype == archetype):
+                        if (item.archetype == archetype
+                                and isinstance(item, BoxPlacement) == (archetype in self.box_archetypes)):
                             palette_id = number
                             break
                 if palette_id is None:
@@ -94,9 +89,7 @@ class EditorFiles:
                         maximum=max(content.image.maximum, max(max(p) for p in pixels)))
         content = replace(content, image=image, billboards=tables[0], boxes=tables[1])
         billboards = {**explicit[0], **content.character_instances}
-        boxes = {key: box for key, box in self.box_templates.items()
-                 if key in self.object_palette.values()}
-        boxes.update(explicit[1])
+        boxes = explicit[1]
         return replace(state, content=content,
                        selected_objects=frozenset(renamed.get(key, key) for key in state.selected_objects)), billboards, boxes
 
@@ -140,7 +133,6 @@ class EditorFiles:
                 outputs[self.game_filename] = game_code.encode('utf-8')
         self._write(outputs)
         self.plugin, self.game_code = plugin, game_code
-        self.box_templates = boxes
         return packed
 
     @staticmethod

@@ -34,8 +34,9 @@ class MovementUpdater:
         after = self.collisions.move(
             'player', before, direction * (4.0 if tries_running else 2.5) * seconds,
             billboards, objects, map_,
-            tuple(box for box in game.instances.boxes.values()
-                  if game.archetypes.tiles[box.archetype].is_collidable))
+            tuple(game.archetypes.boxes[box.archetype].bounds(box.position)
+                  for box in game.instances.boxes.values()
+                  if game.archetypes.boxes[box.archetype].is_collidable))
         is_moving = glm.distance(glm.vec2(before), glm.vec2(after)) > 1e-6
         player = characters['player']
         animation = 'standing' if not is_moving else 'running' if tries_running else 'walking'

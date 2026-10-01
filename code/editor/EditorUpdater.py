@@ -13,10 +13,10 @@ from ..messages import (FocusLostMessage, KeyboardAction, KeyboardMessage,
 
 
 class EditorUpdater:
-    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history, cycle_system, boxes=None):
+    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history, cycle_system, box_archetypes=None):
         self.map_codec = map_codec
         self.object_palette = object_palette
-        self.box_templates = boxes or {}
+        self.box_archetypes = box_archetypes or {}
         self.cursor = cursor
         self.mouselook = mouselook  # A vector updater, with no angle locking.
         self.keylook = keylook      # The regular game's composed look updater.
@@ -90,11 +90,11 @@ class EditorUpdater:
         map_ = self.map_codec.decode(image)
         billboards, boxes = ObjectPlacementCodec(
             self.object_palette, map_, disable_validation=True,
-            boxes=self.box_templates).decode_components(image)
+            box_archetypes=self.box_archetypes).decode_components(image)
         # Regenerate map placements after a pixel edit, retaining explicit ones.
         previous = ObjectPlacementCodec(
             self.object_palette, state.map, disable_validation=True,
-            boxes=self.box_templates).decode(state.content.image)
+            box_archetypes=self.box_archetypes).decode(state.content.image)
         billboards.update((key, value) for key, value in state.content.billboards.items()
                           if key not in previous)
         boxes.update((key, value) for key, value in state.content.boxes.items()
@@ -122,9 +122,9 @@ class EditorUpdater:
         content = state.content
         pixels = list(content.image.pixels)
         mapped = ObjectPlacementCodec(self.object_palette, state.map, disable_validation=True,
-                                      boxes=self.box_templates).decode(content.image)
+                                      box_archetypes=self.box_archetypes).decode(content.image)
         tables = [dict(content.billboards), dict(content.boxes), dict(content.character_instances)]
-        occupied = set().union(*tables, self.box_templates)
+        occupied = set().union(*tables)
         selected = set(state.selected_objects)
         for table in tables:
             for key in sorted(state.selected_objects & table.keys()):

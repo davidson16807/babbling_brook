@@ -25,18 +25,9 @@ class BillboardPlacement:
 
 @dataclass(frozen=True)
 class BoxPlacement:
-    """A tile-material box positioned at its bottom-center, sized in world units."""
+    """A box archetype instance positioned at its bottom-center."""
     archetype: ArchetypeId
     position: glm.vec3
-    scale: glm.vec3 = field(default_factory=lambda: glm.vec3(1))
-
-    @property
-    def minimum(self):
-        return self.position - glm.vec3(self.scale.xy * .5, 0)
-
-    @property
-    def maximum(self):
-        return self.position + glm.vec3(self.scale.xy * .5, self.scale.z)
 
 @dataclass(frozen=True)
 class CharacterAnimationState:

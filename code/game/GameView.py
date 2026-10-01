@@ -46,7 +46,7 @@ class GameView:
         )
         self.tiles.draw(game.map, view)
         if self.boxes is not None:
-            self.boxes.draw(game.instances.boxes, game.archetypes.tiles, view)
+            self.boxes.draw(game.instances.boxes, game.archetypes.boxes, view)
         self.billboards.draw(
             camera,
             game.instances,

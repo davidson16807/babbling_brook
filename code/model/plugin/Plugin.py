@@ -4,7 +4,7 @@ from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from typing import ClassVar, overload
 
-from ..component.archetypes import (BillboardArchetype, TileArchetype, CharacterArchetype,
+from ..component.archetypes import (BillboardArchetype, TileArchetype, BoxArchetype, CharacterArchetype,
                                     AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
 from ..component.Cycle import Cycle
 from ..component.Map import Map
@@ -36,6 +36,7 @@ class Plugin(Sequence[dict]):
     maps: dict[int, Map] = field(default_factory=dict)
     inventory: dict[tuple[EntityId, str], int] = field(default_factory=dict)
     tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
+    box_archetypes: dict[ArchetypeId, BoxArchetype] = field(default_factory=dict)
     billboard_archetypes: dict[ArchetypeId, BillboardArchetype] = field(default_factory=dict)
     character_archetypes: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
     animals: dict[ArchetypeId, AnimalArchetype] = field(default_factory=dict)
@@ -64,6 +65,7 @@ class Plugin(Sequence[dict]):
         'liquids',
         'seasonal_tiles',
         'billboard_archetypes',
+        'box_archetypes',
         'seasonal_billboards',
         'character_archetypes',
         'animals',

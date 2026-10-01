@@ -10,7 +10,7 @@ from ..view.UiPanel import UiPanel, UiText
 
 class EditorView:
     def __init__(self, tiles, billboards, highlights, ui, billboard_archetypes,
-                 filename, map_codec, object_palette, boxes=None):
+                 filename, map_codec, object_palette, boxes=None, box_archetypes=None):
         self.tiles = tiles
         self.billboards = billboards
         self.highlights = highlights
@@ -20,6 +20,7 @@ class EditorView:
         self.map_codec = map_codec
         self.object_palette = object_palette
         self.boxes = boxes
+        self.box_archetypes = box_archetypes or {}
 
     def ui_panels(self, state):
         x, y = state.cursor[-1]
@@ -75,7 +76,7 @@ class EditorView:
         view = self.view_state(state, light)
         self.tiles.draw(state.map, view)
         if self.boxes is not None:
-            self.boxes.draw(state.content.boxes, self.map_codec.tile_archetypes, view)
+            self.boxes.draw(state.content.boxes, self.box_archetypes, view)
         batches = defaultdict(lambda: ([], []))
         for placement in (*state.content.billboards.values(), *state.content.character_instances.values()):
             definition = self.billboard_archetypes[placement.archetype]

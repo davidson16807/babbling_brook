@@ -2,7 +2,6 @@
 
 """Load and save game state at the filesystem boundary."""
 from collections.abc import Iterable
-from dataclasses import replace
 import os
 from pathlib import Path
 
@@ -39,11 +38,8 @@ class GameFiles:
         map_ = MapCodec(plugin.tile_palette, plugin.tiles).decode(image)
 
         object_codec = ObjectPlacementCodec(
-            plugin.object_palette, map_, boxes=plugin.boxes,
+            plugin.object_palette, map_, box_archetypes=plugin.box_archetypes,
             billboard_archetypes=plugin.billboard_archetypes)
-        # Palette-referenced boxes are templates, not extra fixed placements.
-        plugin = replace(plugin, boxes={key: box for key, box in plugin.boxes.items()
-                                        if key not in plugin.object_palette.values()})
         if save_filename is not None:
             plugin = self.plugin_ops.update(plugin, self._plugin(save_filename))
         else:

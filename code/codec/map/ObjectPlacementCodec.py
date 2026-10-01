@@ -1,7 +1,5 @@
 """Decode the shared blue-channel palette into ECS placement components."""
 
-from dataclasses import replace
-
 from pyglm import glm
 
 from ...model.Map import Map
@@ -12,14 +10,14 @@ from ...model.identifiers import ArchetypeId, EntityId
 
 class ObjectPlacementCodec:
     def __init__(self, object_palette: dict[int, ArchetypeId], map: Map,
-                 disable_validation: bool = False, boxes=None, billboard_archetypes=None):
+                 disable_validation: bool = False, box_archetypes=None, billboard_archetypes=None):
         self.object_palette = object_palette
-        self.boxes = boxes or {}
+        self.box_archetypes = box_archetypes or {}
         if billboard_archetypes is not None:
             for key in object_palette.values():
-                if key in self.boxes and key in billboard_archetypes:
+                if key in self.box_archetypes and key in billboard_archetypes:
                     raise ValueError(f"Ambiguous object palette entry: {key}")
-                if key not in self.boxes and key not in billboard_archetypes:
+                if key not in self.box_archetypes and key not in billboard_archetypes:
                     raise ValueError(f"Unknown object palette entry: {key}")
         self.map = map
         self.disable_validation = disable_validation
@@ -41,8 +39,8 @@ class ObjectPlacementCodec:
             position = glm.vec2(*coordinate) + glm.vec2(0.5)
             origin = glm.vec3(position, self.map.height(position))
             objects[str(coordinate)] = (
-                replace(self.boxes[archetype], position=origin)
-                if archetype in self.boxes else BillboardPlacement(archetype, origin)
+                BoxPlacement(archetype, origin)
+                if archetype in self.box_archetypes else BillboardPlacement(archetype, origin)
             )
         return objects
 

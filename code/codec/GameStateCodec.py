@@ -17,7 +17,7 @@ from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
 from ..model.plugin.Plugin import Plugin
-from ..model.component.archetypes import (TileArchetype, BillboardArchetype, CharacterArchetype,
+from ..model.component.archetypes import (TileArchetype, BoxArchetype, BillboardArchetype, CharacterArchetype,
                                          AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
 from ..model.component.Cycle import Cycle
 from ..model.component.Map import Map
@@ -182,6 +182,16 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				),
 			),
             GameTableCodec(
+                '# box_archetypes\n# archetype\ttop_texture\tside_texture\tscale_x\tscale_y\tscale_z\tis_collidable',
+                PrimitiveListCodec(str),
+                ObjectListCodec(BoxArchetype,
+                    ('top_texture', PrimitiveListCodec(str)),
+                    ('side_texture', PrimitiveListCodec(str)),
+                    ('scale', ContainerListCodec(glm.vec3, float, 3)),
+                    ('is_collidable', BooleanListCodec()),
+                ),
+            ),
+            GameTableCodec(
                 '# seasonal_billboard_archetypes #UNUSED\n# archetype\tleaf_state\ttexture',
                 ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(int)),
                 PrimitiveListCodec(str),
@@ -315,12 +325,11 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				),
 			),
 			GameTableCodec(
-				'# boxes\n# '+'\t'.join('entity archetype x y z scale_x scale_y scale_z'.split()),
+				'# boxes\n# '+'\t'.join('entity archetype x y z'.split()),
 				PrimitiveListCodec(str),
 				ObjectListCodec(BoxPlacement,
 					('archetype', PrimitiveListCodec(str)),
 					('position', ContainerListCodec(glm.vec3, float, 3)),
-					('scale', ContainerListCodec(glm.vec3, float, 3)),
 				),
 			),
 			GameTableCodec('# physics\n #'+'\t'.join('entity vertical_velocity is_grounded'.split()), 

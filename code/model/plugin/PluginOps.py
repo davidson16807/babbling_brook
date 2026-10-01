@@ -28,8 +28,8 @@ class PluginOps:
 
     def load(self, map_: Map, plugin: Plugin) -> GameState:
 
-        if any(box.archetype not in plugin.tiles for box in plugin.boxes.values()):
-            raise ValueError("Box refers to an unknown tile archetype")
+        if any(box.archetype not in plugin.box_archetypes for box in plugin.boxes.values()):
+            raise ValueError("Box refers to an unknown box archetype")
 
         animation_ids = {(key, name) for key, name, _, _ in plugin.animation_frames}
         for key, name in animation_ids:
@@ -49,6 +49,7 @@ class PluginOps:
 
         archetypes = ArchetypeComponentStores(
             billboards=dict(plugin.billboard_archetypes),
+            boxes=dict(plugin.box_archetypes),
             characters={**{key: CharacterArchetype() for key in character_keys},
                         **plugin.character_archetypes},
             animals=dict(plugin.animals),
@@ -99,6 +100,7 @@ class PluginOps:
             seasonal_tiles=dict(state.archetypes.seasonal_tiles),
             seasonal_billboards=dict(state.archetypes.seasonal_billboards),
             billboard_archetypes=dict(state.archetypes.billboards),
+            box_archetypes=dict(state.archetypes.boxes),
             character_archetypes=dict(state.archetypes.characters),
             animals=dict(state.archetypes.animals),
             liquids=dict(state.archetypes.liquids),

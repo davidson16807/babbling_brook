@@ -90,7 +90,7 @@ def main(argv=None):
         # Validate and create the finite texture set before entering the render loop.
         names = {
             texture
-            for item in model.archetypes.tiles.values()
+            for item in (*model.archetypes.tiles.values(), *model.archetypes.boxes.values())
             for texture in (item.top_texture, item.side_texture)
         } | {item.texture for item in model.archetypes.billboards.values()}
         names.update(
@@ -159,11 +159,12 @@ def main(argv=None):
                 instances = model.instances
                 placements, physics = gravity.step(
                     {**instances.billboards, **instances.boxes}, instances.physics, model.map, seconds,
-                    {entity: box for entity, box in instances.boxes.items()
-                     if model.archetypes.tiles[box.archetype].is_collidable},
+                    {entity: model.archetypes.boxes[box.archetype].bounds(box.position)
+                     for entity, box in instances.boxes.items()
+                     if model.archetypes.boxes[box.archetype].is_collidable},
                     {**{entity: model.archetypes.billboards[item.archetype].height
                         for entity, item in instances.billboards.items()},
-                     **{entity: box.scale.z for entity, box in instances.boxes.items()}},
+                     **{entity: model.archetypes.boxes[box.archetype].scale.z for entity, box in instances.boxes.items()}},
                 )
                 characters = animations.step(instances.characters, seconds)
                 model = replace(
