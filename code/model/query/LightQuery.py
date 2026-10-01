@@ -25,11 +25,13 @@ class Scatterer:
 class LightQuery:
 
     def __init__(self, full_moon_color, sun_color):
+        # all units here are in meter-kelvin-second (MKS) base units
+        # a tile is assumed to be 1 meter in width
         self.tiny = 1e-14
         self.huge = 1e14
         self.gamma = 2.2
         self.step_count = 32
-        self.world_radius = 6_360_000.0
+        self.world_radius = 6_360_000.0 
         self.scatterers = [
             Scatterer(8_000.0, glm.dvec3(5.20e-6, 1.21e-5, 2.96e-5)), #rayleigh
             Scatterer(1_200.0, glm.dvec3(1e-7)), #mie, use 1e-3 to 1.5e-3 for light to heavy rain
@@ -295,7 +297,7 @@ class LightQuery:
         interpolant = glm.smoothstep(-0.2, 0.2, (brightness2 - brightness1) / (brightness2 + brightness1)) if brightness2 + brightness1 else 1.0
         return (
             direction1 if interpolant < 0.5 else direction2, 
-            glm.mix(color1, color2, interpolant)
+            color1 + color2
         )
 
     def query(self, cycles, precipitation_factor=1):
@@ -316,4 +318,4 @@ class LightQuery:
             (sun, self.background_color(sun, self.sun_color, scatterer_multipliers) * sun_occlusion),
             (moon, self.background_color(moon, moon_color, scatterer_multipliers) * moon_occlusion),
         )
-        return Light(direction, glm.dvec3(light_color), glm.dvec3(background_color))
+        return Light(direction, glm.vec3(light_color), glm.vec3(background_color))
