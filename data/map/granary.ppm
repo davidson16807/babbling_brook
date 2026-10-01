@@ -1,16 +1,11 @@
 P3
-# R: nearest whole height (h); G: tile_palette.txt; B: 0
-# One pixel per tile. Highest stored surface; half heights round up.
-# Source: https://ffhacktics.com/wiki/MAP065_Granary_of_Bethla_Garrison
-# Extracted from the user-supplied saved HTML tile table.
-# Columns increase x; rows increase numbered wiki y.
 6 8
 255
-0 4 0	3 21 0	7 21 0	3 17 0	2 17 0	1 17 0
-1 4 0	2 21 0	6 21 0	4 17 0	0 4 0	0 4 0
-2 4 0	4 21 0	5 21 0	4 17 0	0 4 0	1 4 0
-3 4 0	6 21 0	8 21 0	0 4 0	0 4 0	2 4 0
-5 4 0	5 21 0	8 21 0	6 21 0	2 4 0	3 4 0
-14 4 0	14 4 0	15 4 0	14 4 0	5 21 0	4 4 0
-8 4 0	8 4 0	7 4 0	14 4 0	6 4 0	5 4 0
-9 21 0	6 4 0	6 4 0	14 4 0	10 20 0	10 20 0
+0 12 0  3 52 0  7 52 0  3 33 0  2 33 0  1 33 0
+1 12 0  2 52 0  6 52 0  4 33 0  0 12 0  0 12 0
+2 12 0  4 52 0  5 52 0  4 33 0  0 12 0  1 12 0
+3 12 0  6 52 0  8 52 0  0 12 0  0 12 0  2 12 0
+5 12 0  5 52 0  8 52 0  6 52 0  2 12 0  3 12 0
+14 12 0  14 12 0  15 12 0  14 12 0  5 52 0  4 12 0
+8 12 0  8 12 0  7 12 0  14 12 0  6 12 0  5 12 0
+9 52 0  6 12 0  6 12 0  14 12 0  10 51 0  10 51 0

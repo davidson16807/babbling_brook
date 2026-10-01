@@ -62,6 +62,7 @@ def remap(image, channel, source, destination):
     for index, entity in destination.items():
         indices.setdefault(entity, index)  # First destination row wins for aliases.
     mapping = {0: 0} if channel == 2 else {}
+    maximum = image.maximum
     for index in sorted({pixel[channel] for pixel in image.pixels} - mapping.keys()):
         if index not in source:
             raise ValueError(f'Image index {index} is missing from the first palette')
@@ -69,13 +70,15 @@ def remap(image, channel, source, destination):
         if entity not in indices:
             raise ValueError(f'Archetype {entity!r} (index {index}) is missing from the second palette')
         target = indices[entity]
-        if not 0 <= target <= image.maximum:
-            raise ValueError(f'Destination index {target} exceeds the PPM maximum {image.maximum}')
+        if not 0 <= target <= maximum:
+            maximum = target
         mapping[index] = target
-    return replace(image, pixels=tuple(
-        tuple(mapping[value] if component == channel else value
-              for component, value in enumerate(pixel))
-        for pixel in image.pixels))
+    return replace(image, 
+        maximum = maximum,
+        pixels=tuple(tuple(mapping[value] if component == channel else value
+                        for component, value in enumerate(pixel))
+                    for pixel in image.pixels)
+    )
 
 
 def main(argv=None):

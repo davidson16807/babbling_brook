@@ -1,0 +1,11 @@
+# object_palette
+# index	archetype
+1	tree
+2	apple
+3	crate
+4	villager
+5	stick
+
+# remap
+# from	to
+crate	crate2

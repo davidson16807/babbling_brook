@@ -1,42 +1,312 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
-<title>thatch</title>
-<rect x="0" y="0" width="32" height="32" fill="#b49559"/>
-<rect x="0" y="7" width="32" height="1" fill="#795f3d"/>
-<path d="M0 0L-2 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M4 0L2 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M8 0L6 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M12 0L10 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M16 0L14 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M20 0L18 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M24 0L22 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M28 0L26 6" fill="none" stroke="#d0b274" stroke-width="1"/>
-<rect x="0" y="15" width="32" height="1" fill="#795f3d"/>
-<path d="M0 8L-2 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M4 8L2 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M8 8L6 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M12 8L10 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M16 8L14 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M20 8L18 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M24 8L22 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M28 8L26 14" fill="none" stroke="#d0b274" stroke-width="1"/>
-<rect x="0" y="23" width="32" height="1" fill="#795f3d"/>
-<path d="M0 16L-2 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M4 16L2 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M8 16L6 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M12 16L10 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M16 16L14 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M20 16L18 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M24 16L22 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M28 16L26 22" fill="none" stroke="#d0b274" stroke-width="1"/>
-<rect x="0" y="31" width="32" height="1" fill="#795f3d"/>
-<path d="M0 24L-2 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M4 24L2 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M8 24L6 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M12 24L10 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M16 24L14 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M20 24L18 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M24 24L22 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-<path d="M28 24L26 30" fill="none" stroke="#d0b274" stroke-width="1"/>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg33"
+   sodipodi:docname="thatch.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs33" />
+  <sodipodi:namedview
+     id="namedview33"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="27.5"
+     inkscape:cx="16.018182"
+     inkscape:cy="17.363636"
+     inkscape:window-width="2494"
+     inkscape:window-height="1371"
+     inkscape:window-x="66"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g33" />
+  <title
+     id="title1">thatch</title>
+  <rect
+     x="1.1270697e-07"
+     y="0"
+     width="32"
+     height="32"
+     fill="#b49559"
+     id="rect1" />
+  <g
+     id="g33"
+     transform="translate(3.3818182)">
+    <rect
+       x="-3.3818183"
+       y="31"
+       width="32"
+       height="1"
+       fill="#795f3d"
+       id="rect25" />
+    <path
+       d="M -0.94303042,24.008498 -3.0069931,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path26"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 3.184895,24.008498 1.1209323,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path27"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 7.3128205,24.008498 5.2488577,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path28"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 11.440746,24.008498 9.3767832,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path29"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 15.568671,24.008498 -2.063962,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path30"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 19.696597,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path31"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 23.824522,24.008498 21.76056,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path32"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 27.952448,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path33"
+       style="stroke-width:1;stroke-dasharray:none" />
+  </g>
+  <g
+     id="g41"
+     transform="translate(3.3818182,-7.9272727)">
+    <rect
+       x="-3.3454545"
+       y="31"
+       width="32"
+       height="1"
+       fill="#795f3d"
+       id="rect33" />
+    <path
+       d="M -0.94303042,24.008498 -3.0069931,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path34"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 3.184895,24.008498 1.1209323,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path35"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 7.3128205,24.008498 5.2488577,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path36"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 11.440746,24.008498 9.3767832,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path37"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 15.568671,24.008498 -2.063962,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path38"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 19.696597,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path39"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 23.824522,24.008498 21.76056,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path40"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 27.952448,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path41"
+       style="stroke-width:1;stroke-dasharray:none" />
+  </g>
+  <g
+     id="g49"
+     transform="translate(3.3818182,-16.036364)">
+    <rect
+       x="-3.4181819"
+       y="31"
+       width="32"
+       height="1"
+       fill="#795f3d"
+       id="rect41" />
+    <path
+       d="M -0.94303042,24.008498 -3.0069931,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path42"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 3.184895,24.008498 1.1209323,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path43"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 7.3128205,24.008498 5.2488577,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path44"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 11.440746,24.008498 9.3767832,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path45"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 15.568671,24.008498 -2.063962,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path46"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 19.696597,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path47"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 23.824522,24.008498 21.76056,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path48"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 27.952448,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path49"
+       style="stroke-width:1;stroke-dasharray:none" />
+  </g>
+  <g
+     id="g57"
+     transform="translate(3.3818182,-24)">
+    <rect
+       x="-3.3818183"
+       y="31"
+       width="32"
+       height="1"
+       fill="#795f3d"
+       id="rect49" />
+    <path
+       d="M -0.94303042,24.008498 -3.0069931,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path50"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 3.184895,24.008498 1.1209323,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path51"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 7.3128205,24.008498 5.2488577,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path52"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 11.440746,24.008498 9.3767832,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path53"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 15.568671,24.008498 -2.063962,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path54"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 19.696597,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path55"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="M 23.824522,24.008498 21.76056,31.700593"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path56"
+       style="stroke-width:1;stroke-dasharray:none" />
+    <path
+       d="m 27.952448,24.008498 -2.063963,7.692095"
+       fill="none"
+       stroke="#d0b274"
+       stroke-width="1.15022"
+       id="path57"
+       style="stroke-width:1;stroke-dasharray:none" />
+  </g>
 </svg>

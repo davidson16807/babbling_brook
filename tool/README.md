@@ -3,7 +3,7 @@
 From the project directory:
 
 ```sh
-python tool/remap_palette.py data/map/world.ppm 1 palettes.txt
+python tool/palette_swap.py data/map/world.ppm 1 palettes.txt
 ```
 
 The three arguments are the PPM, channel index, and a file containing exactly two palette tables. The script updates the PPM **in place**. Channel `1` is green/tile indices; channel `2` is blue/object indices. Red heights and the unselected channel remain unchanged.

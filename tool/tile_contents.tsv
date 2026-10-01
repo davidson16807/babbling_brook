@@ -1,0 +1,32 @@
+# tile_palette	
+# index	archetype
+0	rock
+1	sandy-rock
+2	dirty-rock
+3	grassy-rock
+4	stone
+5	sandy-stone
+6	dirty-rock
+7	grassy-stone
+8	dirt
+9	path
+10	dirt
+11	grass
+12	sand
+13	stream
+14	river
+15	ocean
+16	wood-house
+17	wood
+18	stone-house
+19	brick-chimney
+20	books
+21	furniture
+22	crate
+23	swamp
+24	bridge-deck
+25	cutaway-edge
+
+# remap
+# from	to
+stone	stone
