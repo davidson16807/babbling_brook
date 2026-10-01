@@ -6,7 +6,7 @@ from ..codec.map.PpmImageCodec import PpmImage
 from ..model.CameraState import CameraState
 from ..model.component.Cycle import Cycle
 from ..model.Map import Map
-from ..model.identifiers import Coordinate
+from ..model.identifiers import Coordinate, EntityId
 from .EditorContent import EditorContent
 
 
@@ -28,4 +28,7 @@ class EditorState:
     undo_history: list[EditorContent] = field(default_factory=list)
     redo_history: list[EditorContent] = field(default_factory=list)
     cycles: dict[str, Cycle] = field(default_factory=dict)
-    time_warp: float = 1.0
+    time_warp: float = 0.0
+    time_mode: bool = False
+    object_step: float | None = None
+    selected_objects: frozenset[EntityId] = frozenset()

@@ -14,3 +14,6 @@ class EditorContent:
     # Treat dictionaries and their GLM vectors as values: replace, don't mutate.
     billboards: dict[EntityId, BillboardPlacement] = field(default_factory=dict)
     boxes: dict[EntityId, BoxPlacement] = field(default_factory=dict)
+    # Named character placements retain their ECS entity IDs and are always
+    # serialized in the game's billboards table.
+    character_instances: dict[EntityId, BillboardPlacement] = field(default_factory=dict)
