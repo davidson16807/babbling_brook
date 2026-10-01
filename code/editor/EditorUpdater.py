@@ -1,11 +1,12 @@
 """Editor MVU transitions. Input and persistence remain outside the model."""
 from bisect import bisect_left, bisect_right
 from dataclasses import replace
-from math import isfinite
+from math import floor, isfinite, pi
+
+from pyglm import glm
 
 from ..codec.map.PpmImageCodec import PpmImage
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
-from .EditorContent import EditorContent
 from ..messages import (FocusLostMessage, KeyboardAction, KeyboardMessage,
                         KeyboardModifiers, MouseButton, MouseMotionMessage,
                         QuitMessage, ScrollMessage, WindowResizeMessage)
@@ -30,6 +31,15 @@ class EditorUpdater:
             modifiers |= message.modifiers
         if modifiers & KeyboardModifiers.CTRL:
             return state
+        if state.object_step is not None:
+            axes = glm.vec3(0)
+            quadrant = floor(state.camera.look_azimuth / (pi / 2) + .5) % 4
+            forward = glm.vec3(*((-1, 0), (0, -1), (1, 0), (0, 1))[quadrant], 0)
+            right = glm.vec3(forward.y, -forward.x, 0)
+            for message in messages:
+                axes += {'w': forward, 's': -forward, 'a': -right, 'd': right,
+                         'q': glm.vec3(0, 0, 1), 'z': glm.vec3(0, 0, -1)}.get(message.key, glm.vec3(0))
+            return self._move_objects(state, axes * state.object_step)
         cursor = self.cursor.update(
             state.cursor, state.map.dimensions, state.camera, messages,
             bool(modifiers & KeyboardModifiers.SHIFT),
@@ -49,8 +59,9 @@ class EditorUpdater:
     def _warp(self, state, faster):
         # At factor period/1min, that cycle takes one real minute. Include 1x so
         # normal time is reachable even when no configured period equals one.
-        factors = sorted({1.0, *(c.period for c in state.cycles.values()
-                                if isfinite(c.period) and c.period > 0)})
+        rates = {1.0, *(c.period for c in state.cycles.values()
+                       if isfinite(c.period) and c.period > 0)}
+        factors = sorted({0.0, *rates, *(-rate for rate in rates)})
         index = (bisect_right(factors, state.time_warp) if faster
                  else bisect_left(factors, state.time_warp)-1)
         factor = factors[max(0, min(len(factors)-1, index))]
@@ -79,9 +90,59 @@ class EditorUpdater:
                           if key not in previous)
         boxes.update((key, value) for key, value in state.content.boxes.items()
                      if key not in previous)
-        content = EditorContent(image, billboards, boxes)
+        content = replace(state.content, image=image, billboards=billboards, boxes=boxes)
         return replace(self.history.do(state, content), map=map_,
                        message=message, quit_requested=False)
+
+    def _object_mode(self, state, step):
+        # Keep the same group when switching precision, even after it has moved.
+        tiles = set(state.cursor)
+        selected = state.selected_objects if state.object_step is not None else frozenset(
+            key for table in (state.content.billboards, state.content.boxes,
+                              state.content.character_instances)
+            for key, item in table.items()
+            if (floor(item.position.x), floor(item.position.y)) in tiles
+        )
+        return replace(state, channel=None, time_mode=False, object_step=step,
+                       selected_objects=selected, cursor_delay=0.0, quit_requested=False,
+                       message=f'Move {len(selected)} object(s), step {step:g}. Q up / Z down.')
+
+    def _move_objects(self, state, offset, snap=False):
+        if not state.selected_objects or (not snap and not glm.length(offset)):
+            return state
+        content = state.content
+        pixels = list(content.image.pixels)
+        mapped = ObjectPlacementCodec(self.object_palette, state.map, disable_validation=True,
+                                      boxes=self.box_templates).decode(content.image)
+        tables = [dict(content.billboards), dict(content.boxes), dict(content.character_instances)]
+        occupied = set().union(*tables, self.box_templates)
+        selected = set(state.selected_objects)
+        for table in tables:
+            for key in sorted(state.selected_objects & table.keys()):
+                item = table[key]
+                position = glm.vec3(*(round(v) for v in item.position)) if snap else item.position + offset
+                if position == item.position:
+                    continue
+                new_key = key
+                if key in mapped:
+                    # Detach the PPM instance before moving it. Its old cell can
+                    # now be painted independently, without resurrecting it.
+                    x, y = map(int, glm.floor(mapped[key].position.xy))
+                    index = y * content.image.width + x
+                    pixels[index] = (*pixels[index][:2], 0)
+                    suffix = 1
+                    while f'editor-object-{suffix}' in occupied:
+                        suffix += 1
+                    new_key = f'editor-object-{suffix}'
+                    occupied.add(new_key)
+                    selected.remove(key)
+                    selected.add(new_key)
+                del table[key]
+                table[new_key] = replace(item, position=position)
+        content = replace(content, image=replace(content.image, pixels=tuple(pixels)),
+                          billboards=tables[0], boxes=tables[1], character_instances=tables[2])
+        return replace(self.history.do(state, content), selected_objects=frozenset(selected),
+                       quit_requested=False, message='Objects snapped.' if snap else 'Objects moved.')
 
     def _zoom(self, state, amount):
         # A smaller orthographic span means a closer view. Bound the exponent
@@ -91,6 +152,10 @@ class EditorUpdater:
                        orthographic_scale=max(1.0, min(128.0, scale))))
 
     def _adjust(self, state, amount):
+        if state.time_mode:
+            for _ in range(abs(amount)):
+                state = self._warp(state, amount > 0)
+            return state
         if state.channel is None:
             return self._zoom(state, amount)
         channel = state.channel
@@ -114,6 +179,9 @@ class EditorUpdater:
                             f'Changed {label} on {len(state.cursor)} selected tile(s).')
 
     def _set(self, state, value):
+        if state.time_mode:
+            return (replace(state, time_warp=0.0, message='Time paused.')
+                    if value == 0 else state)
         if state.channel is None:
             return state
         pixels = list(state.content.image.pixels)
@@ -163,7 +231,8 @@ class EditorUpdater:
         updated = self.history.redo(state) if redo else self.history.undo(state)
         if updated is state:
             return replace(state, message='Nothing to redo.' if redo else 'Nothing to undo.')
-        return replace(self._rebuild(updated), message='Redone.' if redo else 'Undone.')
+        return replace(self._rebuild(updated), object_step=None, selected_objects=frozenset(),
+                       message='Redone.' if redo else 'Undone.')
 
     def _quit(self, state):
         if state.dirty and not state.quit_requested:
@@ -185,6 +254,8 @@ class EditorUpdater:
         if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS:
             key = message.key
             if message.modifiers & KeyboardModifiers.CTRL:
+                if key == 'e':
+                    return self._object_mode(state, .1)
                 if key == 'c':
                     return self._copy(state)
                 if key == 'v':
@@ -197,26 +268,33 @@ class EditorUpdater:
                     return self._quit(state)
                 return state
             if key == 'escape':
-                return replace(state, channel=None, message='Zoom mode.', quit_requested=False)
-            if key in ('t', 'z', 'e'):
-                channel = {'z': 0, 't': 1, 'e': 2}[key]
+                if state.object_step is not None and state.object_step < 1:
+                    state = self._move_objects(state, glm.vec3(0), snap=True)
+                return replace(state, channel=None, time_mode=False, object_step=None,
+                               selected_objects=frozenset(), message='Zoom mode.', quit_requested=False)
+            if key == 'e':
+                return self._object_mode(state, 1.0)
+            if key == 't':
+                return replace(state, channel=None, time_mode=True, object_step=None,
+                               selected_objects=frozenset(), message='Time mode. / pauses.')
+            if key in ('r', 'g', 'b'):
+                channel = {'r': 0, 'g': 1, 'b': 2}[key]
                 label = ('Height', 'Tile', 'Object')[channel]
-                return replace(state, channel=channel, message=f'{label} mode.', quit_requested=False)
+                return replace(state, channel=channel, time_mode=False, object_step=None,
+                               selected_objects=frozenset(), message=f'{label} mode.', quit_requested=False)
             if key in ('+', '=', '[+]', 'kp +'):
                 return self._zoom(state, 1)
             if key in ('-', '[-]', 'kp -'):
                 return self._zoom(state, -1)
-            if key in (',', '<', '.', '>') and message.modifiers:
-                return self._warp(state, key in ('>', '.'))
+            if key in (',', '<', '.', '>'):
+                return self._adjust(state, -1 if key in (',', '<') else 1)
             if key == '/':
-                return replace(state, time_warp=1.0, message='Time warp: 1x.')
-            if key in ('[', ']'):
-                return self._adjust(state, -1 if key in (',', '[') else 1)
+                return self._set(state, 0)
             if key == 'delete':
                 return self._set(state, 0)
             if key in '0123456789' and len(key) == 1:
                 return self._set(state, int(key))
-            if key in ('w', 'a', 's', 'd'):
+            if key in ('w', 'a', 's', 'd', 'z', 'q'):
                 return replace(self._move(state, (message,)),
                                cursor_delay=.25)
             if key in ('i', 'j', 'k', 'l'):

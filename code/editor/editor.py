@@ -50,12 +50,14 @@ def make_updater(map_codec, object_palette, boxes=None):
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Babbling Brook level editor')
     parser.add_argument('ppm', type=Path, help='Text P3 PPM level to edit')
+    parser.add_argument('--game', type=Path, help='Game definition/placements file (default: data/world.game)')
     args = parser.parse_args(argv)
     filename = args.ppm.resolve()
     root = Path(__file__).resolve().parents[2]
     data = root / 'data'
+    game_filename = (args.game or data / 'world.game').resolve()
     try:
-        plugin = PluginStringCodec().decode((data / 'world.game').read_text(encoding='utf-8'))
+        plugin = PluginStringCodec().decode(game_filename.read_text(encoding='utf-8'))
         if any(not 0 <= index <= 65535 for index in plugin.tile_palette):
             raise ValueError('Tile palette IDs must be between 0 and 65535')
         if any(not 1 <= index <= 65535 for index in plugin.object_palette):
@@ -63,7 +65,8 @@ def main(argv=None):
         map_codec = MapCodec(plugin.tile_palette, plugin.tiles)
         ObjectPlacementCodec(plugin.object_palette, None, boxes=plugin.boxes,
                              billboard_archetypes=plugin.billboard_archetypes)
-        files = EditorFiles(map_codec, plugin.object_palette, plugin.boxes)
+        files = EditorFiles(map_codec, plugin.object_palette, plugin.boxes,
+                            game_filename=game_filename, plugin=plugin)
         if any(box.archetype not in plugin.tiles for box in plugin.boxes.values()):
             raise ValueError('Box refers to an unknown tile archetype')
         state = replace(files.load(filename), cycles=dict(plugin.cycles))
@@ -89,7 +92,7 @@ def main(argv=None):
                           filename.name, map_codec, plugin.object_palette,
                           BoxView(TileProgram(gl, textures)))
         updater = make_updater(map_codec, plugin.object_palette, plugin.boxes)
-        queue = PygameMessageQueue(monitored_keys='wasd')
+        queue = PygameMessageQueue(monitored_keys='wasdzq')
         clock = pygame.time.Clock()
         while state.running:
             seconds = min(clock.tick(60) / 1000.0, .25)
@@ -99,9 +102,9 @@ def main(argv=None):
                         and (message.key == 'f5' or message.key == 's'
                              and message.modifiers & KeyboardModifiers.CTRL)):
                     try:
-                        files.save(filename, state)
+                        state = files.save(filename, state)
                         state = replace(state, dirty=False, quit_requested=False,
-                                        message=f'Saved {filename.name}.')
+                                        message=f'Saved {filename.name} and {game_filename.name}.')
                     except (OSError, ValueError) as error:
                         state = replace(state, message=f'Save failed: {error}')
                 else:
