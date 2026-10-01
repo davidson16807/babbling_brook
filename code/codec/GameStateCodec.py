@@ -17,13 +17,13 @@ from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from .ZippedCodec import ZippedCodec
 from ..model.plugin.Plugin import Plugin
-from ..model.component.archetypes import (TileArchetype, ObjectArchetype, CharacterArchetype,
+from ..model.component.archetypes import (TileArchetype, BillboardArchetype, CharacterArchetype,
                                          AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
 from ..model.component.Cycle import Cycle
 from ..model.component.Map import Map
 from ..model.component.Landmark import Landmark
 from ..model.component.Waterlevel import Waterlevel
-from ..model.component.instances import ObjectPlacement, VerticalPhysics, CharacterAnimationState
+from ..model.component.instances import BillboardPlacement, BoxPlacement, VerticalPhysics, CharacterAnimationState
 
 
 class PluginListCodec:
@@ -167,10 +167,10 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 ),
             ),
 			GameTableCodec(
-				'# object_archetypes\n'+
+				'# billboard_archetypes\n'+
 				'\t'.join('archetype texture is_collidable radius height width has_gravity action lexeme'.split()),
 				PrimitiveListCodec(str),
-				ObjectListCodec(ObjectArchetype,
+				ObjectListCodec(BillboardArchetype,
 					('texture', PrimitiveListCodec(str)),
 					('is_collidable', BooleanListCodec()),
 					('radius', PrimitiveListCodec(float)),
@@ -182,7 +182,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				),
 			),
             GameTableCodec(
-                '# seasonal_object_archetypes #UNUSED\n# archetype\tleaf_state\ttexture',
+                '# seasonal_billboard_archetypes #UNUSED\n# archetype\tleaf_state\ttexture',
                 ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(int)),
                 PrimitiveListCodec(str),
             ),
@@ -307,11 +307,20 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
 				PrimitiveListCodec(str),
 			),
 			GameTableCodec(
-				'# objects\n #'+'\t'.join('entity archetype x y z'.split()),
+				'# billboards\n #'+'\t'.join('entity archetype x y z'.split()),
 				PrimitiveListCodec(str),
-				ObjectListCodec(ObjectPlacement,
+				ObjectListCodec(BillboardPlacement,
 					('archetype', PrimitiveListCodec(str)),
 					('position', ContainerListCodec(glm.vec3, float, 3)),
+				),
+			),
+			GameTableCodec(
+				'# boxes\n# '+'\t'.join('entity archetype x y z scale_x scale_y scale_z'.split()),
+				PrimitiveListCodec(str),
+				ObjectListCodec(BoxPlacement,
+					('archetype', PrimitiveListCodec(str)),
+					('position', ContainerListCodec(glm.vec3, float, 3)),
+					('scale', ContainerListCodec(glm.vec3, float, 3)),
 				),
 			),
 			GameTableCodec('# physics\n #'+'\t'.join('entity vertical_velocity is_grounded'.split()), 

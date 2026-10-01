@@ -12,6 +12,7 @@ from ..adapter.PygameImages import PygameImages
 from ..adapter.PygameMessageQueue import PygameMessageQueue
 from ..codec.GameStateCodec import PluginStringCodec
 from ..codec.map.MapCodec import MapCodec
+from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..messages import KeyboardAction, KeyboardMessage, KeyboardModifiers
 from .EditorFiles import EditorFiles
 from ..update.CursorUpdater import CursorUpdater
@@ -28,9 +29,10 @@ from ..view.program.TileProgram import TileProgram
 from ..view.program.UiProgram import UiProgram
 from .EditorView import EditorView
 from ..view.view.TileView import TileView
+from ..view.view.BoxView import BoxView
 
 
-def make_updater(map_codec, object_palette):
+def make_updater(map_codec, object_palette, boxes=None):
     # Keep keyboard look identical to the regular game; only mouse look is free.
     keylook = LockedLookUpdater(
         BoundedVectorUpdater(VectorKeysUpdater(*'ijkl', magnitude=(pi/2, pi/6)),
@@ -42,7 +44,7 @@ def make_updater(map_codec, object_palette):
             DirectLookUpdater(BoundedVectorUpdater(VectorMouseUpdater(-.01), y0=0, y1=pi/2)),
             keylook,
             AppHistoryTraversal(max_history_size=100), 
-            CycleSystem())
+            CycleSystem(), boxes=boxes)
 
 
 def main(argv=None):
@@ -58,10 +60,12 @@ def main(argv=None):
             raise ValueError('Tile palette IDs must be between 0 and 65535')
         if any(not 1 <= index <= 65535 for index in plugin.object_palette):
             raise ValueError('Object palette IDs must be between 1 and 65535; zero means empty')
-        if any(key not in plugin.objects for key in plugin.object_palette.values()):
-            raise ValueError('Object palette refers to an unknown archetype')
         map_codec = MapCodec(plugin.tile_palette, plugin.tiles)
-        files = EditorFiles(map_codec, plugin.object_palette)
+        ObjectPlacementCodec(plugin.object_palette, None, boxes=plugin.boxes,
+                             billboard_archetypes=plugin.billboard_archetypes)
+        files = EditorFiles(map_codec, plugin.object_palette, plugin.boxes)
+        if any(box.archetype not in plugin.tiles for box in plugin.boxes.values()):
+            raise ValueError('Box refers to an unknown tile archetype')
         state = replace(files.load(filename), cycles=dict(plugin.cycles))
     except (OSError, ValueError, KeyError) as error:
         parser.exit(1, f'Cannot open level: {error}\n')
@@ -81,9 +85,10 @@ def main(argv=None):
         textures = Textures(gl, PygameImages(root / 'texture'))
         view = EditorView(TileView(TileProgram(gl, textures)), BillboardProgram(gl, textures),
                           HighlightProgram(gl),
-                          PygameUiView(UiProgram(gl)), plugin.objects,
-                          filename.name, map_codec, plugin.object_palette)
-        updater = make_updater(map_codec, plugin.object_palette)
+                          PygameUiView(UiProgram(gl)), plugin.billboard_archetypes,
+                          filename.name, map_codec, plugin.object_palette,
+                          BoxView(TileProgram(gl, textures)))
+        updater = make_updater(map_codec, plugin.object_palette, plugin.boxes)
         queue = PygameMessageQueue(monitored_keys='wasd')
         clock = pygame.time.Clock()
         while state.running:

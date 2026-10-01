@@ -32,10 +32,10 @@ class GameUpdater:
                 return replace(game, instances=replace(game.instances, physics=physics))
             if message.key == 'e':
                 target = self.interactions.nearest(
-                    game.instances.placements['player'].position,
+                    game.instances.billboards['player'].position,
                     game.instances.characters['player'].facing,
-                    game.instances.placements,
-                    game.archetypes.objects,
+                    game.instances.billboards,
+                    game.archetypes.billboards,
                 )
                 if target is None:
                     return replace(game, message="Nothing to interact with nearby.")

@@ -4,13 +4,13 @@ from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from typing import ClassVar, overload
 
-from ..component.archetypes import (ObjectArchetype, TileArchetype, CharacterArchetype,
+from ..component.archetypes import (BillboardArchetype, TileArchetype, CharacterArchetype,
                                     AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
 from ..component.Cycle import Cycle
 from ..component.Map import Map
 from ..component.Landmark import Landmark
 from ..component.Waterlevel import Waterlevel
-from ..component.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from ..component.instances import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
 from ..identifiers import ArchetypeId, EntityId
 
 AnimationFrameId = tuple[ArchetypeId, str, int, int]
@@ -36,7 +36,7 @@ class Plugin(Sequence[dict]):
     maps: dict[int, Map] = field(default_factory=dict)
     inventory: dict[tuple[EntityId, str], int] = field(default_factory=dict)
     tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
-    objects: dict[ArchetypeId, ObjectArchetype] = field(default_factory=dict)
+    billboard_archetypes: dict[ArchetypeId, BillboardArchetype] = field(default_factory=dict)
     character_archetypes: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
     animals: dict[ArchetypeId, AnimalArchetype] = field(default_factory=dict)
     liquids: dict[ArchetypeId, Liquid] = field(default_factory=dict)
@@ -44,14 +44,15 @@ class Plugin(Sequence[dict]):
     animation_frames: dict[AnimationFrameId, AnimationFrame] = field(default_factory=dict)
     tile_palette: dict[int, ArchetypeId] = field(default_factory=dict)
     object_palette: dict[int, ArchetypeId] = field(default_factory=dict)
-    placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
+    billboards: dict[EntityId, BillboardPlacement] = field(default_factory=dict)
+    boxes: dict[EntityId, BoxPlacement] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
     landmarks: dict[str, Landmark] = field(default_factory=dict)
     waterlevels: dict[str, Waterlevel] = field(default_factory=dict)
 
     seasonal_tiles: dict[ArchetypeId, SeasonalTileArchetype] = field(default_factory=dict)
-    seasonal_objects: dict[tuple[ArchetypeId, int], str] = field(default_factory=dict)
+    seasonal_billboards: dict[tuple[ArchetypeId, int], str] = field(default_factory=dict)
 
     table_fields: ClassVar[tuple[str, ...]] = (
         'format',
@@ -62,8 +63,8 @@ class Plugin(Sequence[dict]):
         'tiles',
         'liquids',
         'seasonal_tiles',
-        'objects',
-        'seasonal_objects',
+        'billboard_archetypes',
+        'seasonal_billboards',
         'character_archetypes',
         'animals',
         'waypoints',
@@ -71,7 +72,8 @@ class Plugin(Sequence[dict]):
         'animation_frames',
         'tile_palette',
         'object_palette',
-        'placements',
+        'billboards',
+        'boxes',
         'physics',
         'characters',
         'inventory',

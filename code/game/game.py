@@ -17,6 +17,7 @@ from ..view.program.TileProgram import TileProgram
 from ..view.program.BillboardProgram import BillboardProgram
 from ..view.program.UiProgram import UiProgram
 from ..view.view.TileView import TileView
+from ..view.view.BoxView import BoxView
 from ..view.view.BillboardView import BillboardView
 from .GameView import GameView
 
@@ -91,7 +92,7 @@ def main(argv=None):
             texture
             for item in model.archetypes.tiles.values()
             for texture in (item.top_texture, item.side_texture)
-        } | {item.texture for item in model.archetypes.objects.values()}
+        } | {item.texture for item in model.archetypes.billboards.values()}
         names.update(
             texture
             for texture, _ in model.character_animation_frames.values()
@@ -100,7 +101,7 @@ def main(argv=None):
             textures.get(name)
         view = GameView(TileView(TileProgram(gl, textures)),
                         BillboardView(BillboardProgram(gl, textures)), 
-                        PygameUiView(UiProgram(gl)))
+                        PygameUiView(UiProgram(gl)), BoxView(TileProgram(gl, textures)))
         movement = MovementUpdater(CollisionQuery(), VectorKeysUpdater(*'wasd'))
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
@@ -157,13 +158,20 @@ def main(argv=None):
                 model = movement.update(model, seconds, messages)
                 instances = model.instances
                 placements, physics = gravity.step(
-                    instances.placements, instances.physics, model.map, seconds)
+                    {**instances.billboards, **instances.boxes}, instances.physics, model.map, seconds,
+                    {entity: box for entity, box in instances.boxes.items()
+                     if model.archetypes.tiles[box.archetype].is_collidable},
+                    {**{entity: model.archetypes.billboards[item.archetype].height
+                        for entity, item in instances.billboards.items()},
+                     **{entity: box.scale.z for entity, box in instances.boxes.items()}},
+                )
                 characters = animations.step(instances.characters, seconds)
                 model = replace(
                     model,
                     instances=replace(
                         instances,
-                        placements=placements,
+                        billboards={entity: placements[entity] for entity in instances.billboards},
+                        boxes={entity: placements[entity] for entity in instances.boxes},
                         physics=physics,
                         characters=characters,
                         cycles=cycles.step(instances.cycles, seconds / 60),

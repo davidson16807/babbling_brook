@@ -79,7 +79,7 @@ grassy-ruin	grass.svg	leaves.svg	grass-dead.svg	snow.svg
 sand	sand.svg	leaves.svg	sand.svg	snow.svg																																									
 grass	grass.svg	leaves.svg	grass-dead.svg	snow.svg																																									
 																																													
-# object_archetypes																																													
+# billboard_archetypes																																													
 # archetype	texture	is_collidable	radius	height	width	has_gravity	action	lexeme																																					
 tree	tree.svg	x	0.35	3.0	1.0			tree																																					
 apple	apple.svg		0.15	0.32	0.32	x	collect_apple	apple																																					
@@ -88,7 +88,7 @@ villager	villager-front-0.svg	x	0.28	1.3	0.7		greet	villager
 stick	stick.svg		0.12	0.28	0.55	x	collect_stick	stick																																					
 child	child-front-0.svg	x	0.24	1.1	0.65	x		you																																					
 																																													
-# seasonal_object_archetypes																																													
+# seasonal_billboard_archetypes																																													
 # archetype	leaf_state	texture																																											
 tree	0	spring-tree.svg																																											
 tree	1	tree.svg																																											
@@ -233,7 +233,7 @@ villager	running	1	1	villager-back-1.svg	0.12
 24	bridge-deck																																												
 25	cutaway-edge																																												
 																																													
-# object_palette																																													
+# billboard_palette																																													
 # index	archetype																																												
 1	tree																																												
 2	apple																																												
@@ -241,10 +241,14 @@ villager	running	1	1	villager-back-1.svg	0.12
 4	villager																																												
 5	stick																																												
 																																													
-# objects																																													
+# billboards																																													
 # entity	archetype	x	y	z																																									
 player	child	7	10	1																																									
 																																													
+# boxes
+# entity	archetype	x	y	z	scale_x	scale_y	scale_z
+# Example: crate-box	crate	9.5	10.5	1	0.75	0.5	1.25
+
 # physics																																													
 # entity	vertical_velocity	is_grounded																																											
 																																													

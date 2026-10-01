@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-from ..component.archetypes import (CharacterArchetype, ObjectArchetype, TileArchetype,
+from ..component.archetypes import (CharacterArchetype, BillboardArchetype, TileArchetype,
                                     AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
 from ..identifiers import ArchetypeId
 
@@ -17,11 +17,11 @@ a system should only operate on the fewest component collections needed to do it
 
 @dataclass(frozen=True)
 class ArchetypeComponentStores:
-    objects: dict[ArchetypeId, ObjectArchetype] = field(default_factory=dict)
+    billboards: dict[ArchetypeId, BillboardArchetype] = field(default_factory=dict)
     characters: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
     tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
     animals: dict[ArchetypeId, AnimalArchetype] = field(default_factory=dict)
     liquids: dict[ArchetypeId, Liquid] = field(default_factory=dict)
     waypoints: dict[ArchetypeId, Waypoint] = field(default_factory=dict)
     seasonal_tiles: dict[ArchetypeId, SeasonalTileArchetype] = field(default_factory=dict)
-    seasonal_objects: dict[tuple[ArchetypeId, int], str] = field(default_factory=dict)
+    seasonal_billboards: dict[tuple[ArchetypeId, int], str] = field(default_factory=dict)

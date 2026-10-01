@@ -10,10 +10,10 @@ class LineOfSightQuery:
     def __init__(self, step_length: float):
         self.step_length = step_length
 
-    def is_clear(self, source, target, placements, objects, map_, disabled=(), excluded=()):
+    def is_clear(self, source, target, billboards, objects, map_, disabled=(), excluded=()):
         # USAGE NOTE: excluded should include source and target entities
         heights = {}
-        for entity, placement in placements.items():
+        for entity, placement in billboards.items():
             if entity in disabled or entity in excluded: continue
             object_ = objects[placement.archetype]
             if object_.is_collidable:

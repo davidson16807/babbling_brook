@@ -58,12 +58,14 @@ class TileProgram:
     VERTEX_SHADER = """#version 330 core
 uniform mat4 clip_from_world;
 uniform vec3 light_direction;
+uniform bool is_box;
 in ivec3 element_position;
 in vec2 element_uv;
 in ivec3 element_normal;
 in vec2 coordinate;
 in mat2 heights;
 in float base_height;
+in vec3 scale;
 out vec2 uv;
 out float lighting;
 flat out int is_top;
@@ -88,7 +90,8 @@ void main() {
     float height = element_position.z == 0? 
         base_height
       : heights[corner.x][corner.y];
-    vec3 position = vec3(coordinate + vec2(corner), height);
+    vec3 position = vec3(coordinate + vec2(corner) * scale.xy,
+                         base_height + (height - base_height) * scale.z);
 
     vec3 normal = vec3(element_normal);
     if (is_top == 1) {
@@ -100,8 +103,9 @@ void main() {
     }
 
     gl_Position = clip_from_world * vec4(position, 1.0);
-    lighting = 0.60 + 0.40 * max(dot(normalize(normal), normalize(light_direction)), 0.0);
-    uv = is_top == 1 ? vec2(corner) : vec2(element_uv.x, height);
+    lighting = 0.60 + 0.40 * max(dot(normalize(normal / scale), normalize(light_direction)), 0.0);
+    uv = is_top == 1 ? vec2(corner)
+       : vec2(element_uv.x, is_box ? height - base_height : height);
     if (is_top == 1 && dot(normal.xy, normal.xy) > 0.0) {
         // Texture +V points uphill; fit the rotated tile within [0, 1].
         vec2 uphill = -normal.xy / (abs(normal.x) + abs(normal.y));
@@ -152,6 +156,7 @@ void main() {
         self.coordinate_buffer = gl.buffer(reserve=16)
         self.height_buffer = gl.buffer(reserve=16)
         self.base_height_buffer = gl.buffer(reserve=4)
+        self.scale_buffer = gl.buffer(reserve=12)
         self.vao = gl.vertex_array(self.program, [
             (self.element_position_buffer, "3i", "element_position"),
             (self.element_uv_buffer, "2f", "element_uv"),
@@ -159,6 +164,7 @@ void main() {
             (self.coordinate_buffer, "2f /i", "coordinate"),
             (self.height_buffer, "4f /i", "heights"),
             (self.base_height_buffer, "1f /i", "base_height"),
+            (self.scale_buffer, "3f /i", "scale"),
         ])
         self.released = False
 
@@ -168,7 +174,10 @@ void main() {
         coordinates: tuple[tuple[int, int], ...],
         heights: tuple[glm.mat2, ...],
         base_heights: tuple[float, ...],
-        view: ViewState
+        view: ViewState,
+        *,
+        scales: tuple[glm.vec3, ...] | None = None,
+        is_box: bool = False
     ) -> None:
         """Draw one tile per coordinate, height matrix, and base height.
 
@@ -178,11 +187,16 @@ void main() {
         ties use southwest–northeast. Side geometry and texture orientation stay fixed.
         Sloped top textures point uphill independently on each triangle.
         Side textures repeat once per world height unit, cropping partial units.
+        Optional per-instance scales act about (coordinate.x, coordinate.y, base_height).
+        Box mode anchors side UVs at the local base; supply unit-height geometry
+        to stretch one texture over the box height.
         """
         if self.released:
             return
         if len(coordinates) != len(heights) or len(heights) != len(base_heights):
             raise ValueError("Tile coordinates, heights, and base heights must have equal lengths")
+        if scales is not None and len(scales) != len(coordinates):
+            raise ValueError("Tile scales and coordinates must have equal lengths")
         if not coordinates:
             return
         self.gl.enable_only(gl.DEPTH_TEST | gl.CULL_FACE)
@@ -193,6 +207,7 @@ void main() {
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
         self.program["light_direction"].value = tuple(view.light_direction)
         self.program["light_color"].value = tuple(view.light_color)
+        self.program["is_box"].value = is_box
         self.program["top_image"].value = 0
         self.program["side_image"].value = 1
 
@@ -213,8 +228,14 @@ void main() {
             self.base_height_buffer.orphan(len(base_height_data))
         self.base_height_buffer.write(base_height_data)
 
-        # Two top triangles and two for each side.
-        self.vao.render(gl.TRIANGLES, vertices=len(self.ELEMENT_POSITIONS), instances=len(coordinates))
+        scale_data = pack(f"{3 * len(coordinates)}f",
+                          *(value for scale in (scales if scales is not None else ((1, 1, 1),) * len(coordinates))
+                            for value in scale))
+        if self.scale_buffer.size < len(scale_data):
+            self.scale_buffer.orphan(len(scale_data))
+        self.scale_buffer.write(scale_data)
+
+        self.vao.render(gl.TRIANGLES, vertices=30, instances=len(coordinates))
 
     def release(self):
         if self.released: return
@@ -226,4 +247,5 @@ void main() {
         self.coordinate_buffer.release()
         self.height_buffer.release()
         self.base_height_buffer.release()
+        self.scale_buffer.release()
         self.program.release()

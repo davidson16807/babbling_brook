@@ -79,7 +79,7 @@ class TileArchetype:
 
 
 @dataclass(frozen=True)
-class ObjectArchetype:
+class BillboardArchetype:
     texture: str
     is_collidable: bool = True
     radius: float = 0.3

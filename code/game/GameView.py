@@ -8,10 +8,11 @@ from ..view.program.ViewState import ViewState
 
 
 class GameView:
-    def __init__(self, tiles, billboards, ui):
+    def __init__(self, tiles, billboards, ui, boxes=None):
         self.tiles = tiles
         self.billboards = billboards
         self.ui = ui
+        self.boxes = boxes
 
     def ui_panels(self, game):
         def panel(title, lines, width):
@@ -35,7 +36,7 @@ class GameView:
     def draw(self, game, light=None):
         light = light if light is not None else Light()
         camera = game.camera
-        target = game.instances.placements['player'].position + glm.vec3(0, 0, .4)
+        target = game.instances.billboards['player'].position + glm.vec3(0, 0, .4)
         aspect = game.viewport[0] / game.viewport[1]
         scale = camera.orthographic_scale / 2
         projection = glm.ortho(-scale * aspect, scale * aspect, -scale, scale, .1, 100.0)
@@ -44,6 +45,8 @@ class GameView:
             camera.right(), light.direction, light.color
         )
         self.tiles.draw(game.map, view)
+        if self.boxes is not None:
+            self.boxes.draw(game.instances.boxes, game.archetypes.tiles, view)
         self.billboards.draw(
             camera,
             game.instances,
@@ -57,3 +60,5 @@ class GameView:
         self.tiles.release()
         self.billboards.release()
         self.ui.release()
+        if self.boxes is not None:
+            self.boxes.release()

@@ -13,9 +13,9 @@ class BillboardView:
     def draw(self, camera, instances, archetypes, animation_frames, view_state: ViewState):
         toward_camera = glm.normalize(-camera.forward().xy)
         batches = defaultdict(lambda: ([], [], [], []))
-        for entity, placement in instances.placements.items():
+        for entity, placement in instances.billboards.items():
             key, position = placement.archetype, placement.position
-            definition = archetypes.objects[key]
+            definition = archetypes.billboards[key]
             texture, mirrored = definition.texture, False
             if entity in instances.characters:
                 state = instances.characters[entity]

@@ -6,7 +6,7 @@ from ..codec.map.PpmImageCodec import PpmImage
 from ..model.CameraState import CameraState
 from ..model.component.Cycle import Cycle
 from ..model.Map import Map
-from ..model.component.instances import ObjectPlacement
+from ..model.component.instances import BillboardPlacement, BoxPlacement
 from ..model.identifiers import Coordinate, EntityId
 
 
@@ -14,7 +14,7 @@ from ..model.identifiers import Coordinate, EntityId
 class EditorState:
     image: PpmImage  # Authoritative samples, including heights before erosion.
     map: Map
-    placements: dict[EntityId, ObjectPlacement]
+    billboards: dict[EntityId, BillboardPlacement]
     # Always a nonempty list. First is the selection anchor; last is its head.
     cursor: list[Coordinate]
     camera: CameraState = field(default_factory=CameraState)
@@ -30,3 +30,4 @@ class EditorState:
     redo_history: list[PpmImage] = field(default_factory=list)
     cycles: dict[str, Cycle] = field(default_factory=dict)
     time_warp: float = 1.0
+    boxes: dict[EntityId, BoxPlacement] = field(default_factory=dict)

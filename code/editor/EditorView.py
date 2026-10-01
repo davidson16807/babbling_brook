@@ -9,16 +9,17 @@ from ..view.UiPanel import UiPanel, UiText
 
 
 class EditorView:
-    def __init__(self, tiles, billboards, highlights, ui, object_archetypes,
-                 filename, map_codec, object_palette):
+    def __init__(self, tiles, billboards, highlights, ui, billboard_archetypes,
+                 filename, map_codec, object_palette, boxes=None):
         self.tiles = tiles
         self.billboards = billboards
         self.highlights = highlights
         self.ui = ui
-        self.object_archetypes = object_archetypes
+        self.billboard_archetypes = billboard_archetypes
         self.filename = filename
         self.map_codec = map_codec
         self.object_palette = object_palette
+        self.boxes = boxes
 
     def ui_panels(self, state):
         x, y = state.cursor[-1]
@@ -64,9 +65,11 @@ class EditorView:
     def draw(self, state, light=None):
         view = self.view_state(state, light)
         self.tiles.draw(state.map, view)
+        if self.boxes is not None:
+            self.boxes.draw(state.boxes, self.map_codec.tile_archetypes, view)
         batches = defaultdict(lambda: ([], []))
-        for placement in state.placements.values():
-            definition = self.object_archetypes[placement.archetype]
+        for placement in state.billboards.values():
+            definition = self.billboard_archetypes[placement.archetype]
             origins, sizes = batches[definition.texture]
             origins.append(placement.position)
             sizes.append(glm.vec2(definition.width, definition.height))
@@ -88,3 +91,5 @@ class EditorView:
         self.billboards.release()
         self.highlights.release()
         self.ui.release()
+        if self.boxes is not None:
+            self.boxes.release()

@@ -28,6 +28,9 @@ class PluginOps:
 
     def load(self, map_: Map, plugin: Plugin) -> GameState:
 
+        if any(box.archetype not in plugin.tiles for box in plugin.boxes.values()):
+            raise ValueError("Box refers to an unknown tile archetype")
+
         animation_ids = {(key, name) for key, name, _, _ in plugin.animation_frames}
         for key, name in animation_ids:
             frames = {
@@ -45,7 +48,7 @@ class PluginOps:
                 raise ValueError(f"Character {key!r} requires a standing animation")
 
         archetypes = ArchetypeComponentStores(
-            objects=dict(plugin.objects),
+            billboards=dict(plugin.billboard_archetypes),
             characters={**{key: CharacterArchetype() for key in character_keys},
                         **plugin.character_archetypes},
             animals=dict(plugin.animals),
@@ -53,20 +56,20 @@ class PluginOps:
             waypoints=dict(plugin.waypoints),
             tiles=dict(plugin.tiles),
             seasonal_tiles=dict(plugin.seasonal_tiles),
-            seasonal_objects=dict(plugin.seasonal_objects),
+            seasonal_billboards=dict(plugin.seasonal_billboards),
         )
 
         physics, characters = {}, {}
-        for entity, placement in plugin.placements.items():
+        for entity, placement in plugin.billboards.items():
             key, position = placement.archetype, placement.position
-            definition = archetypes.objects[key]
+            definition = archetypes.billboards[key]
             if definition.has_gravity:
                 ground = map_.height(glm.vec2(position))
                 physics[entity] = VerticalPhysics(0.0, abs(position.z - ground) < 1e-5)
             if key in character_keys:
                 characters[entity] = CharacterAnimationState()
 
-        instances = InstanceComponentStores(dict(plugin.placements), physics, characters)
+        instances = InstanceComponentStores(dict(plugin.billboards), physics, characters)
         instances = replace(
             instances,
             physics={**instances.physics, **plugin.physics},
@@ -74,6 +77,7 @@ class PluginOps:
             cycles=dict(plugin.cycles),
             landmarks=dict(plugin.landmarks),
             waterlevels=dict(plugin.waterlevels),
+            boxes=dict(plugin.boxes),
         )
 
         return GameState(
@@ -93,8 +97,8 @@ class PluginOps:
             inventory=dict(state.inventory),
             tiles=dict(state.archetypes.tiles),
             seasonal_tiles=dict(state.archetypes.seasonal_tiles),
-            seasonal_objects=dict(state.archetypes.seasonal_objects),
-            objects=dict(state.archetypes.objects),
+            seasonal_billboards=dict(state.archetypes.seasonal_billboards),
+            billboard_archetypes=dict(state.archetypes.billboards),
             character_archetypes=dict(state.archetypes.characters),
             animals=dict(state.archetypes.animals),
             liquids=dict(state.archetypes.liquids),
@@ -104,7 +108,8 @@ class PluginOps:
             landmarks=dict(state.instances.landmarks),
             waterlevels=dict(state.instances.waterlevels),
             animation_frames=dict(state.character_animation_frames),
-            placements=dict(state.instances.placements),
+            billboards=dict(state.instances.billboards),
+            boxes=dict(state.instances.boxes),
             physics=dict(state.instances.physics),
             characters=dict(state.instances.characters),
         )

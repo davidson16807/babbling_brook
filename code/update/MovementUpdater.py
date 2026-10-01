@@ -11,9 +11,9 @@ class MovementUpdater:
         self.vector_updater = vector_updater
 
     def update(self, game, seconds, messages):
-        placements = game.instances.placements
+        billboards = game.instances.billboards
         characters = game.instances.characters
-        objects = game.archetypes.objects
+        objects = game.archetypes.billboards
         map_ = game.map
         held = tuple(
             message for message in messages
@@ -30,18 +30,20 @@ class MovementUpdater:
         if glm.length(direction) > 0:
             direction = glm.normalize(direction)
         tries_running = any(message.key in ('shift', 'right shift') for message in held)
-        before = placements['player'].position
+        before = billboards['player'].position
         after = self.collisions.move(
             'player', before, direction * (4.0 if tries_running else 2.5) * seconds,
-            placements, objects, map_)
+            billboards, objects, map_,
+            tuple(box for box in game.instances.boxes.values()
+                  if game.archetypes.tiles[box.archetype].is_collidable))
         is_moving = glm.distance(glm.vec2(before), glm.vec2(after)) > 1e-6
         player = characters['player']
         animation = 'standing' if not is_moving else 'running' if tries_running else 'walking'
         return replace(game, 
             instances=replace(game.instances, 
-                placements={
-                    **placements,
-                    'player': replace(placements['player'], position=after),
+                billboards={
+                    **billboards,
+                    'player': replace(billboards['player'], position=after),
                 },
                 characters={
                     **characters, 

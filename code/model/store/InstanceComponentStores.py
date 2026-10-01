@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-from ..component.instances import CharacterAnimationState, ObjectPlacement, VerticalPhysics
+from ..component.instances import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
 from ..identifiers import EntityId
 from ..component.Cycle import Cycle
 from ..component.Landmark import Landmark
@@ -19,9 +19,10 @@ a system should only operate on the fewest component collections needed to do it
 
 @dataclass(frozen=True)
 class InstanceComponentStores:
-    placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
+    billboards: dict[EntityId, BillboardPlacement] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)
     cycles: dict[str, Cycle] = field(default_factory=dict)
     landmarks: dict[str, Landmark] = field(default_factory=dict)
     waterlevels: dict[str, Waterlevel] = field(default_factory=dict)
+    boxes: dict[EntityId, BoxPlacement] = field(default_factory=dict)

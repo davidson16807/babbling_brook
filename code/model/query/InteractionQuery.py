@@ -5,10 +5,10 @@ from pyglm import glm
 
 
 class InteractionQuery:
-    def nearest(self, origin, facing, placements, objects):
+    def nearest(self, origin, facing, billboards, objects):
         candidates = [
             (entity, objects[placement.archetype], placement.position)
-            for entity, placement in placements.items()
+            for entity, placement in billboards.items()
             if entity != 'player'
             and placement.archetype in objects
             and objects[placement.archetype].action

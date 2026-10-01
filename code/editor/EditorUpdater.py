@@ -11,9 +11,12 @@ from ..messages import (FocusLostMessage, KeyboardAction, KeyboardMessage,
 
 
 class EditorUpdater:
-    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history, cycle_system):
+    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history, cycle_system, boxes=None):
         self.map_codec = map_codec
         self.object_palette = object_palette
+        self.box_templates = boxes or {}
+        self.fixed_boxes = {key: box for key, box in self.box_templates.items()
+                            if key not in object_palette.values()}
         self.cursor = cursor
         self.mouselook = mouselook  # A vector updater, with no angle locking.
         self.keylook = keylook      # The regular game's composed look updater.
@@ -56,8 +59,11 @@ class EditorUpdater:
 
     def _rebuild(self, state):
         map_ = self.map_codec.decode(state.image)
-        placements = ObjectPlacementCodec(self.object_palette, map_, disable_validation=True).decode(state.image)
-        return replace(state, map=map_, placements=placements, quit_requested=False)
+        billboards, boxes = ObjectPlacementCodec(
+            self.object_palette, map_, disable_validation=True,
+            boxes=self.box_templates).decode_components(state.image)
+        return replace(state, map=map_, billboards=billboards,
+                       boxes={**boxes, **self.fixed_boxes}, quit_requested=False)
 
     def _commit(self, state, pixels, message):
         pixels = tuple(pixels)
