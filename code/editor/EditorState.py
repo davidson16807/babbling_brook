@@ -23,7 +23,7 @@ class EditorState:
     dirty: bool = False
     quit_requested: bool = False
     cursor_delay: float = 0.0
-    channel: int | None = None  # PPM R/G/B index; None selects zoom.
+    channel: int | None = None  # PPM R/G/B index; None in zoom, time, or object movement modes.
     clipboard: PpmImage | None = None
     undo_history: list[EditorContent] = field(default_factory=list)
     redo_history: list[EditorContent] = field(default_factory=list)

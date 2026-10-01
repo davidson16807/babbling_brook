@@ -27,6 +27,10 @@ class EditorView:
         tile = self.map_codec.tile_palette.get(green, 'missing')
         object_ = self.object_palette.get(blue, 'none' if blue == 0 else 'missing')
         mode = 'Zoom' if state.channel is None else ('Height [0]', 'Tile [1]', 'Object [2]')[state.channel]
+        if state.time_mode:
+            mode = 'Time'
+        elif state.object_step is not None:
+            mode = f'Move {len(state.selected_objects)} objects ({state.object_step:g} units)'
         clipboard = (f'{state.clipboard.width} x {state.clipboard.height}'
                      if state.clipboard is not None else 'empty')
         lines = (
@@ -36,9 +40,10 @@ class EditorView:
             f'Mode: {mode}   |   Zoom span {state.camera.orthographic_scale:g}   |   '
             f'Clipboard: {clipboard}   |   Undo {len(state.undo_history)} / Redo {len(state.redo_history)}',
             'WASD Move   |   Shift+WASD Select rectangle   |   IJKL Rotate   |   Middle-drag Free look',
-            'Wheel / , . Adjust mode   |   + - Zoom   |   T Tile   Z Height   E Object   Esc Zoom',
-            f'< > Time slower / faster   |   / Reset time   |   Time warp {state.time_warp:g}x',
-            '0-9 Set channel   |   Delete Zero   |   Ctrl+C Copy   Ctrl+V Paste',
+            'Wheel / < > Adjust mode   |   + - Zoom   |   R Height   G Tile   B Object   Esc Zoom',
+            f'T Time mode   |   < > / wheel Reverse / forward   |   0 or / Pause   |   {state.time_warp:g}x',
+            'E Move objects (1)   |   Ctrl+E Fine move (0.1)   |   WASD XY   Q Up / Z Down   |   Esc Snap fine move',
+            '0-9 Set channel   |   / or Delete Zero   |   Ctrl+C Copy   Ctrl+V Paste',
             'Ctrl+Z Undo   |   Ctrl+Shift+Z / Ctrl+Y Redo   |   Ctrl+S / F5 Save   |   Close window Quit',
             state.message or 'Ready.',
         )
@@ -68,7 +73,7 @@ class EditorView:
         if self.boxes is not None:
             self.boxes.draw(state.content.boxes, self.map_codec.tile_archetypes, view)
         batches = defaultdict(lambda: ([], []))
-        for placement in state.content.billboards.values():
+        for placement in (*state.content.billboards.values(), *state.content.character_instances.values()):
             definition = self.billboard_archetypes[placement.archetype]
             origins, sizes = batches[definition.texture]
             origins.append(placement.position)
