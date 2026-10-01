@@ -6,6 +6,7 @@ from tempfile import NamedTemporaryFile
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..codec.map.PpmImageCodec import PpmImageCodec
 from .EditorState import EditorState
+from .EditorContent import EditorContent
 
 
 class EditorFiles:
@@ -23,11 +24,11 @@ class EditorFiles:
             boxes=self.box_templates).decode_components(image)
         fixed = {key: box for key, box in self.box_templates.items()
                  if key not in self.object_palette.values()}
-        return EditorState(image, map_, billboards, [(image.width // 2, image.height // 2)],
-                           boxes={**boxes, **fixed})
+        content = EditorContent(image, billboards, {**boxes, **fixed})
+        return EditorState(content, map_, [(image.width // 2, image.height // 2)])
 
     def save(self, filename: Path, state: EditorState) -> None:
-        code = self.ppm_codec.encode(state.image)
+        code = self.ppm_codec.encode(state.content.image)
         temporary = None
         try:
             with NamedTemporaryFile(mode='w', encoding='ascii', newline='\n',

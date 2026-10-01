@@ -5,6 +5,7 @@ from math import isfinite
 
 from ..codec.map.PpmImageCodec import PpmImage
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
+from .EditorContent import EditorContent
 from ..messages import (FocusLostMessage, KeyboardAction, KeyboardMessage,
                         KeyboardModifiers, MouseButton, MouseMotionMessage,
                         QuitMessage, ScrollMessage, WindowResizeMessage)
@@ -15,8 +16,6 @@ class EditorUpdater:
         self.map_codec = map_codec
         self.object_palette = object_palette
         self.box_templates = boxes or {}
-        self.fixed_boxes = {key: box for key, box in self.box_templates.items()
-                            if key not in object_palette.values()}
         self.cursor = cursor
         self.mouselook = mouselook  # A vector updater, with no angle locking.
         self.keylook = keylook      # The regular game's composed look updater.
@@ -58,20 +57,31 @@ class EditorUpdater:
         return replace(state, time_warp=factor, message=f'Time warp: {factor:g}x.')
 
     def _rebuild(self, state):
-        map_ = self.map_codec.decode(state.image)
-        billboards, boxes = ObjectPlacementCodec(
-            self.object_palette, map_, disable_validation=True,
-            boxes=self.box_templates).decode_components(state.image)
-        return replace(state, map=map_, billboards=billboards,
-                       boxes={**boxes, **self.fixed_boxes}, quit_requested=False)
+        # Placements are authoritative content now; only terrain is derived.
+        return replace(state, map=self.map_codec.decode(state.content.image),
+                       quit_requested=False)
 
     def _commit(self, state, pixels, message):
         pixels = tuple(pixels)
-        if pixels == state.image.pixels:
+        if pixels == state.content.image.pixels:
             return state
-        image = replace(state.image, pixels=pixels,
-                        maximum=max(state.image.maximum, max(max(p) for p in pixels)))
-        return replace(self._rebuild(self.history.do(state, image)), message=message)
+        image = replace(state.content.image, pixels=pixels,
+                        maximum=max(state.content.image.maximum, max(max(p) for p in pixels)))
+        map_ = self.map_codec.decode(image)
+        billboards, boxes = ObjectPlacementCodec(
+            self.object_palette, map_, disable_validation=True,
+            boxes=self.box_templates).decode_components(image)
+        # Regenerate map placements after a pixel edit, retaining explicit ones.
+        previous = ObjectPlacementCodec(
+            self.object_palette, state.map, disable_validation=True,
+            boxes=self.box_templates).decode(state.content.image)
+        billboards.update((key, value) for key, value in state.content.billboards.items()
+                          if key not in previous)
+        boxes.update((key, value) for key, value in state.content.boxes.items()
+                     if key not in previous)
+        content = EditorContent(image, billboards, boxes)
+        return replace(self.history.do(state, content), map=map_,
+                       message=message, quit_requested=False)
 
     def _zoom(self, state, amount):
         # A smaller orthographic span means a closer view. Bound the exponent
@@ -84,10 +94,10 @@ class EditorUpdater:
         if state.channel is None:
             return self._zoom(state, amount)
         channel = state.channel
-        pixels = list(state.image.pixels)
+        pixels = list(state.content.image.pixels)
         ids = self.tile_ids if channel == 1 else self.object_ids
         for x, y in state.cursor:
-            index = y * state.image.width + x
+            index = y * state.content.image.width + x
             pixel = list(pixels[index])
             if channel == 0:
                 pixel[0] = max(0, min(65535, pixel[0] + amount))
@@ -106,9 +116,9 @@ class EditorUpdater:
     def _set(self, state, value):
         if state.channel is None:
             return state
-        pixels = list(state.image.pixels)
+        pixels = list(state.content.image.pixels)
         for x, y in state.cursor:
-            index = y * state.image.width + x
+            index = y * state.content.image.width + x
             pixel = list(pixels[index])
             pixel[state.channel] = value
             pixels[index] = tuple(pixel)
@@ -118,8 +128,8 @@ class EditorUpdater:
     def _copy(self, state):
         x0, x1 = min(x for x, _ in state.cursor), max(x for x, _ in state.cursor)
         y0, y1 = min(y for _, y in state.cursor), max(y for _, y in state.cursor)
-        clipboard = PpmImage(x1-x0+1, y1-y0+1, state.image.maximum, tuple(
-            state.image.pixels[y*state.image.width + x]
+        clipboard = PpmImage(x1-x0+1, y1-y0+1, state.content.image.maximum, tuple(
+            state.content.image.pixels[y*state.content.image.width + x]
             for y in range(y0, y1+1) for x in range(x0, x1+1)
         ))
         return replace(state, clipboard=clipboard,
@@ -136,11 +146,11 @@ class EditorUpdater:
             # selection direction. Clip to existing map bounds; never resize it.
             x0, y0 = state.cursor[-1]
             targets = [(x0+x, y0+y, clipboard.pixels[y*clipboard.width+x])
-                       for y in range(min(clipboard.height, state.image.height-y0))
-                       for x in range(min(clipboard.width, state.image.width-x0))]
-        pixels = list(state.image.pixels)
+                       for y in range(min(clipboard.height, state.content.image.height-y0))
+                       for x in range(min(clipboard.width, state.content.image.width-x0))]
+        pixels = list(state.content.image.pixels)
         for x, y, source in targets:
-            index = y * state.image.width + x
+            index = y * state.content.image.width + x
             if state.channel is None:
                 pixels[index] = source
             else:

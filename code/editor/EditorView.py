@@ -23,7 +23,7 @@ class EditorView:
 
     def ui_panels(self, state):
         x, y = state.cursor[-1]
-        red, green, blue = state.image.pixels[y*state.image.width + x]
+        red, green, blue = state.content.image.pixels[y*state.content.image.width + x]
         tile = self.map_codec.tile_palette.get(green, 'missing')
         object_ = self.object_palette.get(blue, 'none' if blue == 0 else 'missing')
         mode = 'Zoom' if state.channel is None else ('Height [0]', 'Tile [1]', 'Object [2]')[state.channel]
@@ -66,9 +66,9 @@ class EditorView:
         view = self.view_state(state, light)
         self.tiles.draw(state.map, view)
         if self.boxes is not None:
-            self.boxes.draw(state.boxes, self.map_codec.tile_archetypes, view)
+            self.boxes.draw(state.content.boxes, self.map_codec.tile_archetypes, view)
         batches = defaultdict(lambda: ([], []))
-        for placement in state.billboards.values():
+        for placement in state.content.billboards.values():
             definition = self.billboard_archetypes[placement.archetype]
             origins, sizes = batches[definition.texture]
             origins.append(placement.position)
