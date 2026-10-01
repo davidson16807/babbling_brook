@@ -21,7 +21,7 @@ class TileView:
             for x in range(map_.dimensions.x):
                 coordinate = x, y
                 tile = map_.tile(coordinate)
-                coordinates, heights, base_heights = batches[tile.top_texture, tile.ns_texture, tile.we_texture]
+                coordinates, heights, base_heights = batches[tile.top_texture, tile.side_texture]
                 surface = map_.corner_heights(coordinate)
                 corners = tuple(surface[i][j] for i in range(2) for j in range(2))
                 # Keep all flat layers below the lowest corner. The cap then
@@ -41,8 +41,8 @@ class TileView:
         key = (map_._corner_heights, map_._tiles)
         if self.map != key:
             self.map, self.batches = key, self._build(map_)
-        for textures, arrays in self.batches.items():
-            self.program.draw(*textures, *arrays, view_state)
+        for (top_texture, side_texture), arrays in self.batches.items():
+            self.program.draw(top_texture, side_texture, *arrays, view_state)
 
     def release(self):
         self.program.release()

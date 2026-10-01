@@ -65,8 +65,7 @@ class CharacterArchetype:
 @dataclass(frozen=True)
 class TileArchetype:
     top_texture: str
-    ns_texture: str
-    we_texture: str
+    side_texture: str
     # Zero is flat; infinity allows unlimited erosion. Heights use world units.
     max_erosion: float = 0.0
     is_collidable: bool = True

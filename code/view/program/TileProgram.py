@@ -67,7 +67,6 @@ in float base_height;
 out vec2 uv;
 out float lighting;
 flat out int is_top;
-flat out int is_ns;
 
 ivec2 corner_rotate(ivec2 corner, bool is_rotated) {
     return is_rotated ? ivec2(1 - corner.y, corner.x) : corner;
@@ -81,7 +80,6 @@ vec3 corner_point(ivec2 corner, bool is_rotated) {
 void main() {
 
     is_top = element_normal.z;
-    is_ns = abs(element_normal.y);
     bool is_rotated = abs(heights[1][0] - heights[0][1])
                     > abs(heights[0][0] - heights[1][1]);
     ivec2 corner = is_top == 1? 
@@ -116,21 +114,17 @@ void main() {
     FRAGMENT_SHADER = """#version 330 core
 uniform sampler2D top_image;
 uniform vec3 light_color;
-uniform sampler2D ns_image;
-uniform sampler2D we_image;
+uniform sampler2D side_image;
 in vec2 uv;
 in float lighting;
 flat in int is_top;
-flat in int is_ns;
 out vec4 color;
 void main() {
     vec3 texture_color;
     if (is_top == 1) {
         texture_color = texture(top_image, uv).rgb;
     } else {
-        vec2 side_uv = vec2(uv.x, fract(uv.y));
-        texture_color = is_ns == 1 ? texture(ns_image, side_uv).rgb
-                                  : texture(we_image, side_uv).rgb;
+        texture_color = texture(side_image, vec2(uv.x, fract(uv.y))).rgb;
     }
     color = vec4(texture_color * lighting * light_color, 1.0);
 }
@@ -170,8 +164,7 @@ void main() {
 
     def draw(self,
         top_texture: str,
-        ns_texture: str,
-        we_texture: str,
+        side_texture: str,
         coordinates: tuple[tuple[int, int], ...],
         heights: tuple[glm.mat2, ...],
         base_heights: tuple[float, ...],
@@ -184,7 +177,6 @@ void main() {
         Top triangles share the diagonal with the greater absolute height change;
         ties use southwest–northeast. Side geometry and texture orientation stay fixed.
         Sloped top textures point uphill independently on each triangle.
-        North/south faces use ns_texture; west/east faces use we_texture.
         Side textures repeat once per world height unit, cropping partial units.
         """
         if self.released:
@@ -202,12 +194,10 @@ void main() {
         self.program["light_direction"].value = tuple(view.light_direction)
         self.program["light_color"].value = tuple(view.light_color)
         self.program["top_image"].value = 0
-        self.program["ns_image"].value = 1
-        self.program["we_image"].value = 2
+        self.program["side_image"].value = 1
 
         self.textures.get(top_texture).use(0)
-        self.textures.get(ns_texture).use(1)
-        self.textures.get(we_texture).use(2)
+        self.textures.get(side_texture).use(1)
         coordinate_data = pack(f"{2 * len(coordinates)}f", *(value for pair in coordinates for value in pair))
         if self.coordinate_buffer.size < len(coordinate_data):
             self.coordinate_buffer.orphan(len(coordinate_data))
