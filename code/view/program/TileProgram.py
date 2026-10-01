@@ -59,13 +59,13 @@ class TileProgram:
 uniform mat4 clip_from_world;
 uniform vec3 light_direction;
 uniform bool is_box;
+uniform vec3 scale;
 in ivec3 element_position;
 in vec2 element_uv;
 in ivec3 element_normal;
 in vec2 coordinate;
 in mat2 heights;
 in float base_height;
-in vec3 scale;
 out vec2 uv;
 out float lighting;
 flat out int is_top;
@@ -156,7 +156,6 @@ void main() {
         self.coordinate_buffer = gl.buffer(reserve=16)
         self.height_buffer = gl.buffer(reserve=16)
         self.base_height_buffer = gl.buffer(reserve=4)
-        self.scale_buffer = gl.buffer(reserve=12)
         self.vao = gl.vertex_array(self.program, [
             (self.element_position_buffer, "3i", "element_position"),
             (self.element_uv_buffer, "2f", "element_uv"),
@@ -164,7 +163,6 @@ void main() {
             (self.coordinate_buffer, "2f /i", "coordinate"),
             (self.height_buffer, "4f /i", "heights"),
             (self.base_height_buffer, "1f /i", "base_height"),
-            (self.scale_buffer, "3f /i", "scale"),
         ])
         self.released = False
 
@@ -176,7 +174,7 @@ void main() {
         base_heights: tuple[float, ...],
         view: ViewState,
         *,
-        scales: tuple[glm.vec3, ...] | None = None,
+        scale: glm.vec3 = glm.vec3(1),
         is_box: bool = False
     ) -> None:
         """Draw one tile per coordinate, height matrix, and base height.
@@ -187,7 +185,7 @@ void main() {
         ties use southwest–northeast. Side geometry and texture orientation stay fixed.
         Sloped top textures point uphill independently on each triangle.
         Side textures repeat once per world height unit, cropping partial units.
-        Optional per-instance scales act about (coordinate.x, coordinate.y, base_height).
+        The optional uniform scale acts about (coordinate.x, coordinate.y, base_height).
         Box mode anchors side UVs at the local base; supply unit-height geometry
         to stretch one texture over the box height.
         """
@@ -195,8 +193,6 @@ void main() {
             return
         if len(coordinates) != len(heights) or len(heights) != len(base_heights):
             raise ValueError("Tile coordinates, heights, and base heights must have equal lengths")
-        if scales is not None and len(scales) != len(coordinates):
-            raise ValueError("Tile scales and coordinates must have equal lengths")
         if not coordinates:
             return
         self.gl.enable_only(gl.DEPTH_TEST | gl.CULL_FACE)
@@ -208,6 +204,7 @@ void main() {
         self.program["light_direction"].value = tuple(view.light_direction)
         self.program["light_color"].value = tuple(view.light_color)
         self.program["is_box"].value = is_box
+        self.program["scale"].value = tuple(scale)
         self.program["top_image"].value = 0
         self.program["side_image"].value = 1
 
@@ -228,13 +225,6 @@ void main() {
             self.base_height_buffer.orphan(len(base_height_data))
         self.base_height_buffer.write(base_height_data)
 
-        scale_data = pack(f"{3 * len(coordinates)}f",
-                          *(value for scale in (scales if scales is not None else ((1, 1, 1),) * len(coordinates))
-                            for value in scale))
-        if self.scale_buffer.size < len(scale_data):
-            self.scale_buffer.orphan(len(scale_data))
-        self.scale_buffer.write(scale_data)
-
         self.vao.render(gl.TRIANGLES, vertices=30, instances=len(coordinates))
 
     def release(self):
@@ -247,5 +237,4 @@ void main() {
         self.coordinate_buffer.release()
         self.height_buffer.release()
         self.base_height_buffer.release()
-        self.scale_buffer.release()
         self.program.release()
