@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" shape-rendering="crispEdges">
+<title>stone-window-slit-unlit</title>
+<rect x="0" y="0" width="32" height="64" fill="#a1a497"/>
+<rect x="0" y="15" width="32" height="1" fill="#848c85"/>
+<rect x="20" y="0" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="5" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="9" width="3" height="1" fill="#b8b8a7"/>
+<rect x="0" y="31" width="32" height="1" fill="#848c85"/>
+<rect x="8" y="16" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="21" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="25" width="3" height="1" fill="#b8b8a7"/>
+<rect x="0" y="47" width="32" height="1" fill="#848c85"/>
+<rect x="20" y="32" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="37" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="41" width="3" height="1" fill="#b8b8a7"/>
+<rect x="0" y="63" width="32" height="1" fill="#848c85"/>
+<rect x="8" y="48" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="53" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="57" width="3" height="1" fill="#b8b8a7"/>
+<polygon points="11,7 21,7 23,57 9,57" fill="#848c85"/>
+<polygon points="11,7 14,10 14,54 9,57" fill="#626d67"/>
+<polygon points="21,7 18,10 18,54 23,57" fill="#b8b8a7"/>
+<rect x="14" y="10" width="4" height="44" fill="#080b09"/>
+<rect x="9" y="57" width="14" height="2" fill="#b8b8a7"/>
+</svg>

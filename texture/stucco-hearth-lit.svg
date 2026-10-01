@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+<title>stucco-hearth-lit</title>
+<g transform="translate(0 0)"><ns0:rect xmlns:ns0="http://www.w3.org/2000/svg" width="32" height="32" fill="#e3dece" />
+  <ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M3 4h5v1h2v2H6V6H3zM20 2h5v1h2v2h-4V4h-3zM12 13h5v1h3v2h-6v-1h-2zM25 22h4v1h2v2h-4v-1h-2zM4 25h4v1h3v2H6v-1H4z" fill="#e9e4d5" />
+  <ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M13 5h3v1h-3zM3 12h4v1H3zM23 11h3v1h-3zM7 19h3v1H7zM19 24h3v1h-3zM14 29h4v1h-4z" fill="#d8d2c1" />
+  <ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M2 3h1v1H2zM11 9h1v1h-1zM18 2h1v1h-1zM28 7h1v1h-1zM5 16h1v1H5zM22 17h1v1h-1zM13 22h1v1h-1zM3 29h1v1H3zM29 29h1v1h-1z" fill="#cec8b8" />
+  <ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M3 3h2v1H3zM12 9h1v1h-1zM19 2h1v1h-1zM29 7h1v1h-1zM6 16h1v1H6zM23 17h2v1h-2zM14 22h1v1h-1zM4 29h1v1H4zM30 29h1v1h-1z" fill="#f0eadb" />
+  <ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M9 2h1v1H9zM16 18h2v1h-2zM28 14h1v1h-1zM8 30h2v1H8zM24 28h1v1h-1z" fill="#ece7d8" />
+</g>
+<rect x="0" y="7" width="32" height="2" fill="#a8a291"/>
+<rect x="0" y="6" width="32" height="1" fill="#f0eadb"/>
+<polygon points="4,28 4,15 7,11 25,11 28,15 28,28" fill="#a8a291"/>
+<polygon points="6,28 6,16 9,13 23,13 26,16 26,28" fill="#282b29"/>
+<polygon points="7,27 8,21 11,17 21,17 25,22 25,28" fill="#624135"/>
+<polygon points="10,28 10,23 14,20 20,21 23,25 23,28" fill="#92553c"/>
+<!-- Fire paths and logs reused from the existing fire.svg. -->
+<g transform="translate(9 10) scale(.44 .39)"><ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M4 43L27 46M5 47L26 40" fill="none" stroke="#795a3b" stroke-width="3" /><ns0:g xmlns:ns0="http://www.w3.org/2000/svg" transform="translate(3 0) scale(.82)"><ns0:path d="M5 39Q1 29 10 19L12 29Q20 15 18 4Q32 19 26 29Q33 42 20 47H12Z" fill="#d96b4e" /><ns0:path d="M10 39Q8 34 16 23Q16 35 23 32Q25 44 16 47Z" fill="#c5a34e" /></ns0:g>
+</g>
+<rect x="2" y="28" width="28" height="2" fill="#f0eadb"/>
+<rect x="1" y="30" width="30" height="2" fill="#a8a291"/>
+</svg>

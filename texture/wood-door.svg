@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" shape-rendering="crispEdges">
+<title>wood-door</title>
+<desc>Full-width wooden door leaf with planks and iron straps; no surrounding frame.</desc>
+<rect x="0" y="0" width="8" height="64" fill="#ab8153"/>
+<rect x="0" y="0" width="1" height="64" fill="#795a3b"/>
+<rect x="1" y="0" width="1" height="64" fill="#d2a974"/>
+<rect x="8" y="0" width="8" height="64" fill="#b58b58"/>
+<rect x="8" y="0" width="1" height="64" fill="#795a3b"/>
+<rect x="9" y="0" width="1" height="64" fill="#d2a974"/>
+<rect x="16" y="0" width="8" height="64" fill="#a17a4d"/>
+<rect x="16" y="0" width="1" height="64" fill="#795a3b"/>
+<rect x="17" y="0" width="1" height="64" fill="#d2a974"/>
+<rect x="24" y="0" width="8" height="64" fill="#ab8153"/>
+<rect x="24" y="0" width="1" height="64" fill="#795a3b"/>
+<rect x="25" y="0" width="1" height="64" fill="#d2a974"/>
+<rect x="4" y="3" width="1" height="12" fill="#8d673e"/>
+<rect x="6" y="28" width="1" height="15" fill="#8d673e"/>
+<rect x="11" y="20" width="1" height="9" fill="#8d673e"/>
+<rect x="13" y="49" width="1" height="12" fill="#8d673e"/>
+<rect x="18" y="4" width="1" height="19" fill="#8d673e"/>
+<rect x="21" y="36" width="1" height="13" fill="#8d673e"/>
+<rect x="27" y="8" width="1" height="14" fill="#8d673e"/>
+<rect x="29" y="46" width="1" height="11" fill="#8d673e"/>
+<polygon points="18,26 20,24 22,26 22,29 20,31 18,29" fill="#795a3b"/>
+<rect x="19" y="26" width="2" height="3" fill="#c39b68"/>
+<rect x="0" y="13" width="32" height="4" fill="#574739"/>
+<rect x="0" y="13" width="32" height="1" fill="#848580"/>
+<rect x="3" y="14" width="1" height="1" fill="#b8b8a7"/>
+<rect x="11" y="14" width="1" height="1" fill="#b8b8a7"/>
+<rect x="20" y="14" width="1" height="1" fill="#b8b8a7"/>
+<rect x="28" y="14" width="1" height="1" fill="#b8b8a7"/>
+<rect x="0" y="48" width="32" height="4" fill="#574739"/>
+<rect x="0" y="48" width="32" height="1" fill="#848580"/>
+<rect x="3" y="49" width="1" height="1" fill="#b8b8a7"/>
+<rect x="11" y="49" width="1" height="1" fill="#b8b8a7"/>
+<rect x="20" y="49" width="1" height="1" fill="#b8b8a7"/>
+<rect x="28" y="49" width="1" height="1" fill="#b8b8a7"/>
+<rect x="26" y="30" width="3" height="5" fill="#626d67"/>
+<rect x="27" y="31" width="1" height="2" fill="#b8b8a7"/>
+<rect x="25" y="34" width="5" height="5" fill="#344247"/>
+<rect x="26" y="35" width="3" height="3" fill="#795a3b"/>
+<rect x="26" y="34" width="3" height="1" fill="#a1a497"/>
+</svg>

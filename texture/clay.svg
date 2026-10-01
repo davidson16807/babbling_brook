@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>Clay pot — stucco-based side texture</title>
+  <desc>Full-face terracotta clay with the subtle trowel marks and stippling of stucco.svg.</desc>
+  <rect width="32" height="32" fill="#a86049"/>
+  <path d="M3 4h5v1h2v2H6V6H3zM20 2h5v1h2v2h-4V4h-3zM12 13h5v1h3v2h-6v-1h-2zM25 22h4v1h2v2h-4v-1h-2zM4 25h4v1h3v2H6v-1H4z" fill="#af6a50"/>
+  <path d="M13 5h3v1h-3zM3 12h4v1H3zM23 11h3v1h-3zM7 19h3v1H7zM19 24h3v1h-3zM14 29h4v1h-4z" fill="#9e5844"/>
+  <path d="M2 3h1v1H2zM11 9h1v1h-1zM18 2h1v1h-1zM28 7h1v1h-1zM5 16h1v1H5zM22 17h1v1h-1zM13 22h1v1h-1zM3 29h1v1H3zM29 29h1v1h-1z" fill="#93513f"/>
+  <path d="M3 3h2v1H3zM12 9h1v1h-1zM19 2h1v1h-1zM29 7h1v1h-1zM6 16h1v1H6zM23 17h2v1h-2zM14 22h1v1h-1zM4 29h1v1H4zM30 29h1v1h-1z" fill="#bd7759"/>
+  <path d="M9 2h1v1H9zM16 18h2v1h-2zM28 14h1v1h-1zM8 30h2v1H8zM24 28h1v1h-1z" fill="#b46e53"/>
+</svg>

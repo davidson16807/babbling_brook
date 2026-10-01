@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" shape-rendering="crispEdges">
+<title>stone-threshold</title>
+<desc>Dark opening with dressed-stone jambs, a complete lintel, and a low sill. Does not tile vertically.</desc>
+<rect x="0" y="0" width="32" height="64" fill="#a1a497"/>
+<rect x="0" y="16" width="5" height="1" fill="#626d67"/>
+<rect x="0" y="17" width="5" height="1" fill="#b8b8a7"/>
+<rect x="0" y="32" width="5" height="1" fill="#626d67"/>
+<rect x="0" y="33" width="5" height="1" fill="#b8b8a7"/>
+<rect x="0" y="48" width="5" height="1" fill="#626d67"/>
+<rect x="0" y="49" width="5" height="1" fill="#b8b8a7"/>
+<rect x="1" y="11" width="2" height="1" fill="#b8b8a7"/>
+<rect x="1" y="26" width="2" height="1" fill="#b8b8a7"/>
+<rect x="1" y="42" width="2" height="1" fill="#b8b8a7"/>
+<rect x="1" y="56" width="2" height="1" fill="#b8b8a7"/>
+<rect x="27" y="16" width="5" height="1" fill="#626d67"/>
+<rect x="27" y="17" width="5" height="1" fill="#b8b8a7"/>
+<rect x="27" y="32" width="5" height="1" fill="#626d67"/>
+<rect x="27" y="33" width="5" height="1" fill="#b8b8a7"/>
+<rect x="27" y="48" width="5" height="1" fill="#626d67"/>
+<rect x="27" y="49" width="5" height="1" fill="#b8b8a7"/>
+<rect x="28" y="11" width="2" height="1" fill="#b8b8a7"/>
+<rect x="28" y="26" width="2" height="1" fill="#b8b8a7"/>
+<rect x="28" y="42" width="2" height="1" fill="#b8b8a7"/>
+<rect x="28" y="56" width="2" height="1" fill="#b8b8a7"/>
+<rect x="0" y="0" width="32" height="1" fill="#c5c5b2"/>
+<rect x="0" y="6" width="32" height="1" fill="#848c85"/>
+<rect x="9" y="0" width="1" height="7" fill="#848c85"/>
+<rect x="22" y="0" width="1" height="7" fill="#848c85"/>
+<rect x="5" y="7" width="22" height="55" fill="#626d67"/>
+<rect x="7" y="9" width="18" height="53" fill="#101411"/>
+<rect x="8" y="10" width="16" height="52" fill="#060807"/>
+<rect x="26" y="8" width="1" height="54" fill="#b8b8a7"/>
+<rect x="4" y="8" width="1" height="54" fill="#b8b8a7"/>
+<rect x="5" y="62" width="22" height="1" fill="#c5c5b2"/>
+<rect x="5" y="63" width="22" height="1" fill="#848c85"/>
+</svg>

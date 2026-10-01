@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+<title>stone-hearth-lit</title>
+<rect x="0" y="0" width="32" height="32" fill="#a1a497"/>
+<rect x="0" y="15" width="32" height="1" fill="#848c85"/>
+<rect x="20" y="0" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="5" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="9" width="3" height="1" fill="#b8b8a7"/>
+<rect x="0" y="31" width="32" height="1" fill="#848c85"/>
+<rect x="8" y="16" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="21" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="25" width="3" height="1" fill="#b8b8a7"/>
+<rect x="0" y="7" width="32" height="2" fill="#626d67"/>
+<rect x="0" y="6" width="32" height="1" fill="#b8b8a7"/>
+<polygon points="4,28 4,15 7,11 25,11 28,15 28,28" fill="#626d67"/>
+<polygon points="6,28 6,16 9,13 23,13 26,16 26,28" fill="#282b29"/>
+<polygon points="7,27 8,21 11,17 21,17 25,22 25,28" fill="#624135"/>
+<polygon points="10,28 10,23 14,20 20,21 23,25 23,28" fill="#92553c"/>
+<!-- Fire paths and logs reused from the existing fire.svg. -->
+<g transform="translate(9 10) scale(.44 .39)"><ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M4 43L27 46M5 47L26 40" fill="none" stroke="#795a3b" stroke-width="3" /><ns0:g xmlns:ns0="http://www.w3.org/2000/svg" transform="translate(3 0) scale(.82)"><ns0:path d="M5 39Q1 29 10 19L12 29Q20 15 18 4Q32 19 26 29Q33 42 20 47H12Z" fill="#d96b4e" /><ns0:path d="M10 39Q8 34 16 23Q16 35 23 32Q25 44 16 47Z" fill="#c5a34e" /></ns0:g>
+</g>
+<rect x="2" y="28" width="28" height="2" fill="#b8b8a7"/>
+<rect x="1" y="30" width="30" height="2" fill="#626d67"/>
+</svg>

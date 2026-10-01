@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" shape-rendering="crispEdges">
+<title>stone-door</title>
+<desc>Full-width stone door leaf; no surrounding frame. One unit wide and two units high.</desc>
+<rect x="0" y="0" width="32" height="64" fill="#a1a497"/>
+<rect x="0" y="0" width="1" height="64" fill="#b8b8a7"/>
+<rect x="31" y="0" width="1" height="64" fill="#848c85"/>
+<rect x="4" y="5" width="4" height="1" fill="#b8b8a7"/>
+<rect x="19" y="9" width="3" height="1" fill="#b8b8a7"/>
+<rect x="12" y="18" width="4" height="1" fill="#b8b8a7"/>
+<rect x="3" y="37" width="3" height="1" fill="#b8b8a7"/>
+<rect x="18" y="45" width="4" height="1" fill="#b8b8a7"/>
+<rect x="9" y="55" width="3" height="1" fill="#b8b8a7"/>
+<polygon points="25,0 24,6 26,9 25,13 25,9 23,6 24,0" fill="#848c85"/>
+<polygon points="3,26 7,29 6,34 7,31 9,30 7,30" fill="#848c85"/>
+<polygon points="18,64 17,59 19,56 18,52 20,56 18,59 19,64" fill="#848c85"/>
+<rect x="0" y="12" width="6" height="4" fill="#626d67"/>
+<rect x="1" y="12" width="5" height="1" fill="#848c85"/>
+<rect x="4" y="13" width="1" height="1" fill="#b8b8a7"/>
+<rect x="0" y="47" width="6" height="4" fill="#626d67"/>
+<rect x="1" y="47" width="5" height="1" fill="#848c85"/>
+<rect x="4" y="48" width="1" height="1" fill="#b8b8a7"/>
+<rect x="25" y="30" width="3" height="4" fill="#626d67"/>
+<rect x="26" y="31" width="1" height="1" fill="#b8b8a7"/>
+<rect x="23" y="34" width="6" height="6" fill="#344247"/>
+<rect x="24" y="35" width="4" height="4" fill="#a1a497"/>
+<rect x="24" y="34" width="4" height="1" fill="#848c85"/>
+</svg>

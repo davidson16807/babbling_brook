@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+<title>stone-hearth-unlit</title>
+<rect x="0" y="0" width="32" height="32" fill="#a1a497"/>
+<rect x="0" y="15" width="32" height="1" fill="#848c85"/>
+<rect x="20" y="0" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="5" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="9" width="3" height="1" fill="#b8b8a7"/>
+<rect x="0" y="31" width="32" height="1" fill="#848c85"/>
+<rect x="8" y="16" width="1" height="16" fill="#848c85"/>
+<rect x="3" y="21" width="3" height="1" fill="#b8b8a7"/>
+<rect x="27" y="25" width="3" height="1" fill="#b8b8a7"/>
+<rect x="0" y="7" width="32" height="2" fill="#626d67"/>
+<rect x="0" y="6" width="32" height="1" fill="#b8b8a7"/>
+<polygon points="4,28 4,15 7,11 25,11 28,15 28,28" fill="#626d67"/>
+<polygon points="6,28 6,16 9,13 23,13 26,16 26,28" fill="#282b29"/>
+<rect x="8" y="26" width="16" height="2" fill="#4b4940"/>
+<rect x="11" y="25" width="4" height="1" fill="#66665a"/>
+<g transform="translate(9 10) scale(.44 .39)"><ns0:path xmlns:ns0="http://www.w3.org/2000/svg" d="M4 43L27 46M5 47L26 40" fill="none" stroke="#795a3b" stroke-width="3" /></g>
+<rect x="2" y="28" width="28" height="2" fill="#b8b8a7"/>
+<rect x="1" y="30" width="30" height="2" fill="#626d67"/>
+</svg>
