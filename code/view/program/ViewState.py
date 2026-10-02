@@ -12,4 +12,6 @@ class ViewState:
     camera_right: glm.vec3
     light_direction: glm.vec3 = field(default_factory=lambda: glm.vec3(-.5, -.7, 1))
     light_color: glm.vec3 = field(default_factory=lambda: glm.vec3(1))
+    rayleigh_coefficient: glm.vec3 = field(default_factory=lambda: glm.vec3(0))
+    mie_coefficient: glm.vec3 = field(default_factory=lambda: glm.vec3(0))
 

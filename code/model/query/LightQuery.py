@@ -16,6 +16,8 @@ class Light:
     direction: glm.dvec3 = field(default_factory=lambda: glm.dvec3(-.5, -.7, 1))
     color: glm.dvec3 = field(default_factory=lambda: glm.dvec3(1))
     background: glm.dvec3 = field(default_factory=lambda: glm.dvec3(.16, .23, .25))
+    rayleigh_coefficient: glm.vec3 = field(default_factory=lambda: glm.vec3(0))
+    mie_coefficient: glm.vec3 = field(default_factory=lambda: glm.vec3(0))
 
 @dataclass(frozen=True)
 class Scatterer:
@@ -318,4 +320,6 @@ class LightQuery:
             (sun, self.background_color(sun, self.sun_color, scatterer_multipliers) * sun_occlusion),
             (moon, self.background_color(moon, moon_color, scatterer_multipliers) * moon_occlusion),
         )
-        return Light(direction, glm.vec3(light_color), glm.vec3(background_color))
+        rayleigh, mie = (glm.vec3(scatterer.rgb_surface_air_scattering_coefficient * multiplier)
+                         for scatterer, multiplier in zip(self.scatterers, scatterer_multipliers))
+        return Light(direction, glm.vec3(light_color), glm.vec3(background_color), rayleigh, mie)

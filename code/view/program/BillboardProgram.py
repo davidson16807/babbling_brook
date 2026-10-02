@@ -7,6 +7,7 @@ import moderngl as gl
 
 from ..Textures import Textures
 from .ViewState import ViewState
+from .atmosphere import ATMOSPHERE_GLSL, write_atmosphere_uniforms
 
 """
 `BillboardProgram` renders a swarm of textured cylindrical billboards represented through primitives
@@ -32,9 +33,11 @@ in vec2 size;
 in vec4 uv_rect;
 in float mirrored;
 out vec2 uv;
+out vec3 world_position;
 void main() {
     vec3 position = origin + camera_right * ((element_position.x - 0.5) * size.x)
                            + vec3(0.0, 0.0, element_position.y * size.y);
+    world_position = position;
     gl_Position = clip_from_world * vec4(position, 1.0);
     float u = mix(element_uv.x, 1.0 - element_uv.x, mirrored);
     uv = mix(uv_rect.xy, uv_rect.zw, vec2(u, element_uv.y));
@@ -42,11 +45,14 @@ void main() {
 """
 
     FRAGMENT_SHADER = """#version 330 core
+uniform mat4 clip_from_world;
+""" + ATMOSPHERE_GLSL + """
 uniform sampler2D image;
 uniform vec3 light_direction;
 uniform vec3 light_color;
 uniform vec3 camera_right;
 in vec2 uv;
+in vec3 world_position;
 out vec4 color;
 void main() {
     color = texture(image, uv);
@@ -54,7 +60,8 @@ void main() {
     vec3 normal = normalize(cross(camera_right, vec3(0.0, 0.0, 1.0)));
     // A sprite is two-sided; use the lit side of its vertical plane.
     float lighting = 0.60 + 0.40 * abs(dot(normal, normalize(light_direction)));
-    color.rgb *= lighting * light_color;
+    color.rgb = apply_atmosphere(color.rgb * lighting * light_color,
+                                 world_position, light_direction, light_color);
 }
 """
 
@@ -108,6 +115,7 @@ void main() {
         self.program["light_direction"].value = tuple(view.light_direction)
         self.program["light_color"].value = tuple(view.light_color)
         self.program["image"].value = 0
+        write_atmosphere_uniforms(self.program, view)
 
         self.textures.get(texture).use(0)
 

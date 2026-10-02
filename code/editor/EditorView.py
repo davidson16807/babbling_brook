@@ -70,7 +70,8 @@ class EditorView:
         # A camera-derived up vector stays valid at the allowed overhead angle.
         up = glm.cross(right, forward)
         return ViewState(projection * glm.lookAt(target - forward*30, target, up), right,
-                         light.direction, light.color)
+                         light.direction, light.color,
+                         light.rayleigh_coefficient, light.mie_coefficient)
 
     def draw(self, state, light=None):
         view = self.view_state(state, light)
