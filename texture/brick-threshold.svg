@@ -1,57 +1,397 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" shape-rendering="crispEdges">
-<title>brick-threshold</title>
-<desc>Dark opening with brick jambs and a soldier-course lintel. Does not tile vertically.</desc>
-<rect x="0" y="0" width="32" height="64" fill="#a86049"/>
-<rect x="0" y="8" width="5" height="1" fill="#d0b08b"/>
-<rect x="1" y="10" width="3" height="1" fill="#c07b59"/>
-<rect x="0" y="16" width="5" height="1" fill="#d0b08b"/>
-<rect x="1" y="18" width="3" height="1" fill="#c07b59"/>
-<rect x="0" y="24" width="5" height="1" fill="#d0b08b"/>
-<rect x="1" y="26" width="3" height="1" fill="#c07b59"/>
-<rect x="0" y="32" width="5" height="1" fill="#d0b08b"/>
-<rect x="1" y="34" width="3" height="1" fill="#c07b59"/>
-<rect x="0" y="40" width="5" height="1" fill="#d0b08b"/>
-<rect x="1" y="42" width="3" height="1" fill="#c07b59"/>
-<rect x="0" y="48" width="5" height="1" fill="#d0b08b"/>
-<rect x="1" y="50" width="3" height="1" fill="#c07b59"/>
-<rect x="0" y="56" width="5" height="1" fill="#d0b08b"/>
-<rect x="1" y="58" width="3" height="1" fill="#c07b59"/>
-<rect x="27" y="8" width="5" height="1" fill="#d0b08b"/>
-<rect x="28" y="10" width="3" height="1" fill="#c07b59"/>
-<rect x="27" y="16" width="5" height="1" fill="#d0b08b"/>
-<rect x="28" y="18" width="3" height="1" fill="#c07b59"/>
-<rect x="27" y="24" width="5" height="1" fill="#d0b08b"/>
-<rect x="28" y="26" width="3" height="1" fill="#c07b59"/>
-<rect x="27" y="32" width="5" height="1" fill="#d0b08b"/>
-<rect x="28" y="34" width="3" height="1" fill="#c07b59"/>
-<rect x="27" y="40" width="5" height="1" fill="#d0b08b"/>
-<rect x="28" y="42" width="3" height="1" fill="#c07b59"/>
-<rect x="27" y="48" width="5" height="1" fill="#d0b08b"/>
-<rect x="28" y="50" width="3" height="1" fill="#c07b59"/>
-<rect x="27" y="56" width="5" height="1" fill="#d0b08b"/>
-<rect x="28" y="58" width="3" height="1" fill="#c07b59"/>
-<rect x="0" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="1" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="4" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="5" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="8" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="9" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="12" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="13" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="16" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="17" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="20" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="21" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="24" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="25" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="28" y="0" width="1" height="8" fill="#d0b08b"/>
-<rect x="29" y="1" width="1" height="5" fill="#c07b59"/>
-<rect x="0" y="7" width="32" height="1" fill="#d0b08b"/>
-<rect x="5" y="7" width="22" height="55" fill="#62493e"/>
-<rect x="7" y="9" width="18" height="53" fill="#101411"/>
-<rect x="8" y="10" width="16" height="52" fill="#060807"/>
-<rect x="26" y="8" width="1" height="54" fill="#c07b59"/>
-<rect x="5" y="62" width="22" height="1" fill="#d0b08b"/>
-<rect x="5" y="63" width="22" height="1" fill="#a86049"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="64"
+   viewBox="0 0 32 64"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg52"
+   sodipodi:docname="brick-threshold.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs52" />
+  <sodipodi:namedview
+     id="namedview52"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="8.03125"
+     inkscape:cx="16.560311"
+     inkscape:cy="23.40856"
+     inkscape:window-width="1033"
+     inkscape:window-height="1214"
+     inkscape:window-x="234"
+     inkscape:window-y="127"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg52" />
+  <title
+     id="title1">brick-threshold</title>
+  <desc
+     id="desc1">Dark opening with brick jambs and a soldier-course lintel. Does not tile vertically.</desc>
+  <rect
+     x="0"
+     y="0"
+     width="32"
+     height="64"
+     fill="#a86049"
+     id="rect1" />
+  <rect
+     x="0"
+     y="8"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect2" />
+  <rect
+     x="1"
+     y="10"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect3" />
+  <rect
+     x="0"
+     y="16"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect4" />
+  <rect
+     x="1"
+     y="18"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect5" />
+  <rect
+     x="0"
+     y="24"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect6" />
+  <rect
+     x="1"
+     y="26"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect7" />
+  <rect
+     x="0"
+     y="32"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect8" />
+  <rect
+     x="1"
+     y="34"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect9" />
+  <rect
+     x="0"
+     y="40"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect10" />
+  <rect
+     x="1"
+     y="42"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect11" />
+  <rect
+     x="0"
+     y="48"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect12" />
+  <rect
+     x="1"
+     y="50"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect13" />
+  <rect
+     x="0"
+     y="56"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect14" />
+  <rect
+     x="1"
+     y="58"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect15" />
+  <rect
+     x="27"
+     y="8"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect16" />
+  <rect
+     x="28"
+     y="10"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect17" />
+  <rect
+     x="27"
+     y="16"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect18" />
+  <rect
+     x="28"
+     y="18"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect19" />
+  <rect
+     x="27"
+     y="24"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect20" />
+  <rect
+     x="28"
+     y="26"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect21" />
+  <rect
+     x="27"
+     y="32"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect22" />
+  <rect
+     x="28"
+     y="34"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect23" />
+  <rect
+     x="27"
+     y="40"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect24" />
+  <rect
+     x="28"
+     y="42"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect25" />
+  <rect
+     x="27"
+     y="48"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect26" />
+  <rect
+     x="28"
+     y="50"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect27" />
+  <rect
+     x="27"
+     y="56"
+     width="5"
+     height="1"
+     fill="#d0b08b"
+     id="rect28" />
+  <rect
+     x="28"
+     y="58"
+     width="3"
+     height="1"
+     fill="#c07b59"
+     id="rect29" />
+  <rect
+     x="0"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect30" />
+  <rect
+     x="1"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect31" />
+  <rect
+     x="4"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect32" />
+  <rect
+     x="5"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect33" />
+  <rect
+     x="8"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect34" />
+  <rect
+     x="9"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect35" />
+  <rect
+     x="12"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect36" />
+  <rect
+     x="13"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect37" />
+  <rect
+     x="16"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect38" />
+  <rect
+     x="17"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect39" />
+  <rect
+     x="20"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect40" />
+  <rect
+     x="21"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect41" />
+  <rect
+     x="24"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect42" />
+  <rect
+     x="25"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect43" />
+  <rect
+     x="28"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect44" />
+  <rect
+     x="29"
+     y="1"
+     width="1"
+     height="5"
+     fill="#c07b59"
+     id="rect45" />
+  <rect
+     x="0"
+     y="7"
+     width="32"
+     height="1"
+     fill="#d0b08b"
+     id="rect46" />
+  <rect
+     x="5"
+     y="7"
+     width="22"
+     height="55"
+     fill="#62493e"
+     id="rect47" />
+  <rect
+     x="7"
+     y="9"
+     width="18"
+     height="53"
+     fill="#101411"
+     id="rect48"
+     style="fill:#282b29" />
+  <rect
+     x="26"
+     y="8"
+     width="1"
+     height="54"
+     fill="#c07b59"
+     id="rect50" />
+  <rect
+     x="5"
+     y="62"
+     width="22"
+     height="1"
+     fill="#d0b08b"
+     id="rect51" />
+  <rect
+     x="5"
+     y="63"
+     width="22"
+     height="1"
+     fill="#a86049"
+     id="rect52" />
 </svg>

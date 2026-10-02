@@ -5,17 +5,20 @@
    viewBox="0 0 32 32"
    shape-rendering="crispEdges"
    version="1.1"
-   id="svg25"
-   sodipodi:docname="wood-window-glassy-unlit.svg"
+   id="svg5"
+   sodipodi:docname="stucco-window-unlit.svg"
    inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
-     id="defs25" />
+     id="defs5" />
   <sodipodi:namedview
-     id="namedview25"
+     id="namedview5"
      pagecolor="#ffffff"
      bordercolor="#000000"
      borderopacity="0.25"
@@ -23,82 +26,47 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="9.7227182"
-     inkscape:cx="13.370746"
-     inkscape:cy="20.158971"
-     inkscape:window-width="1033"
+     inkscape:zoom="19.445436"
+     inkscape:cx="12.856487"
+     inkscape:cy="15.067803"
+     inkscape:window-width="1693"
      inkscape:window-height="1214"
-     inkscape:window-x="1353"
-     inkscape:window-y="188"
+     inkscape:window-x="265"
+     inkscape:window-y="90"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg25" />
+     inkscape:current-layer="svg5" />
   <title
-     id="title1">wood-window-glassy-unlit</title>
+     id="title1">Off-white stucco — side texture</title>
+  <desc
+     id="desc1">Seamless warm off-white plaster with subtle trowel marks and fine stippling.</desc>
   <rect
-     x="0"
-     y="0"
      width="32"
      height="32"
-     fill="#ab8153"
+     fill="#e3dece"
      id="rect1" />
-  <rect
-     x="0"
-     y="0"
-     width="1"
-     height="32"
-     fill="#795a3b"
-     id="rect2" />
-  <rect
-     x="1"
-     y="0"
-     width="1"
-     height="32"
-     fill="#d2a974"
-     id="rect3" />
-  <rect
-     x="8"
-     y="0"
-     width="1"
-     height="32"
-     fill="#795a3b"
-     id="rect4" />
-  <rect
-     x="9"
-     y="0"
-     width="1"
-     height="32"
-     fill="#d2a974"
-     id="rect5" />
-  <rect
-     x="16"
-     y="0"
-     width="1"
-     height="32"
-     fill="#795a3b"
-     id="rect6" />
-  <rect
-     x="17"
-     y="0"
-     width="1"
-     height="32"
-     fill="#d2a974"
-     id="rect7" />
-  <rect
-     x="24"
-     y="0"
-     width="1"
-     height="32"
-     fill="#795a3b"
-     id="rect8" />
-  <rect
-     x="25"
-     y="0"
-     width="1"
-     height="32"
-     fill="#d2a974"
-     id="rect9" />
+  <path
+     d="M3 4h5v1h2v2H6V6H3zM20 2h5v1h2v2h-4V4h-3zM12 13h5v1h3v2h-6v-1h-2zM25 22h4v1h2v2h-4v-1h-2zM4 25h4v1h3v2H6v-1H4z"
+     fill="#e9e4d5"
+     id="path1" />
+  <path
+     d="M13 5h3v1h-3zM3 12h4v1H3zM23 11h3v1h-3zM7 19h3v1H7zM19 24h3v1h-3zM14 29h4v1h-4z"
+     fill="#d8d2c1"
+     id="path2" />
+  <path
+     d="M2 3h1v1H2zM11 9h1v1h-1zM18 2h1v1h-1zM28 7h1v1h-1zM5 16h1v1H5zM22 17h1v1h-1zM13 22h1v1h-1zM3 29h1v1H3zM29 29h1v1h-1z"
+     fill="#cec8b8"
+     id="path3" />
+  <path
+     d="M3 3h2v1H3zM12 9h1v1h-1zM19 2h1v1h-1zM29 7h1v1h-1zM6 16h1v1H6zM23 17h2v1h-2zM14 22h1v1h-1zM4 29h1v1H4zM30 29h1v1h-1z"
+     fill="#f0eadb"
+     id="path4" />
+  <path
+     d="M9 2h1v1H9zM16 18h2v1h-2zM28 14h1v1h-1zM8 30h2v1H8zM24 28h1v1h-1z"
+     fill="#ece7d8"
+     id="path5" />
   <g
-     id="g26">
+     id="g26"
+     transform="translate(-0.13698281,-1.0561196)">
     <g
        id="g25">
       <rect
@@ -144,15 +112,15 @@
          fill="#526b6b"
          id="rect15" />
       <polygon
-         points="7,8 10,8 7,11"
+         points="10,8 7,11 7,8 "
          fill="#869c93"
          id="polygon15" />
       <polygon
-         points="18,8 24,8 18,14"
+         points="24,8 18,14 18,8 "
          fill="#718b88"
          id="polygon16" />
       <polygon
-         points="7,20 10,17 13,17 7,23"
+         points="7,23 7,20 10,17 13,17 "
          fill="#718b88"
          id="polygon17" />
       <rect
@@ -220,4 +188,13 @@
          id="rect25" />
     </g>
   </g>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Off-white stucco — side texture</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
 </svg>

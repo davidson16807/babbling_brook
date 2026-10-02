@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="stucco-window-lit.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="19.445436"
+     inkscape:cx="12.856487"
+     inkscape:cy="15.067803"
+     inkscape:window-width="1693"
+     inkscape:window-height="1214"
+     inkscape:window-x="265"
+     inkscape:window-y="90"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg5" />
+  <title
+     id="title1">Off-white stucco — side texture</title>
+  <desc
+     id="desc1">Seamless warm off-white plaster with subtle trowel marks and fine stippling.</desc>
+  <rect
+     width="32"
+     height="32"
+     fill="#e3dece"
+     id="rect1" />
+  <path
+     d="M3 4h5v1h2v2H6V6H3zM20 2h5v1h2v2h-4V4h-3zM12 13h5v1h3v2h-6v-1h-2zM25 22h4v1h2v2h-4v-1h-2zM4 25h4v1h3v2H6v-1H4z"
+     fill="#e9e4d5"
+     id="path1" />
+  <path
+     d="M13 5h3v1h-3zM3 12h4v1H3zM23 11h3v1h-3zM7 19h3v1H7zM19 24h3v1h-3zM14 29h4v1h-4z"
+     fill="#d8d2c1"
+     id="path2" />
+  <path
+     d="M2 3h1v1H2zM11 9h1v1h-1zM18 2h1v1h-1zM28 7h1v1h-1zM5 16h1v1H5zM22 17h1v1h-1zM13 22h1v1h-1zM3 29h1v1H3zM29 29h1v1h-1z"
+     fill="#cec8b8"
+     id="path3" />
+  <path
+     d="M3 3h2v1H3zM12 9h1v1h-1zM19 2h1v1h-1zM29 7h1v1h-1zM6 16h1v1H6zM23 17h2v1h-2zM14 22h1v1h-1zM4 29h1v1H4zM30 29h1v1h-1z"
+     fill="#f0eadb"
+     id="path4" />
+  <path
+     d="M9 2h1v1H9zM16 18h2v1h-2zM28 14h1v1h-1zM8 30h2v1H8zM24 28h1v1h-1z"
+     fill="#ece7d8"
+     id="path5" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Off-white stucco — side texture</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g5"
+     transform="translate(-1.2342227,0.25712974)">
+    <rect
+       x="6.0065303"
+       y="4.8630171"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect10" />
+    <rect
+       x="14.00653"
+       y="17.863018"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect11" />
+    <rect
+       x="21.006531"
+       y="2.8630171"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect12" />
+    <rect
+       x="28.006531"
+       y="22.863018"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect13" />
+    <rect
+       x="5.0065303"
+       y="3.8630171"
+       width="24"
+       height="23"
+       fill="#574332"
+       id="rect14" />
+    <rect
+       x="7.0065303"
+       y="5.8630171"
+       width="20"
+       height="19"
+       fill="#c69c60"
+       id="rect15" />
+    <rect
+       x="9.0065298"
+       y="7.8630171"
+       width="16"
+       height="15"
+       fill="#e3bd7b"
+       id="rect16" />
+    <rect
+       x="11.00653"
+       y="9.8630171"
+       width="12"
+       height="11"
+       fill="#edd198"
+       id="rect17" />
+    <polygon
+       points="7,11 7,8 10,8 "
+       fill="#f0d99f"
+       id="polygon17"
+       transform="translate(1.0065303,-1.1369828)" />
+    <polygon
+       points="18,14 18,8 24,8 "
+       fill="#f0d99f"
+       id="polygon18"
+       transform="translate(1.0065303,-1.1369828)" />
+    <polygon
+       points="7,20 10,17 13,17 7,23 "
+       fill="#f0d99f"
+       id="polygon19"
+       transform="translate(1.0065303,-1.1369828)" />
+    <rect
+       x="16.006531"
+       y="5.8630171"
+       width="2"
+       height="19"
+       fill="#795a3b"
+       id="rect19" />
+    <rect
+       x="7.0065303"
+       y="13.863017"
+       width="20"
+       height="2"
+       fill="#795a3b"
+       id="rect20" />
+    <rect
+       x="16.006531"
+       y="5.8630171"
+       width="1"
+       height="19"
+       fill="#d2a974"
+       id="rect21" />
+    <rect
+       x="7.0065303"
+       y="13.863017"
+       width="20"
+       height="1"
+       fill="#d2a974"
+       id="rect22" />
+    <rect
+       x="4.0065303"
+       y="2.8630171"
+       width="26"
+       height="2"
+       fill="#d2a974"
+       id="rect23" />
+    <rect
+       x="5.0065303"
+       y="4.8630171"
+       width="1"
+       height="22"
+       fill="#d2a974"
+       id="rect24" />
+    <rect
+       x="28.006531"
+       y="4.8630171"
+       width="1"
+       height="22"
+       fill="#795a3b"
+       id="rect25" />
+    <rect
+       x="4.0065303"
+       y="25.863018"
+       width="26"
+       height="2"
+       fill="#d2a974"
+       id="rect26" />
+    <rect
+       x="4.0065303"
+       y="27.863018"
+       width="26"
+       height="1"
+       fill="#795a3b"
+       id="rect27" />
+  </g>
+</svg>

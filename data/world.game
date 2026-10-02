@@ -112,7 +112,41 @@ child	child-front-0.svg	x	0.24	1.1	0.65	x		you
 																																																			
 # box_archetypes																																																			
 # archetype	top_texture	side_texture	scale_x	scale_y	scale_z	is_collidable																																													
-crate-box	crate2.svg	crate2.svg	0.75	0.5	1.25	x																																													
+wood-window-glassless-lit	wood.svg	wood-window-glassless-lit.svg	0.9	0.9	0.9																																														
+wood-window-glassless-unlit	wood.svg	wood-window-glassless-unlit.svg	0.9	0.9	0.9																																														
+wood-window-glassy-lit	wood.svg	wood-window-glassy-lit.svg	0.9	0.9	0.9																																														
+wood-window-glassy-unlit	wood.svg	wood-window-glassy-unlit.svg	0.9	0.9	0.9																																														
+rubble-window-lit	rubble-top.svg	rubble-window-lit.svg	0.9	0.9	0.9																																														
+rubble-window-unlit	rubble-top.svg	rubble-window-unlit.svg	0.9	0.9	0.9																																														
+brick-window-lit	brick.svg	brick-window-lit.svg	0.9	0.9	0.9																																														
+brick-window-unlit	brick.svg	brick-window-unlit.svg	0.9	0.9	0.9																																														
+stucco-window-lit	stucco.svg	stucco-window-lit.svg	0.9	0.9	0.9																																														
+stucco-window-unlit	stucco.svg	stucco-window-unlit.svg	0.9	0.9	0.9																																														
+stone-window-lit	stucco.svg	stone-window-stained-lit.svg	0.9	0.9	1.8																																														
+stone-window-unlit	stucco.svg	stone-window-stained-unlit.svg	0.9	0.9	1.8																																														
+rubble-hearth-lit	rubble-top.svg	rubble-hearth-lit.svg	0.9	0.9	0.9																																														
+rubble-hearth-unlit	rubble-top.svg	rubble-hearth-unlit.svg	0.9	0.9	0.9																																														
+brick-hearth-lit	brick.svg	brick-hearth-lit.svg	0.9	0.9	0.9																																														
+brick-hearth-unlit	brick.svg	brick-hearth-unlit.svg	0.9	0.9	0.9																																														
+stucco-hearth-lit	stucco.svg	stucco-hearth-lit.svg	0.9	0.9	0.9																																														
+stucco-hearth-unlit	stucco.svg	stucco-hearth-unlit.svg	0.9	0.9	0.9																																														
+stone-hearth-lit	stone.svg	stone-hearth-lit.svg	0.9	0.9	0.9																																														
+stone-hearth-unlit	stone.svg	stone-hearth-unlit.svg	0.9	0.9	0.9																																														
+wood-threshold	wood.svg	wood-threshold.svg	0.9	0.9	1.8																																														
+rock-threshold	rubble-top.svg	rock-threshold.svg	0.9	0.9	1.8																																														
+rubble-threshold	rubble-top.svg	rubble-threshold.svg	0.9	0.9	1.8																																														
+brick-threshold	brick.svg	brick-threshold.svg	0.9	0.9	1.8																																														
+stucco-threshold	stucco.svg	stucco-threshold.svg	0.9	0.9	1.8																																														
+stone-threshold	stone.svg	stone-threshold.svg	0.9	0.9	1.8																																														
+wood-door	wood.svg	wood-door.svg	0.9	0.9	1.8																																														
+stone-door	stone.svg	stone-door.svg	0.9	0.9	1.8																																														
+wood-bookshelf	wood.svg	wood-bookshelf.svg	0.8	0.8	0.9																																														
+stone-bookshelf	stone.svg	stone-bookshelf.svg	0.8	0.8	0.9																																														
+wood-table	wood.svg	wood-table.svg	1.0	1.0	1.0	x																																													
+stone-table	stone.svg	stone-table.svg	1.0	1.0	1.0	x																																													
+crate-box	crate2.svg	crate2.svg	1.0	1.0	1.0	x																																													
+clay-pot	clay-pot.svg	clay.svg	0.5	0.5	0.5	x																																													
+wicker-basket	wicker-basket.svg	thatch.svg	0.5	0.5	0.5	x																																													
 																																																			
 # seasonal_billboard_archetypes																																																			
 # archetype	leaf_state	texture																																																	
@@ -290,12 +324,46 @@ villager	running	1	1	villager-back-1.svg	0.12
 																																																			
 # object_palette																																																			
 # index	archetype																																																		
-1	tree																																																		
-2	apple																																																		
-3	crate																																																		
-4	villager																																																		
-5	stick																																																		
-6	crate-box																																																		
+1	wood-window-glassless-lit																																																		
+2	wood-window-glassless-unlit																																																		
+3	wood-window-glassy-lit																																																		
+4	wood-window-glassy-unlit																																																		
+7	rubble-window-lit																																																		
+8	rubble-window-unlit																																																		
+9	brick-window-lit																																																		
+10	brick-window-unlit																																																		
+11	stucco-window-lit																																																		
+12	stucco-window-unlit																																																		
+13	stone-window-lit																																																		
+14	stone-window-unlit																																																		
+15	rubble-hearth-lit																																																		
+16	rubble-hearth-unlit																																																		
+17	brick-hearth-lit																																																		
+18	brick-hearth-unlit																																																		
+19	stucco-hearth-lit																																																		
+20	stucco-hearth-unlit																																																		
+21	stone-hearth-lit																																																		
+22	stone-hearth-unlit																																																		
+23	wood-threshold																																																		
+24	rock-threshold																																																		
+25	rubble-threshold																																																		
+26	brick-threshold																																																		
+27	stucco-threshold																																																		
+28	stone-threshold																																																		
+29	wood-door																																																		
+30	stone-door																																																		
+31	wood-bookshelf																																																		
+32	stone-bookshelf																																																		
+33	wood-table																																																		
+34	stone-table																																																		
+35	crate-box																																																		
+36	clay-pot																																																		
+37	wicker-basket																																																		
+38	tree																																																		
+39	apple																																																		
+40	crate																																																		
+42	villager																																																		
+43	stick																																																		
 																																																			
 # billboards																																																			
 # entity	archetype	x	y	z																																															

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg21"
+   sodipodi:docname="brick-window-lit.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs21" />
+  <sodipodi:namedview
+     id="namedview21"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="6.875"
+     inkscape:cx="18.036364"
+     inkscape:cy="29.963636"
+     inkscape:window-width="1033"
+     inkscape:window-height="1214"
+     inkscape:window-x="620"
+     inkscape:window-y="141"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg21" />
+  <title
+     id="title1">brick</title>
+  <rect
+     x="0"
+     y="0"
+     width="32"
+     height="32"
+     fill="#a86049"
+     id="rect1" />
+  <rect
+     x="0"
+     y="0"
+     width="32"
+     height="1"
+     fill="#d0b08b"
+     id="rect2" />
+  <rect
+     x="0"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect3" />
+  <rect
+     x="2"
+     y="2"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect4" />
+  <rect
+     x="16"
+     y="0"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect5" />
+  <rect
+     x="18"
+     y="2"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect6" />
+  <rect
+     x="0"
+     y="8"
+     width="32"
+     height="1"
+     fill="#d0b08b"
+     id="rect7" />
+  <rect
+     x="8"
+     y="8"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect8" />
+  <rect
+     x="10"
+     y="10"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect9" />
+  <rect
+     x="24"
+     y="8"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect10" />
+  <rect
+     x="26"
+     y="10"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect11" />
+  <rect
+     x="0"
+     y="16"
+     width="32"
+     height="1"
+     fill="#d0b08b"
+     id="rect12" />
+  <rect
+     x="0"
+     y="16"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect13" />
+  <rect
+     x="2"
+     y="18"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect14" />
+  <rect
+     x="16"
+     y="16"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect15" />
+  <rect
+     x="18"
+     y="18"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect16" />
+  <rect
+     x="0"
+     y="24"
+     width="32"
+     height="1"
+     fill="#d0b08b"
+     id="rect17" />
+  <rect
+     x="8"
+     y="24"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect18" />
+  <rect
+     x="10"
+     y="26"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect19" />
+  <rect
+     x="24"
+     y="24"
+     width="1"
+     height="8"
+     fill="#d0b08b"
+     id="rect20" />
+  <rect
+     x="26"
+     y="26"
+     width="12"
+     height="1"
+     fill="#c07b59"
+     id="rect21" />
+  <g
+     id="g21"
+     transform="translate(-4.3636364,-36.363636)">
+    <rect
+       x="10"
+       y="42"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect10-3" />
+    <rect
+       x="18"
+       y="55"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect11-6" />
+    <rect
+       x="25"
+       y="40"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect12-7" />
+    <rect
+       x="32"
+       y="60"
+       width="1"
+       height="5"
+       fill="#8d673e"
+       id="rect13-5" />
+    <rect
+       x="9"
+       y="41"
+       width="24"
+       height="23"
+       fill="#574332"
+       id="rect14-3" />
+    <rect
+       x="11"
+       y="43"
+       width="20"
+       height="19"
+       fill="#c69c60"
+       id="rect15-5" />
+    <rect
+       x="13"
+       y="45"
+       width="16"
+       height="15"
+       fill="#e3bd7b"
+       id="rect16-6" />
+    <rect
+       x="15"
+       y="47"
+       width="12"
+       height="11"
+       fill="#edd198"
+       id="rect17-2" />
+    <polygon
+       points="7,11 7,8 10,8 "
+       fill="#f0d99f"
+       id="polygon17"
+       transform="translate(5,36)" />
+    <polygon
+       points="18,14 18,8 24,8 "
+       fill="#f0d99f"
+       id="polygon18"
+       transform="translate(5,36)" />
+    <polygon
+       points="7,20 10,17 13,17 7,23 "
+       fill="#f0d99f"
+       id="polygon19"
+       transform="translate(5,36)" />
+    <rect
+       x="20"
+       y="43"
+       width="2"
+       height="19"
+       fill="#795a3b"
+       id="rect19-9" />
+    <rect
+       x="11"
+       y="51"
+       width="20"
+       height="2"
+       fill="#795a3b"
+       id="rect20-1" />
+    <rect
+       x="20"
+       y="43"
+       width="1"
+       height="19"
+       fill="#d2a974"
+       id="rect21-2" />
+    <rect
+       x="11"
+       y="51"
+       width="20"
+       height="1"
+       fill="#d2a974"
+       id="rect22" />
+    <rect
+       x="8"
+       y="40"
+       width="26"
+       height="2"
+       fill="#d2a974"
+       id="rect23" />
+    <rect
+       x="9"
+       y="42"
+       width="1"
+       height="22"
+       fill="#d2a974"
+       id="rect24" />
+    <rect
+       x="32"
+       y="42"
+       width="1"
+       height="22"
+       fill="#795a3b"
+       id="rect25" />
+    <rect
+       x="8"
+       y="63"
+       width="26"
+       height="2"
+       fill="#d2a974"
+       id="rect26" />
+    <rect
+       x="8"
+       y="65"
+       width="26"
+       height="1"
+       fill="#795a3b"
+       id="rect27" />
+  </g>
+</svg>

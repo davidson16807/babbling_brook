@@ -1,37 +1,257 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="64" viewBox="0 0 32 64" shape-rendering="crispEdges">
-<title>stone-threshold</title>
-<desc>Dark opening with dressed-stone jambs, a complete lintel, and a low sill. Does not tile vertically.</desc>
-<rect x="0" y="0" width="32" height="64" fill="#a1a497"/>
-<rect x="0" y="16" width="5" height="1" fill="#626d67"/>
-<rect x="0" y="17" width="5" height="1" fill="#b8b8a7"/>
-<rect x="0" y="32" width="5" height="1" fill="#626d67"/>
-<rect x="0" y="33" width="5" height="1" fill="#b8b8a7"/>
-<rect x="0" y="48" width="5" height="1" fill="#626d67"/>
-<rect x="0" y="49" width="5" height="1" fill="#b8b8a7"/>
-<rect x="1" y="11" width="2" height="1" fill="#b8b8a7"/>
-<rect x="1" y="26" width="2" height="1" fill="#b8b8a7"/>
-<rect x="1" y="42" width="2" height="1" fill="#b8b8a7"/>
-<rect x="1" y="56" width="2" height="1" fill="#b8b8a7"/>
-<rect x="27" y="16" width="5" height="1" fill="#626d67"/>
-<rect x="27" y="17" width="5" height="1" fill="#b8b8a7"/>
-<rect x="27" y="32" width="5" height="1" fill="#626d67"/>
-<rect x="27" y="33" width="5" height="1" fill="#b8b8a7"/>
-<rect x="27" y="48" width="5" height="1" fill="#626d67"/>
-<rect x="27" y="49" width="5" height="1" fill="#b8b8a7"/>
-<rect x="28" y="11" width="2" height="1" fill="#b8b8a7"/>
-<rect x="28" y="26" width="2" height="1" fill="#b8b8a7"/>
-<rect x="28" y="42" width="2" height="1" fill="#b8b8a7"/>
-<rect x="28" y="56" width="2" height="1" fill="#b8b8a7"/>
-<rect x="0" y="0" width="32" height="1" fill="#c5c5b2"/>
-<rect x="0" y="6" width="32" height="1" fill="#848c85"/>
-<rect x="9" y="0" width="1" height="7" fill="#848c85"/>
-<rect x="22" y="0" width="1" height="7" fill="#848c85"/>
-<rect x="5" y="7" width="22" height="55" fill="#626d67"/>
-<rect x="7" y="9" width="18" height="53" fill="#101411"/>
-<rect x="8" y="10" width="16" height="52" fill="#060807"/>
-<rect x="26" y="8" width="1" height="54" fill="#b8b8a7"/>
-<rect x="4" y="8" width="1" height="54" fill="#b8b8a7"/>
-<rect x="5" y="62" width="22" height="1" fill="#c5c5b2"/>
-<rect x="5" y="63" width="22" height="1" fill="#848c85"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="64"
+   viewBox="0 0 32 64"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg32"
+   sodipodi:docname="stone-threshold.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs32" />
+  <sodipodi:namedview
+     id="namedview32"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="16.0625"
+     inkscape:cx="15.968872"
+     inkscape:cy="31.968872"
+     inkscape:window-width="2494"
+     inkscape:window-height="1371"
+     inkscape:window-x="66"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg32" />
+  <title
+     id="title1">stone-threshold</title>
+  <desc
+     id="desc1">Dark opening with dressed-stone jambs, a complete lintel, and a low sill. Does not tile vertically.</desc>
+  <rect
+     x="0"
+     y="0"
+     width="32"
+     height="64"
+     fill="#a1a497"
+     id="rect1" />
+  <rect
+     x="0"
+     y="16"
+     width="5"
+     height="1"
+     fill="#626d67"
+     id="rect2" />
+  <rect
+     x="0"
+     y="17"
+     width="5"
+     height="1"
+     fill="#b8b8a7"
+     id="rect3" />
+  <rect
+     x="0"
+     y="32"
+     width="5"
+     height="1"
+     fill="#626d67"
+     id="rect4" />
+  <rect
+     x="0"
+     y="33"
+     width="5"
+     height="1"
+     fill="#b8b8a7"
+     id="rect5" />
+  <rect
+     x="0"
+     y="48"
+     width="5"
+     height="1"
+     fill="#626d67"
+     id="rect6" />
+  <rect
+     x="0"
+     y="49"
+     width="5"
+     height="1"
+     fill="#b8b8a7"
+     id="rect7" />
+  <rect
+     x="1"
+     y="11"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect8" />
+  <rect
+     x="1"
+     y="26"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect9" />
+  <rect
+     x="1"
+     y="42"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect10" />
+  <rect
+     x="1"
+     y="56"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect11" />
+  <rect
+     x="27"
+     y="16"
+     width="5"
+     height="1"
+     fill="#626d67"
+     id="rect12" />
+  <rect
+     x="27"
+     y="17"
+     width="5"
+     height="1"
+     fill="#b8b8a7"
+     id="rect13" />
+  <rect
+     x="27"
+     y="32"
+     width="5"
+     height="1"
+     fill="#626d67"
+     id="rect14" />
+  <rect
+     x="27"
+     y="33"
+     width="5"
+     height="1"
+     fill="#b8b8a7"
+     id="rect15" />
+  <rect
+     x="27"
+     y="48"
+     width="5"
+     height="1"
+     fill="#626d67"
+     id="rect16" />
+  <rect
+     x="27"
+     y="49"
+     width="5"
+     height="1"
+     fill="#b8b8a7"
+     id="rect17" />
+  <rect
+     x="28"
+     y="11"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect18" />
+  <rect
+     x="28"
+     y="26"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect19" />
+  <rect
+     x="28"
+     y="42"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect20" />
+  <rect
+     x="28"
+     y="56"
+     width="2"
+     height="1"
+     fill="#b8b8a7"
+     id="rect21" />
+  <rect
+     x="0"
+     y="0"
+     width="32"
+     height="1"
+     fill="#c5c5b2"
+     id="rect22" />
+  <rect
+     x="0"
+     y="6"
+     width="32"
+     height="1"
+     fill="#848c85"
+     id="rect23" />
+  <rect
+     x="9"
+     y="0"
+     width="1"
+     height="7"
+     fill="#848c85"
+     id="rect24" />
+  <rect
+     x="22"
+     y="0"
+     width="1"
+     height="7"
+     fill="#848c85"
+     id="rect25" />
+  <rect
+     x="5"
+     y="7"
+     width="22"
+     height="55"
+     fill="#626d67"
+     id="rect26" />
+  <rect
+     x="7"
+     y="9"
+     width="18"
+     height="53"
+     fill="#101411"
+     id="rect27"
+     style="fill:#282b29" />
+  <rect
+     x="26"
+     y="8"
+     width="1"
+     height="54"
+     fill="#b8b8a7"
+     id="rect29" />
+  <rect
+     x="4"
+     y="8"
+     width="1"
+     height="54"
+     fill="#b8b8a7"
+     id="rect30" />
+  <rect
+     x="5"
+     y="62"
+     width="22"
+     height="1"
+     fill="#c5c5b2"
+     id="rect31" />
+  <rect
+     x="5"
+     y="63"
+     width="22"
+     height="1"
+     fill="#848c85"
+     id="rect32" />
 </svg>

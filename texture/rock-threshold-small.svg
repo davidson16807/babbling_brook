@@ -1,21 +1,125 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
-<title>cavern-entrance-small</title>
-<desc>Small complete cavern opening with jagged roof and rock floor. Use on a one-unit-high face; not vertically seamless.</desc>
-<rect x="0" y="0" width="32" height="32" fill="#a1a497"/>
-<rect x="31" y="0" width="1" height="32" fill="#848c85"/>
-<rect x="5" y="8" width="3" height="1" fill="#848c85"/>
-<rect x="21" y="5" width="3" height="1" fill="#848c85"/>
-<rect x="13" y="23" width="3" height="1" fill="#848c85"/>
-<rect x="27" y="17" width="3" height="1" fill="#848c85"/>
-<rect x="0" y="31" width="32" height="1" fill="#848c85"/>
-<polygon points="4,25 5,20 3,18 6,15 6,11 10,10 12,6 17,7 20,5 23,9 27,10 26,14 29,18 27,21 28,26 25,29 8,30" fill="#848c85"/>
-<polygon points="6,25 7,20 5,18 8,15 8,12 11,12 13,8 17,10 20,8 22,11 25,12 24,15 27,18 25,21 26,25 24,28 9,28" fill="#626d67"/>
-<polygon points="8,25 9,21 7,18 10,15 10,13 13,14 14,10 17,12 20,10 21,13 24,14 22,17 25,19 23,22 24,25 22,27 10,27" fill="#080b09"/>
-<polygon points="6,15 6,11 10,10 12,6 14,7 12,8 11,11 8,12 8,15 5,18" fill="#b8b8a7"/>
-<polygon points="17,7 20,5 23,9 22,10 20,7 18,9" fill="#b8b8a7"/>
-<polygon points="25,12 27,10 26,14 29,18 27,21 27,18 24,15" fill="#747e77"/>
-<polygon points="8,28 11,28 12,29 23,28 25,29 9,30" fill="#b8b8a7"/>
-<polygon points="2,9 4,7 7,7 5,8 4,8 3,12" fill="#848c85"/>
-<polygon points="25,4 27,5 28,8 27,7 25,6" fill="#848c85"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="32"
+   height="32"
+   viewBox="0 0 32 32"
+   shape-rendering="crispEdges"
+   version="1.1"
+   id="svg15"
+   sodipodi:docname="rock-threshold-small.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs15" />
+  <sodipodi:namedview
+     id="namedview15"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="28.1875"
+     inkscape:cx="15.982262"
+     inkscape:cy="15.982262"
+     inkscape:window-width="2494"
+     inkscape:window-height="1371"
+     inkscape:window-x="66"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg15" />
+  <title
+     id="title1">cavern-entrance-small</title>
+  <desc
+     id="desc1">Small complete cavern opening with jagged roof and rock floor. Use on a one-unit-high face; not vertically seamless.</desc>
+  <rect
+     x="0"
+     y="0"
+     width="32"
+     height="32"
+     fill="#a1a497"
+     id="rect1" />
+  <rect
+     x="31"
+     y="0"
+     width="1"
+     height="32"
+     fill="#848c85"
+     id="rect2" />
+  <rect
+     x="5"
+     y="8"
+     width="3"
+     height="1"
+     fill="#848c85"
+     id="rect3" />
+  <rect
+     x="21"
+     y="5"
+     width="3"
+     height="1"
+     fill="#848c85"
+     id="rect4" />
+  <rect
+     x="13"
+     y="23"
+     width="3"
+     height="1"
+     fill="#848c85"
+     id="rect5" />
+  <rect
+     x="27"
+     y="17"
+     width="3"
+     height="1"
+     fill="#848c85"
+     id="rect6" />
+  <rect
+     x="0"
+     y="31"
+     width="32"
+     height="1"
+     fill="#848c85"
+     id="rect7" />
+  <polygon
+     points="4,25 5,20 3,18 6,15 6,11 10,10 12,6 17,7 20,5 23,9 27,10 26,14 29,18 27,21 28,26 25,29 8,30"
+     fill="#848c85"
+     id="polygon7" />
+  <polygon
+     points="6,25 7,20 5,18 8,15 8,12 11,12 13,8 17,10 20,8 22,11 25,12 24,15 27,18 25,21 26,25 24,28 9,28"
+     fill="#626d67"
+     id="polygon8" />
+  <polygon
+     points="8,25 9,21 7,18 10,15 10,13 13,14 14,10 17,12 20,10 21,13 24,14 22,17 25,19 23,22 24,25 22,27 10,27"
+     fill="#080b09"
+     id="polygon9"
+     style="fill:#282b29" />
+  <polygon
+     points="6,15 6,11 10,10 12,6 14,7 12,8 11,11 8,12 8,15 5,18"
+     fill="#b8b8a7"
+     id="polygon10" />
+  <polygon
+     points="17,7 20,5 23,9 22,10 20,7 18,9"
+     fill="#b8b8a7"
+     id="polygon11" />
+  <polygon
+     points="25,12 27,10 26,14 29,18 27,21 27,18 24,15"
+     fill="#747e77"
+     id="polygon12" />
+  <polygon
+     points="8,28 11,28 12,29 23,28 25,29 9,30"
+     fill="#b8b8a7"
+     id="polygon13" />
+  <polygon
+     points="2,9 4,7 7,7 5,8 4,8 3,12"
+     fill="#848c85"
+     id="polygon14" />
+  <polygon
+     points="25,4 27,5 28,8 27,7 25,6"
+     fill="#848c85"
+     id="polygon15" />
 </svg>
