@@ -106,7 +106,7 @@ grass	grass.svg	leaves.svg	grass-dead.svg	snow.svg
 tree	tree.svg	x	0.35	3.0	1.0			tree																																											
 apple	apple.svg		0.15	0.32	0.32	x	collect_apple	apple																																											
 crate	crate.svg	x	0.45	0.9	0.9			crate																																											
-villager	villager-front-0.svg	x	0.28	1.3	0.7		greet	villager																																											
+villager	villager-front-0.svg	x	0.28	1.8	0.7		greet	villager																																											
 stick	stick.svg		0.12	0.28	0.55	x	collect_stick	stick																																											
 child	child-front-0.svg	x	0.24	1.1	0.65	x		you																																											
 																																																			
@@ -371,7 +371,7 @@ player	child	7	10	1
 																																																			
 # boxes																																																			
 # entity	archetype	x	y	z																																															
-crate1	crate-box	12.5	9.5	2.0
+crate1	crate-box	12.5	9.5	2.0																																															
 																																																			
 # physics																																																			
 # entity	vertical_velocity	is_grounded																																																	
