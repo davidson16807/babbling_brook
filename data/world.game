@@ -371,7 +371,7 @@ player	child	7	10	1
 																																																			
 # boxes																																																			
 # entity	archetype	x	y	z																																															
-crate1	crate-box	9.5	10.5	1																																															
+crate1	crate-box	12.5	9.5	2.0
 																																																			
 # physics																																																			
 # entity	vertical_velocity	is_grounded																																																	

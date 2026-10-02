@@ -124,13 +124,16 @@ in float lighting;
 flat in int is_top;
 out vec4 color;
 void main() {
-    vec3 texture_color;
+    vec4 texture_sample;
     if (is_top == 1) {
-        texture_color = texture(top_image, uv).rgb;
+        texture_sample = texture(top_image, uv);
     } else {
-        texture_color = texture(side_image, vec2(uv.x, fract(uv.y))).rgb;
+        texture_sample = texture(side_image, vec2(uv.x, fract(uv.y)));
     }
-    color = vec4(texture_color * lighting * light_color, 1.0);
+    if (texture_sample.a <= 0.0) {
+        discard;
+    }
+    color = vec4(texture_sample.rgb * lighting * light_color, texture_sample.a);
 }
 """
 
@@ -195,9 +198,13 @@ void main() {
             raise ValueError("Tile coordinates, heights, and base heights must have equal lengths")
         if not coordinates:
             return
-        self.gl.enable_only(gl.DEPTH_TEST | gl.CULL_FACE)
+        # Tile textures may contain transparent SVG pixels (tables, stairs,
+        # windows, etc.). Keep depth testing/culling, then composite their RGB
+        # over terrain instead of treating transparent texels as black.
+        self.gl.enable_only(gl.DEPTH_TEST | gl.CULL_FACE | gl.BLEND)
         self.gl.front_face = "ccw"
         self.gl.cull_face = "back"
+        self.gl.blend_func = gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA
         self.gl.fbo.depth_mask = True
         self.gl.depth_func = "<="
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
