@@ -90,11 +90,11 @@ class EditorUpdater:
         map_ = self.map_codec.decode(image)
         billboards, boxes = ObjectPlacementCodec(
             self.object_palette, map_, disable_validation=True,
-            box_archetypes=self.box_archetypes).decode_components(image)
+            box_archetypes=self.box_archetypes, zone=state.content.zone).decode_components(image)
         # Regenerate map placements after a pixel edit, retaining explicit ones.
         previous = ObjectPlacementCodec(
             self.object_palette, state.map, disable_validation=True,
-            box_archetypes=self.box_archetypes).decode(state.content.image)
+            box_archetypes=self.box_archetypes, zone=state.content.zone).decode(state.content.image)
         billboards.update((key, value) for key, value in state.content.billboards.items()
                           if key not in previous)
         boxes.update((key, value) for key, value in state.content.boxes.items()
@@ -122,7 +122,7 @@ class EditorUpdater:
         content = state.content
         pixels = list(content.image.pixels)
         mapped = ObjectPlacementCodec(self.object_palette, state.map, disable_validation=True,
-                                      box_archetypes=self.box_archetypes).decode(content.image)
+                                      box_archetypes=self.box_archetypes, zone=state.content.zone).decode(content.image)
         tables = [dict(content.billboards), dict(content.boxes), dict(content.character_instances)]
         occupied = set().union(*tables)
         selected = set(state.selected_objects)

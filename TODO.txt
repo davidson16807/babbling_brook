@@ -1,6 +1,4 @@
 
-* TileProgram and BillboardProgram should respect out-scatter and in-scatter from scattering coefficients and gamma using same logic from LightQuery
-
 * parameter in TileProgram that indicates whether sides and tops on the border of a map should be discarded by flipping their normal
 
 * "Liquid" archetype component:
@@ -25,7 +23,7 @@
 
 * add behavior that seasonally changes grass, leaves, trees, and snow
 
-* add overlay for snow and precipitation
+* add overlay for rain, snow, and fog
 
 * behavior for "Waypoint" object archetype components:
 	game state is updated so:

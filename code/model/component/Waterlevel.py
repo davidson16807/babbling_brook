@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Waterlevel:
-    map: str
+    zone: str
     high_tide_liquid_level: float
     low_tide_liquid_level: float
-    liquid_id: str | None = None
+    liquid: str | None = None

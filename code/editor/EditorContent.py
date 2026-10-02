@@ -20,6 +20,8 @@ class EditorContent:
     # serialized in the game's billboards table.
     character_instances: dict[EntityId, BillboardPlacement] = field(default_factory=dict)
 
+    zone: str = ""
+
     def object_center(self, entities):
         positions = [item.position for table in (self.billboards, self.boxes, self.character_instances)
                      for key, item in table.items() if key in entities]

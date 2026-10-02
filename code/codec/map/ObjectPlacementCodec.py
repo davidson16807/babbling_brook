@@ -10,7 +10,8 @@ from ...model.identifiers import ArchetypeId, EntityId
 
 class ObjectPlacementCodec:
     def __init__(self, object_palette: dict[int, ArchetypeId], map: Map,
-                 disable_validation: bool = False, box_archetypes=None, billboard_archetypes=None):
+                 disable_validation: bool = False, box_archetypes=None, billboard_archetypes=None, zone=""):
+        self.zone = zone
         self.object_palette = object_palette
         self.box_archetypes = box_archetypes or {}
         if billboard_archetypes is not None:
@@ -39,8 +40,8 @@ class ObjectPlacementCodec:
             position = glm.vec2(*coordinate) + glm.vec2(0.5)
             origin = glm.vec3(position, self.map.height(position))
             objects[str(coordinate)] = (
-                BoxPlacement(archetype, origin)
-                if archetype in self.box_archetypes else BillboardPlacement(archetype, origin)
+                BoxPlacement(archetype, origin, self.zone)
+                if archetype in self.box_archetypes else BillboardPlacement(archetype, origin, self.zone)
             )
         return objects
 

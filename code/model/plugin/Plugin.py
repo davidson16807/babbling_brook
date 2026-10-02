@@ -1,13 +1,15 @@
 # HUMAN VETTED
 
 from collections.abc import Iterator, Sequence
+from ..component.Waypoint import Waypoint, CardinalWaypoint
+
 from dataclasses import dataclass, field
 from typing import ClassVar, overload
 
 from ..component.archetypes import (BillboardArchetype, TileArchetype, BoxArchetype, CharacterArchetype,
-                                    AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
+                                    CreatureArchetype, Liquid, SeasonalTileArchetype)
 from ..component.Cycle import Cycle
-from ..component.Map import Map
+from ..component.Zone import Biome, Zone, ZoneDirections, ZoneAdjacency
 from ..component.Landmark import Landmark
 from ..component.Waterlevel import Waterlevel
 from ..component.instances import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
@@ -33,13 +35,19 @@ class Plugin(Sequence[dict]):
     format: dict[str, int] = field(default_factory=dict)
     globals: dict[str, float] = field(default_factory=dict)
     cycles: dict[str, Cycle] = field(default_factory=dict)
-    maps: dict[int, Map] = field(default_factory=dict)
+    biomes: dict[str, Biome] = field(default_factory=dict)
+    biome_spawns: dict[tuple[str, str], None] = field(default_factory=dict)
+    zones: dict[str, Zone] = field(default_factory=dict)
+    zone_directions: dict[str, ZoneDirections] = field(default_factory=dict)
+    zone_adjacencies: dict[tuple[str, str, str], ZoneAdjacency] = field(default_factory=dict)
+    cardinal_waypoints: dict[str, CardinalWaypoint] = field(default_factory=dict)
+    colorcodes: dict[str, str] = field(default_factory=dict)
     inventory: dict[tuple[EntityId, str], int] = field(default_factory=dict)
     tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
     box_archetypes: dict[ArchetypeId, BoxArchetype] = field(default_factory=dict)
     billboard_archetypes: dict[ArchetypeId, BillboardArchetype] = field(default_factory=dict)
     character_archetypes: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
-    animals: dict[ArchetypeId, AnimalArchetype] = field(default_factory=dict)
+    creatures: dict[ArchetypeId, CreatureArchetype] = field(default_factory=dict)
     liquids: dict[ArchetypeId, Liquid] = field(default_factory=dict)
     waypoints: dict[ArchetypeId, Waypoint] = field(default_factory=dict)
     animation_frames: dict[AnimationFrameId, AnimationFrame] = field(default_factory=dict)
@@ -59,8 +67,16 @@ class Plugin(Sequence[dict]):
         'format',
         'globals',
         'cycles',
-        'maps',
+        'biomes',
+        'biome_spawns',
+        'zones',
         'waterlevels',
+        'zone_directions',
+        'zone_adjacencies',
+        'waypoints',
+        'cardinal_waypoints',
+        'landmarks',
+        'colorcodes',
         'tiles',
         'liquids',
         'seasonal_tiles',
@@ -68,9 +84,7 @@ class Plugin(Sequence[dict]):
         'box_archetypes',
         'seasonal_billboards',
         'character_archetypes',
-        'animals',
-        'waypoints',
-        'landmarks',
+        'creatures',
         'animation_frames',
         'tile_palette',
         'object_palette',

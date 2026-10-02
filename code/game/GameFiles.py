@@ -37,9 +37,14 @@ class GameFiles:
             image = PpmImageCodec().decode(file.read())
         map_ = MapCodec(plugin.tile_palette, plugin.tiles).decode(image)
 
+        zone_ids = {key for key, zone in plugin.zones.items()
+                    if any((filename.parent / zone.map_filename).resolve() == map_filename.resolve()
+                           for filename in game_filenames)}
+        zone_id = next(iter(zone_ids)) if len(zone_ids) == 1 else ''
+
         object_codec = ObjectPlacementCodec(
             plugin.object_palette, map_, box_archetypes=plugin.box_archetypes,
-            billboard_archetypes=plugin.billboard_archetypes)
+            billboard_archetypes=plugin.billboard_archetypes, zone=zone_id)
         if save_filename is not None:
             plugin = self.plugin_ops.update(plugin, self._plugin(save_filename))
         else:

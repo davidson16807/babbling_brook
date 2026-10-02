@@ -31,9 +31,13 @@ class EditorFiles:
     def load(self, filename: Path) -> EditorState:
         image = self.ppm_codec.decode(filename.read_text(encoding='ascii'))
         map_ = self.map_codec.decode(image)
+        zone_ids = {key for key, zone in self.plugin.zones.items()
+                    if self.game_filename is not None
+                    and (self.game_filename.parent / zone.map_filename).resolve() == filename.resolve()}
+        zone_id = next(iter(zone_ids)) if len(zone_ids) == 1 else ''
         billboards, boxes = ObjectPlacementCodec(
             self.object_palette, map_, disable_validation=True,
-            box_archetypes=self.box_archetypes).decode_components(image)
+            box_archetypes=self.box_archetypes, zone=zone_id).decode_components(image)
         characters = {key: item for key, item in self.plugin.billboards.items()
                       if key in self.plugin.characters or item.archetype in self.plugin.character_archetypes
                       or any(frame[0] == item.archetype for frame in self.plugin.animation_frames)}
@@ -41,7 +45,7 @@ class EditorFiles:
         # Explicit ECS IDs take precedence over generated map IDs, as in GameFiles.
         for key in characters:
             billboards.pop(key, None)
-        content = EditorContent(image, billboards, {**boxes, **self.plugin.boxes}, characters)
+        content = EditorContent(image, billboards, {**boxes, **self.plugin.boxes}, characters, zone_id)
         return EditorState(content, map_, [(image.width // 2, image.height // 2)])
 
     def _pack(self, state):
@@ -49,7 +53,7 @@ class EditorFiles:
         content = state.content
         pixels = list(content.image.pixels)
         mapped = ObjectPlacementCodec(self.object_palette, state.map, disable_validation=True,
-                                      box_archetypes=self.box_archetypes).decode(content.image)
+                                      box_archetypes=self.box_archetypes, zone=content.zone).decode(content.image)
         tables = [dict(content.billboards), dict(content.boxes)]
         explicit = [{}, {}]
         renamed = {}
@@ -65,6 +69,7 @@ class EditorFiles:
                 x, y = floor(position.x), floor(position.y)
                 index = y * content.image.width + x
                 can_pack = (key.startswith('editor-object-') and key not in reserved
+                            and item.zone == content.zone
                             and 0 <= x < content.image.width and 0 <= y < content.image.height
                             and isclose(position.x, x + .5, abs_tol=1e-6, rel_tol=0)
                             and isclose(position.y, y + .5, abs_tol=1e-6, rel_tol=0)

@@ -59,7 +59,7 @@ class CharacterArchetype:
     masons: bool = False
     picks_locks: bool = False
     controls_weather: bool = False
-    animal_friend: bool = False
+    creature_friend: bool = False
     owes_player: bool = False
     unescortable: bool = False
     criminal: bool = False
@@ -72,9 +72,9 @@ class TileArchetype:
     # Zero is flat; infinity allows unlimited erosion. Heights use world units.
     max_erosion: float = 0.0
     is_collidable: bool = True
-    windswept: bool = False
-    waterswept: bool = False
-    disturbed: bool = False
+    has_detritus: bool = False
+    is_moist: bool = False
+    is_disturbed: bool = False
 
     def __post_init__(self):
         if isnan(self.max_erosion) or self.max_erosion < 0:
@@ -109,7 +109,7 @@ class BillboardArchetype:
 
 
 @dataclass(frozen=True)
-class AnimalArchetype:
+class CreatureArchetype:
     run_speed: float = 0.0
     swim_speed: float = 0.0
     climb_speed: float = 0.0
@@ -136,16 +136,8 @@ class Liquid:
     freezing_temperature: float
     frozen_texture: str
     viscosity: float
-    unpassable: bool = False
+    is_unpassable: bool = False
     side_texture: str = ""
-
-
-@dataclass(frozen=True)
-class Waypoint:
-    name: str
-    in_game_texture: str
-    in_editor_texture: str
-    is_door: bool = False
 
 
 @dataclass(frozen=True)

@@ -1,9 +1,11 @@
 # HUMAN VETTED
 
+from ..component.Waypoint import Waypoint
+
 from dataclasses import dataclass, field
 
 from ..component.archetypes import (CharacterArchetype, BillboardArchetype, TileArchetype, BoxArchetype,
-                                    AnimalArchetype, Liquid, Waypoint, SeasonalTileArchetype)
+                                    CreatureArchetype, Liquid, SeasonalTileArchetype)
 from ..identifiers import ArchetypeId
 
 '''
@@ -20,7 +22,7 @@ class ArchetypeComponentStores:
     billboards: dict[ArchetypeId, BillboardArchetype] = field(default_factory=dict)
     characters: dict[ArchetypeId, CharacterArchetype] = field(default_factory=dict)
     tiles: dict[ArchetypeId, TileArchetype] = field(default_factory=dict)
-    animals: dict[ArchetypeId, AnimalArchetype] = field(default_factory=dict)
+    creatures: dict[ArchetypeId, CreatureArchetype] = field(default_factory=dict)
     liquids: dict[ArchetypeId, Liquid] = field(default_factory=dict)
     waypoints: dict[ArchetypeId, Waypoint] = field(default_factory=dict)
     seasonal_tiles: dict[ArchetypeId, SeasonalTileArchetype] = field(default_factory=dict)

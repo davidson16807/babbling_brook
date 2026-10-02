@@ -22,12 +22,14 @@ class VerticalPhysics:
 class BillboardPlacement:
     archetype: ArchetypeId
     position: glm.vec3
+    zone: str = ""
 
 @dataclass(frozen=True)
 class BoxPlacement:
     """A box archetype instance positioned at its bottom-center."""
     archetype: ArchetypeId
     position: glm.vec3
+    zone: str = ""
 
 @dataclass(frozen=True)
 class CharacterAnimationState:
