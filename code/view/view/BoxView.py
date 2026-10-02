@@ -21,7 +21,8 @@ class BoxView:
             archetype = archetypes[key]
             self.program.draw(archetype.top_texture, archetype.side_texture,
                               tuple(coordinates), tuple(heights), tuple(bases),
-                              view_state, scale=archetype.scale, is_box=True)
+                              view_state, scale=archetype.scale, is_box=True,
+                              cull_back_faces=False)
 
     def release(self):
         self.program.release()

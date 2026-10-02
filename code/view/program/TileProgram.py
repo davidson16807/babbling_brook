@@ -178,7 +178,8 @@ void main() {
         view: ViewState,
         *,
         scale: glm.vec3 = glm.vec3(1),
-        is_box: bool = False
+        is_box: bool = False,
+        cull_back_faces: bool = True
     ) -> None:
         """Draw one tile per coordinate, height matrix, and base height.
 
@@ -191,6 +192,7 @@ void main() {
         The optional uniform scale acts about (coordinate.x, coordinate.y, base_height).
         Box mode anchors side UVs at the local base; supply unit-height geometry
         to stretch one texture over the box height.
+        Set cull_back_faces=False to render both sides of each face.
         """
         if self.released:
             return
@@ -199,9 +201,10 @@ void main() {
         if not coordinates:
             return
         # Tile textures may contain transparent SVG pixels (tables, stairs,
-        # windows, etc.). Keep depth testing/culling, then composite their RGB
+        # windows, etc.). Keep depth testing, then composite their RGB
         # over terrain instead of treating transparent texels as black.
-        self.gl.enable_only(gl.DEPTH_TEST | gl.CULL_FACE | gl.BLEND)
+        self.gl.enable_only(gl.DEPTH_TEST | gl.BLEND |
+                            (gl.CULL_FACE if cull_back_faces else 0))
         self.gl.front_face = "ccw"
         self.gl.cull_face = "back"
         self.gl.blend_func = gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA
