@@ -69,8 +69,9 @@ class EditorView:
         forward, right = camera.forward(), camera.right()
         # A camera-derived up vector stays valid at the allowed overhead angle.
         up = glm.cross(right, forward)
-        return ViewState(projection * glm.lookAt(target - forward*30, target, up), right,
-                         light.direction, light.color)
+        camera_position = target - forward*30
+        return ViewState(projection * glm.lookAt(camera_position, target, up), right,
+                         light.direction, light.color, camera_position, light.scatterers, forward)
 
     def draw(self, state, light=None):
         view = self.view_state(state, light)

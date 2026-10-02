@@ -6,6 +6,7 @@ import moderngl as gl
 from pyglm import glm
 
 from .ViewState import ViewState
+from .Atmosphere import ATMOSPHERE_SHADER, write_atmosphere
 from ..Textures import Textures
 
 
@@ -68,6 +69,7 @@ in mat2 heights;
 in float base_height;
 out vec2 uv;
 out float lighting;
+out vec3 world_position;
 flat out int is_top;
 
 ivec2 corner_rotate(ivec2 corner, bool is_rotated) {
@@ -103,6 +105,7 @@ void main() {
     }
 
     gl_Position = clip_from_world * vec4(position, 1.0);
+    world_position = position;
     lighting = 0.60 + 0.40 * max(dot(normalize(normal / scale), normalize(light_direction)), 0.0);
     uv = is_top == 1 ? vec2(corner)
        : vec2(element_uv.x, is_box ? height - base_height : height);
@@ -118,11 +121,14 @@ void main() {
     FRAGMENT_SHADER = """#version 330 core
 uniform sampler2D top_image;
 uniform vec3 light_color;
+uniform vec3 light_direction;
 uniform sampler2D side_image;
 in vec2 uv;
 in float lighting;
+in vec3 world_position;
 flat in int is_top;
 out vec4 color;
+""" + ATMOSPHERE_SHADER + """
 void main() {
     vec4 texture_sample;
     if (is_top == 1) {
@@ -133,7 +139,8 @@ void main() {
     if (texture_sample.a <= 0.0) {
         discard;
     }
-    color = vec4(texture_sample.rgb * lighting * light_color, texture_sample.a);
+    color = vec4(atmospheric_color(texture_sample.rgb * lighting * light_color,
+                                  world_position), texture_sample.a);
 }
 """
 
@@ -213,6 +220,7 @@ void main() {
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
         self.program["light_direction"].value = tuple(view.light_direction)
         self.program["light_color"].value = tuple(view.light_color)
+        write_atmosphere(self.program, view)
         self.program["is_box"].value = is_box
         self.program["scale"].value = tuple(scale)
         self.program["top_image"].value = 0

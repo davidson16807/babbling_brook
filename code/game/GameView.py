@@ -40,9 +40,11 @@ class GameView:
         aspect = game.viewport[0] / game.viewport[1]
         scale = camera.orthographic_scale / 2
         projection = glm.ortho(-scale * aspect, scale * aspect, -scale, scale, .1, 100.0)
+        camera_position = target - camera.forward() * 30
         view = ViewState(
-            projection * glm.lookAt(target + -camera.forward() * 30, target, glm.vec3(0, 0, 1)), 
-            camera.right(), light.direction, light.color
+            projection * glm.lookAt(camera_position, target, glm.vec3(0, 0, 1)),
+            camera.right(), light.direction, light.color,
+            camera_position, light.scatterers, camera.forward()
         )
         self.tiles.draw(game.map, view)
         if self.boxes is not None:

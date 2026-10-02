@@ -22,7 +22,7 @@ class BoxView:
             self.program.draw(archetype.top_texture, archetype.side_texture,
                               tuple(coordinates), tuple(heights), tuple(bases),
                               view_state, scale=archetype.scale, is_box=True,
-                              cull_back_faces=False)
+                              cull_back_faces=True)
 
     def release(self):
         self.program.release()

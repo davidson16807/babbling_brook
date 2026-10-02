@@ -7,6 +7,7 @@ import moderngl as gl
 
 from ..Textures import Textures
 from .ViewState import ViewState
+from .Atmosphere import ATMOSPHERE_SHADER, write_atmosphere
 
 """
 `BillboardProgram` renders a swarm of textured cylindrical billboards represented through primitives
@@ -32,10 +33,12 @@ in vec2 size;
 in vec4 uv_rect;
 in float mirrored;
 out vec2 uv;
+out vec3 world_position;
 void main() {
     vec3 position = origin + camera_right * ((element_position.x - 0.5) * size.x)
                            + vec3(0.0, 0.0, element_position.y * size.y);
     gl_Position = clip_from_world * vec4(position, 1.0);
+    world_position = position;
     float u = mix(element_uv.x, 1.0 - element_uv.x, mirrored);
     uv = mix(uv_rect.xy, uv_rect.zw, vec2(u, element_uv.y));
 }
@@ -47,14 +50,16 @@ uniform vec3 light_direction;
 uniform vec3 light_color;
 uniform vec3 camera_right;
 in vec2 uv;
+in vec3 world_position;
 out vec4 color;
+""" + ATMOSPHERE_SHADER + """
 void main() {
     color = texture(image, uv);
     if (color.a < 0.5) discard;
     vec3 normal = normalize(cross(camera_right, vec3(0.0, 0.0, 1.0)));
     // A sprite is two-sided; use the lit side of its vertical plane.
     float lighting = 0.60 + 0.40 * abs(dot(normal, normalize(light_direction)));
-    color.rgb *= lighting * light_color;
+    color.rgb = atmospheric_color(color.rgb * lighting * light_color, world_position);
 }
 """
 
@@ -107,6 +112,7 @@ void main() {
         self.program["camera_right"].value = tuple(view.camera_right)
         self.program["light_direction"].value = tuple(view.light_direction)
         self.program["light_color"].value = tuple(view.light_color)
+        write_atmosphere(self.program, view)
         self.program["image"].value = 0
 
         self.textures.get(texture).use(0)
