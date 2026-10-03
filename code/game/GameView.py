@@ -1,7 +1,7 @@
 # HUMAN VETTED
 
 from pyglm import glm
-from ..model.query.LightQuery import Light
+from ..model.query.Light import Light
 from .. import APPLICATION_TITLE
 from ..view.UiPanel import UiPanel, UiText
 from ..view.program.ViewState import ViewState

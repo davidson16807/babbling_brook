@@ -1,13 +1,13 @@
 # HUMAN VETTED
 
 from collections import defaultdict
-from ..model.component.Waypoint import CardinalWaypoint
 
 from dataclasses import dataclass, field
 
 from ..model.CameraState import CameraState
 from ..model.identifiers import ArchetypeId, EntityId
-from ..model.component.Zone import Biome, Zone, ZoneDirections, ZoneAdjacency
+from ..model.component.archetype import CardinalWaypoint
+from ..model.component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency
 from ..model.Map import Map
 from ..model.store import ArchetypeComponentStores, InstanceComponentStores
 

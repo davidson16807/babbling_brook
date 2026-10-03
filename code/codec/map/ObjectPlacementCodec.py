@@ -4,7 +4,7 @@ from pyglm import glm
 
 from ...model.Map import Map
 from .PpmImageCodec import PpmImage
-from ...model.component.instances import BillboardPlacement, BoxPlacement
+from ...model.component.instance import BillboardPlacement, BoxPlacement
 from ...model.identifiers import ArchetypeId, EntityId
 
 

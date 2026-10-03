@@ -6,7 +6,7 @@ from pyglm import glm
 from ...model.Map import Map
 from .PpmImageCodec import PpmImage
 from ...model.field import IndexedField, RasterField
-from ...model.component.archetypes import TileArchetype
+from ...model.component.archetype import TileArchetype
 from ...model.identifiers import ArchetypeId
 
 

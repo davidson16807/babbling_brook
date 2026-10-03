@@ -2,7 +2,7 @@
 from collections import defaultdict
 
 from pyglm import glm
-from ..model.query.LightQuery import Light
+from ..model.query.Light import Light
 
 from ..view.program.ViewState import ViewState
 from ..view.UiPanel import UiPanel, UiText

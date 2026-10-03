@@ -1,18 +1,18 @@
 # HUMAN VETTED
 
 from collections.abc import Iterator, Sequence
-from ..component.Waypoint import Waypoint, CardinalWaypoint
 
 from dataclasses import dataclass, field
 from typing import ClassVar, overload
 
-from ..component.archetypes import (BillboardArchetype, TileArchetype, BoxArchetype, CharacterArchetype,
-                                    CreatureArchetype, Liquid, SeasonalTileArchetype)
+from ..component.archetype import (BillboardArchetype, TileArchetype, BoxArchetype, CharacterArchetype,
+                                   CreatureArchetype, Liquid, SeasonalTileArchetype,
+                                   Waypoint, CardinalWaypoint)
 from ..component.Cycle import Cycle
-from ..component.Zone import Biome, Zone, ZoneDirections, ZoneAdjacency
+from ..component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency
 from ..component.Landmark import Landmark
 from ..component.Waterlevel import Waterlevel
-from ..component.instances import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
+from ..component.instance import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
 from ..identifiers import ArchetypeId, EntityId
 
 AnimationFrameId = tuple[ArchetypeId, str, int, int]

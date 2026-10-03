@@ -10,8 +10,8 @@ from pyglm import glm
 from ...game.GameState import GameState
 from ..Map import Map
 from .Plugin import Plugin
-from ..component.archetypes import CharacterArchetype
-from ..component.instances import CharacterAnimationState, VerticalPhysics
+from ..component.archetype import CharacterArchetype
+from ..component.instance import CharacterAnimationState, VerticalPhysics
 from ..store import ArchetypeComponentStores, InstanceComponentStores
 
 class PluginOps:

@@ -5,22 +5,13 @@ The column-density approximation is retained from the supplied Python code.
 Ray geometry, scattering weights, and sky display conversion follow the shader.
 Directions point from the scene towards the source, with world Z pointing up.
 """
-from dataclasses import dataclass, field
 from math import exp, pi, sin, cos, sqrt
 
 from pyglm import glm
 
+from .Light import Light
+from .Scatterer import Scatterer
 
-@dataclass(frozen=True)
-class Light:
-    direction: glm.dvec3 = field(default_factory=lambda: glm.dvec3(-.5, -.7, 1))
-    color: glm.dvec3 = field(default_factory=lambda: glm.dvec3(1))
-    background: glm.dvec3 = field(default_factory=lambda: glm.dvec3(.16, .23, .25))
-
-@dataclass(frozen=True)
-class Scatterer:
-    atmosphere_scale_height: float
-    rgb_surface_air_scattering_coefficient: glm.dvec3
 
 class LightQuery:
 

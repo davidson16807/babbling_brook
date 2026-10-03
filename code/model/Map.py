@@ -22,7 +22,7 @@ from collections import defaultdict
 from pyglm import glm
 
 from .field import IndexedField, RasterField
-from .component.archetypes import TileArchetype
+from .component.archetype import TileArchetype
 from .identifiers import ArchetypeId, Coordinate
 
 

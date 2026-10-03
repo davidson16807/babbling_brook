@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 
-from ..component.instances import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
+from ..component.instance import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
 from ..identifiers import EntityId
 from ..component.Cycle import Cycle
 from ..component.Landmark import Landmark

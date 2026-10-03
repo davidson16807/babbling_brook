@@ -1,11 +1,9 @@
 # HUMAN VETTED
 
-from ..component.Waypoint import Waypoint
-
 from dataclasses import dataclass, field
 
-from ..component.archetypes import (CharacterArchetype, BillboardArchetype, TileArchetype, BoxArchetype,
-                                    CreatureArchetype, Liquid, SeasonalTileArchetype)
+from ..component.archetype import (CharacterArchetype, BillboardArchetype, TileArchetype, BoxArchetype,
+                                   CreatureArchetype, Liquid, SeasonalTileArchetype, Waypoint)
 from ..identifiers import ArchetypeId
 
 '''

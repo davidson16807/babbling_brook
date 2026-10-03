@@ -11,7 +11,7 @@ from pyglm import glm
 from ..codec.GameStateCodec import PluginStringCodec
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..codec.map.PpmImageCodec import PpmImageCodec
-from ..model.component.instances import BoxPlacement
+from ..model.component.instance import BoxPlacement
 from ..model.plugin.Plugin import Plugin
 from .EditorState import EditorState
 from .EditorContent import EditorContent

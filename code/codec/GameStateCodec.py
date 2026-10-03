@@ -2,7 +2,6 @@
 
 import re
 from types import SimpleNamespace
-from ..model.component.Waypoint import Waypoint, CardinalWaypoint
 
 from pyglm import glm
 
@@ -16,16 +15,19 @@ from .ObjectListCodec import ObjectListCodec
 from .PrimitiveListCodec import PrimitiveListCodec, BooleanListCodec
 from .ZippedCodec import ZippedCodec
 from .DictionaryListCodec import DictionaryListCodec
+from .OptionalValueListCodec import OptionalValueListCodec
+from .DefaultValueListCodec import DefaultValueListCodec
 from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
 from ..model.plugin.Plugin import Plugin
-from ..model.component.archetypes import (TileArchetype, BoxArchetype, BillboardArchetype, CharacterArchetype,
-                                         CreatureArchetype, Liquid, SeasonalTileArchetype)
+from ..model.component.archetype import (TileArchetype, BoxArchetype, BillboardArchetype, CharacterArchetype,
+                                        CreatureArchetype, Liquid, SeasonalTileArchetype,
+                                        Waypoint, CardinalWaypoint)
 from ..model.component.Cycle import Cycle
-from ..model.component.Zone import Biome, Zone, ZoneDirections, ZoneAdjacency
+from ..model.component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency
 from ..model.component.Landmark import Landmark
 from ..model.component.Waterlevel import Waterlevel
-from ..model.component.instances import BillboardPlacement, BoxPlacement, VerticalPhysics, CharacterAnimationState
+from ..model.component.instance import BillboardPlacement, BoxPlacement, VerticalPhysics, CharacterAnimationState
 
 
 class PluginListCodec:
@@ -35,22 +37,6 @@ class PluginListCodec:
         return plugin.to_tables()
     def decode(self, code):
         return Plugin.from_tables(code)
-
-def _optional(type):
-    """An empty cell represents an absent reference (including map ID zero)."""
-    return SimpleNamespace(
-    	encode = lambda value: ['' if value is None else str(value)],
-        decode = lambda code: None if code[0] == '' else type(code[0]),
-        item_count=1
-    )
-
-def _defaulted(type, default):
-    """Spreadsheet trait cells may omit a numeric value to use its default."""
-    return SimpleNamespace(
-    	encode = lambda value: [str(value)],
-        decode = lambda code: default if code[0] == '' else type(code[0]),
-        item_count=1
-    )
 
 def GameRowCodec(key_codec, value_codec, column_delimiter='\t'):
 	return ComposedCodec(
@@ -103,8 +89,8 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 ObjectListCodec(Biome,
                     ('summer_temperature', PrimitiveListCodec(float)),
                     ('winter_temperature', PrimitiveListCodec(float)),
-                    ('leaf_state', _defaulted(int, 1)),
-                    ('grass_state', _defaulted(int, 1)),
+                    ('leaf_state', DefaultValueListCodec(int, 1)),
+                    ('grass_state', DefaultValueListCodec(int, 1)),
                     ('is_snowy', BooleanListCodec()),
                 ),
             ),
@@ -143,7 +129,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ConcatenatedContainerCodec(tuple,
                         PrimitiveListCodec(float),
                         PrimitiveListCodec(float),
-                        _optional(str),
+                        OptionalValueListCodec(str),
                     ),
                 ),
             ),
@@ -151,7 +137,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 '# zone directions\n# zone\tnorth\tsouth\teast\twest',
                 PrimitiveListCodec(str),
                 ObjectListCodec(ZoneDirections,
-                    *((direction, _optional(str)) for direction in ('north', 'south', 'east', 'west')),
+                    *((direction, OptionalValueListCodec(str)) for direction in ('north', 'south', 'east', 'west')),
                 ),
             ),
             GameTableCodec(
@@ -160,8 +146,8 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 ObjectListCodec(ZoneAdjacency,
                     ('preposition_to1', PrimitiveListCodec(str)),
                     ('preposition_to2', PrimitiveListCodec(str)),
-                    ('key_to1', _optional(str)),
-                    ('key_to2', _optional(str)),
+                    ('key_to1', OptionalValueListCodec(str)),
+                    ('key_to2', OptionalValueListCodec(str)),
                 ),
             ),
             GameTableCodec(
@@ -266,9 +252,9 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 PrimitiveListCodec(str),
                 ObjectListCodec(CharacterArchetype,
                     ('male', BooleanListCodec()),
-                    ('lifestage', _defaulted(int, 1)),
-                    ('skin', _defaulted(int, 3)),
-                    ('hair', _defaulted(int, 3)),
+                    ('lifestage', DefaultValueListCodec(int, 1)),
+                    ('skin', DefaultValueListCodec(int, 3)),
+                    ('hair', DefaultValueListCodec(int, 3)),
                     ('bald_prone', BooleanListCodec()),
                     ('dwarf', BooleanListCodec()),
                     ('strong', BooleanListCodec()),
@@ -283,21 +269,21 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('avoids', PrimitiveListCodec(str)),
                     ('guards', PrimitiveListCodec(str)),
                     ('wanders', BooleanListCodec()),
-                    ('run_speed', _defaulted(float, 2.0)),
-                    ('swim_speed', _defaulted(float, 0.0)),
-                    ('climb_speed', _defaulted(float, 0.0)),
+                    ('run_speed', DefaultValueListCodec(float, 2.0)),
+                    ('swim_speed', DefaultValueListCodec(float, 0.0)),
+                    ('climb_speed', DefaultValueListCodec(float, 0.0)),
                     ('colorblind', BooleanListCodec()),
                     ('deaf', BooleanListCodec()),
                     ('blind', BooleanListCodec()),
                     ('speaks_native', BooleanListCodec()),
                     ('speaks_foreign', BooleanListCodec()),
-                    ('numeracy', _defaulted(int, 1)),
-                    ('literacy', _defaulted(int, 0)),
-                    ('places_known', _defaulted(int, 0)),
-                    ('people_known', _defaulted(int, 0)),
-                    ('respect_level', _defaulted(int, 1)),
-                    ('respects_level', _defaulted(int, 1)),
-                    ('wealth_level', _defaulted(int, 1)),
+                    ('numeracy', DefaultValueListCodec(int, 1)),
+                    ('literacy', DefaultValueListCodec(int, 0)),
+                    ('places_known', DefaultValueListCodec(int, 0)),
+                    ('people_known', DefaultValueListCodec(int, 0)),
+                    ('respect_level', DefaultValueListCodec(int, 1)),
+                    ('respects_level', DefaultValueListCodec(int, 1)),
+                    ('wealth_level', DefaultValueListCodec(int, 1)),
                     ('heals', BooleanListCodec()),
                     ('mends', BooleanListCodec()),
                     ('cooks', BooleanListCodec()),
@@ -316,10 +302,10 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 '# creature_archetypes #UNUSED\n# archetype\trun_speed\tswim_speed\tclimb_speed\tfly_speed\twarm_blooded\tcolorblind\tuv_vision\theat_vision\tforages\thunts_alone\tpack_hunts\teats_berries\teats_seeds\teats_grass\teats_fish\teats_small_game\teats_big_game',
                 PrimitiveListCodec(str),
                 ObjectListCodec(CreatureArchetype,
-                    ('run_speed', _defaulted(float, 0.0)),
-                    ('swim_speed', _defaulted(float, 0.0)),
-                    ('climb_speed', _defaulted(float, 0.0)),
-                    ('fly_speed', _defaulted(float, 0.0)),
+                    ('run_speed', DefaultValueListCodec(float, 0.0)),
+                    ('swim_speed', DefaultValueListCodec(float, 0.0)),
+                    ('climb_speed', DefaultValueListCodec(float, 0.0)),
+                    ('fly_speed', DefaultValueListCodec(float, 0.0)),
                     ('warm_blooded', BooleanListCodec()),
                     ('colorblind', BooleanListCodec()),
                     ('uv_vision', BooleanListCodec()),

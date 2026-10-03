@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from pyglm import glm
 
 from ..codec.map.PpmImageCodec import PpmImage
-from ..model.component.instances import BillboardPlacement, BoxPlacement
+from ..model.component.instance import BillboardPlacement, BoxPlacement
 from ..model.identifiers import EntityId
 
 
