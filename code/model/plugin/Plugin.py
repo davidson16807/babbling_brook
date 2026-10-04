@@ -9,9 +9,8 @@ from ..component.archetype import (BillboardArchetype, TileArchetype, BoxArchety
                                    CreatureArchetype, Liquid, SeasonalTileArchetype,
                                    Waypoint, CardinalWaypoint)
 from ..component.Cycle import Cycle
-from ..component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency
+from ..component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency, Waterlevel
 from ..component.Landmark import Landmark
-from ..component.Waterlevel import Waterlevel
 from ..component.instance import CharacterAnimationState, BillboardPlacement, BoxPlacement, VerticalPhysics
 from ..identifiers import ArchetypeId, EntityId
 
@@ -39,7 +38,7 @@ class Plugin(Sequence[dict]):
     biome_spawns: dict[tuple[str, str], None] = field(default_factory=dict)
     zones: dict[str, Zone] = field(default_factory=dict)
     zone_directions: dict[str, ZoneDirections] = field(default_factory=dict)
-    zone_adjacencies: dict[tuple[str, str, str], ZoneAdjacency] = field(default_factory=dict)
+    zone_adjacencies: dict[tuple[str, str], ZoneAdjacency] = field(default_factory=dict)
     cardinal_waypoints: dict[str, CardinalWaypoint] = field(default_factory=dict)
     colorcodes: dict[str, str] = field(default_factory=dict)
     inventory: dict[tuple[EntityId, str], int] = field(default_factory=dict)

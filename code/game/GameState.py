@@ -33,6 +33,6 @@ class GameState:
     biome_spawns: dict[tuple[str, str], None] = field(default_factory=dict)
     zones: dict[str, Zone] = field(default_factory=dict)
     zone_directions: dict[str, ZoneDirections] = field(default_factory=dict)
-    zone_adjacencies: dict[tuple[str, str, str], ZoneAdjacency] = field(default_factory=dict)
+    zone_adjacencies: dict[tuple[str, str], ZoneAdjacency] = field(default_factory=dict)
     cardinal_waypoints: dict[str, CardinalWaypoint] = field(default_factory=dict)
     colorcodes: dict[str, str] = field(default_factory=dict)

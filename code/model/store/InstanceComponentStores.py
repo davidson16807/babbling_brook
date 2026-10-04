@@ -6,7 +6,7 @@ from ..component.instance import CharacterAnimationState, BillboardPlacement, Bo
 from ..identifiers import EntityId
 from ..component.Cycle import Cycle
 from ..component.Landmark import Landmark
-from ..component.Waterlevel import Waterlevel
+from ..component.zone import Waterlevel
 
 '''
 A "store" is the name chosen for this application to represent

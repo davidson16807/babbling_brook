@@ -11,5 +11,5 @@ from ...identifiers import ArchetypeId
 class BoxPlacement:
     """A box archetype instance positioned at its bottom-center."""
     archetype: ArchetypeId
+    zone: str
     position: glm.vec3
-    zone: str = ""

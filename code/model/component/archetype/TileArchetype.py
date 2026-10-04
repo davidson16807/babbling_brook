@@ -10,7 +10,6 @@ class TileArchetype:
     side_texture: str
     # Zero is flat; infinity allows unlimited erosion. Heights use world units.
     max_erosion: float = 0.0
-    is_collidable: bool = True
     has_detritus: bool = False
     is_moist: bool = False
     is_disturbed: bool = False

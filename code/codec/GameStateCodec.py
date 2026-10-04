@@ -15,6 +15,7 @@ from .ObjectListCodec import ObjectListCodec
 from .PrimitiveListCodec import PrimitiveListCodec, BooleanListCodec
 from .ZippedCodec import ZippedCodec
 from .DictionaryListCodec import DictionaryListCodec
+from .MultiKeyDictionaryListCodec import MultiKeyDictionaryListCodec
 from .OptionalValueListCodec import OptionalValueListCodec
 from .DefaultValueListCodec import DefaultValueListCodec
 from .CommentedStringCodec import CommentedStringCodec
@@ -24,9 +25,8 @@ from ..model.component.archetype import (TileArchetype, BoxArchetype, BillboardA
                                         CreatureArchetype, Liquid, SeasonalTileArchetype,
                                         Waypoint, CardinalWaypoint)
 from ..model.component.Cycle import Cycle
-from ..model.component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency
+from ..model.component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency, Waterlevel
 from ..model.component.Landmark import Landmark
-from ..model.component.Waterlevel import Waterlevel
 from ..model.component.instance import BillboardPlacement, BoxPlacement, VerticalPhysics, CharacterAnimationState
 
 
@@ -38,18 +38,28 @@ class PluginListCodec:
     def decode(self, code):
         return Plugin.from_tables(code)
 
-def GameRowCodec(key_codec, value_codec, column_delimiter='\t'):
+def GameRowCodec(record_codec, column_delimiter='\t'):
 	return ComposedCodec(
-		ConcatenatedContainerCodec(list, key_codec, value_codec),
+		record_codec,
 		MappedCodec(EscapedTextCodec()),
 		DelimitedStringsCodec(column_delimiter),
 	)
 
 def GameTableCodec(header, key_codec, value_codec,
 		column_delimiter='\t', row_delimiter='\n', comment_delimiter='#'):
+	"""A table whose rows are key cells followed by value cells, decoded as a dictionary."""
 	return ComposedCodec(
 			DictionaryListCodec(),
-			MappedCodec(GameRowCodec(key_codec, value_codec, column_delimiter=column_delimiter)),
+			GameRecordTableCodec(header, ConcatenatedContainerCodec(list, key_codec, value_codec),
+				column_delimiter=column_delimiter, row_delimiter=row_delimiter,
+				comment_delimiter=comment_delimiter),
+		)
+
+def GameRecordTableCodec(header, record_codec,
+		column_delimiter='\t', row_delimiter='\n', comment_delimiter='#'):
+	"""A table decoded as a list with one record per row."""
+	return ComposedCodec(
+			MappedCodec(GameRowCodec(record_codec, column_delimiter=column_delimiter)),
 			DelimitedStringsCodec(row_delimiter),
 			CommentedStringCodec(comment_delimiter),
 			PrefixedStringCodec(header+row_delimiter),
@@ -140,14 +150,19 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     *((direction, OptionalValueListCodec(str)) for direction in ('north', 'south', 'east', 'west')),
                 ),
             ),
-            GameTableCodec(
-                '# zone adjacencies\n# zone1\tzone2\tcolorcode\tpreposition_to1\tpreposition_to2\tkey_to1\tkey_to2',
-                ContainerListCodec(tuple, str, 3),
-                ObjectListCodec(ZoneAdjacency,
-                    ('preposition_to1', PrimitiveListCodec(str)),
-                    ('preposition_to2', PrimitiveListCodec(str)),
-                    ('key_to1', OptionalValueListCodec(str)),
-                    ('key_to2', OptionalValueListCodec(str)),
+            ComposedCodec(
+                MultiKeyDictionaryListCodec(('zone1', 'colorcode'), ('zone2', 'colorcode')),
+                GameRecordTableCodec(
+                    '# zone adjacencies\n# zone1\tzone2\tcolorcode\tpreposition_to1\tpreposition_to2\tkey_to1\tkey_to2',
+                    ObjectListCodec(ZoneAdjacency,
+                        ('zone1', PrimitiveListCodec(str)),
+                        ('zone2', PrimitiveListCodec(str)),
+                        ('colorcode', PrimitiveListCodec(str)),
+                        ('preposition_to1', PrimitiveListCodec(str)),
+                        ('preposition_to2', PrimitiveListCodec(str)),
+                        ('key_to1', OptionalValueListCodec(str)),
+                        ('key_to2', OptionalValueListCodec(str)),
+                    ),
                 ),
             ),
             GameTableCodec(

@@ -10,5 +10,5 @@ from ...identifiers import ArchetypeId
 @dataclass(frozen=True)
 class BillboardPlacement:
     archetype: ArchetypeId
+    zone: str
     position: glm.vec3
-    zone: str = ""

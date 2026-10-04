@@ -40,8 +40,8 @@ class ObjectPlacementCodec:
             position = glm.vec2(*coordinate) + glm.vec2(0.5)
             origin = glm.vec3(position, self.map.height(position))
             objects[str(coordinate)] = (
-                BoxPlacement(archetype, origin, self.zone)
-                if archetype in self.box_archetypes else BillboardPlacement(archetype, origin, self.zone)
+                BoxPlacement(archetype, self.zone, origin)
+                if archetype in self.box_archetypes else BillboardPlacement(archetype, self.zone, origin)
             )
         return objects
 
