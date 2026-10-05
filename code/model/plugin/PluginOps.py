@@ -21,7 +21,8 @@ class PluginOps:
         combined = Plugin()
         for plugin in plugins:
             combined = Plugin(**{
-                name: {**getattr(combined, name), **getattr(plugin, name)}
+                # Later plugins win for dictionary tables; set tables are unioned.
+                name: getattr(combined, name) | getattr(plugin, name)
                 for name in Plugin.table_fields
             })
         return combined
@@ -89,7 +90,7 @@ class PluginOps:
             instances=instances,
             inventory=defaultdict(int, plugin.inventory),
             biomes=dict(plugin.biomes),
-            biome_spawns=dict(plugin.biome_spawns),
+            biome_spawns=set(plugin.biome_spawns),
             zones=dict(plugin.zones),
             zone_directions=dict(plugin.zone_directions),
             zone_adjacencies=dict(plugin.zone_adjacencies),
@@ -112,7 +113,7 @@ class PluginOps:
             liquids=dict(state.archetypes.liquids),
             waypoints=dict(state.archetypes.waypoints),
             biomes=dict(state.biomes),
-            biome_spawns=dict(state.biome_spawns),
+            biome_spawns=set(state.biome_spawns),
             zones=dict(state.zones),
             zone_directions=dict(state.zone_directions),
             zone_adjacencies=dict(state.zone_adjacencies),

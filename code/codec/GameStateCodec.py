@@ -1,8 +1,5 @@
 # HUMAN VETTED
 
-import re
-from types import SimpleNamespace
-
 from pyglm import glm
 
 from .ComposedCodec import ComposedCodec
@@ -20,6 +17,8 @@ from .OptionalValueListCodec import OptionalValueListCodec
 from .DefaultValueListCodec import DefaultValueListCodec
 from .CommentedStringCodec import CommentedStringCodec
 from .PrefixedStringCodec import PrefixedStringCodec
+from .PaddedStringCodec import PaddedStringCodec
+from .SetListCodec import SetListCodec
 from ..model.plugin.Plugin import Plugin
 from ..model.component.archetype import (TileArchetype, BoxArchetype, BillboardArchetype, CharacterArchetype,
                                         CreatureArchetype, Liquid, SeasonalTileArchetype,
@@ -63,10 +62,7 @@ def GameRecordTableCodec(header, record_codec,
 			DelimitedStringsCodec(row_delimiter),
 			CommentedStringCodec(comment_delimiter),
 			PrefixedStringCodec(header+row_delimiter),
-			SimpleNamespace(
-				encode=lambda code: code.rstrip(row_delimiter), 
-				decode=lambda code: code.strip(row_delimiter)+row_delimiter, 
-				item_count=1),
+			PaddedStringCodec(None, row_delimiter),
 		)
 
 def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
@@ -105,15 +101,10 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 ),
             ),
             ComposedCodec(
-                GameTableCodec(
+                SetListCodec(),
+                GameRecordTableCodec(
                     '# biome spawns\n# biome\tcreature',
                     ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(str)),
-                    SimpleNamespace(encode=lambda value: [], decode=lambda code: None, item_count=0),
-                ),
-                SimpleNamespace(
-                    encode=lambda code: code,
-                    # The supplied spreadsheet has an uncommented "biome" column heading.
-                    decode=lambda code: re.sub(r'(?m)^biome\t*$', '# biome', code),
                 ),
             ),
             GameTableCodec(
@@ -125,22 +116,13 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('biome', PrimitiveListCodec(str)),
                 ),
             ),
-            ComposedCodec(
-                SimpleNamespace(
-                    encode=lambda levels: {key: (value.high_tide_liquid_level,
-                                                value.low_tide_liquid_level, value.liquid)
-                                          for key, value in levels.items()},
-                    decode=lambda rows: {key: Waterlevel(key, *value) for key, value in rows.items()},
-                    item_count=1,
-                ),
-                GameTableCodec(
-                    '# zone water levels #UNUSED\n# zone\thigh_tide_liquid_level\tlow_tide_liquid_level\tliquid',
-                    PrimitiveListCodec(str),
-                    ConcatenatedContainerCodec(tuple,
-                        PrimitiveListCodec(float),
-                        PrimitiveListCodec(float),
-                        OptionalValueListCodec(str),
-                    ),
+            GameTableCodec(
+                '# zone water levels #UNUSED\n# zone\thigh_tide_liquid_level\tlow_tide_liquid_level\tliquid',
+                PrimitiveListCodec(str),
+                ObjectListCodec(Waterlevel,
+                    ('high_tide_liquid_level', PrimitiveListCodec(float)),
+                    ('low_tide_liquid_level', PrimitiveListCodec(float)),
+                    ('liquid', OptionalValueListCodec(str)),
                 ),
             ),
             GameTableCodec(

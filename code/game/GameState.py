@@ -30,7 +30,7 @@ class GameState:
         tuple[ArchetypeId, str, int, int], tuple[str, float]
     ] = field(default_factory=dict)
     biomes: dict[str, Biome] = field(default_factory=dict)
-    biome_spawns: dict[tuple[str, str], None] = field(default_factory=dict)
+    biome_spawns: set[tuple[str, str]] = field(default_factory=set)
     zones: dict[str, Zone] = field(default_factory=dict)
     zone_directions: dict[str, ZoneDirections] = field(default_factory=dict)
     zone_adjacencies: dict[tuple[str, str], ZoneAdjacency] = field(default_factory=dict)
