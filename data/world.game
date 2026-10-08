@@ -54,12 +54,13 @@ tidal-flat	0	2	ocean
 babbling-brook				south-gorge																																															
 south-gorge	north-gorge		babbling-brook	farm-town																																															
 north-gorge		south-gorge																																																	
+farm-town			south-gorge	
 																																																			
 # zone adjacencies																																																			
 # zone1	zone2	colorcode	preposition_to1	preposition_to2	key_to1	key_to2																																													
 farm-town	mormors-house	c	in	mormors-key	mormors-key																																														
 south-gorge	cavern1	c			inaccessible																																														
-cavern1	cavern2	c																																																	
+cavern1	cavern2	y																																																	
 																																																			
 # waypoints																																																			
 # archetype	colorcode	door																																																	
@@ -91,20 +92,20 @@ waypoint-c	c
 waypoint-y	y																																																		
 waypoint-m	m																																																		
 																																																			
-# cardinal waypoints #UNUSED																																																			
+# cardinal waypoints																																																			
 # archetype	name	texture	direction	colorcode																																															
-n-c	north	waypoint-n.svg	n	c																																															
-s-c	south	waypoint-s.svg	s	c																																															
-e-c	east	waypoint-e.svg	e	c																																															
-w-c	west	waypoint-w.svg	w	c																																															
-n-y	north	waypoint-n.svg	n	y																																															
-s-y	south	waypoint-s.svg	s	y																																															
-e-y	east	waypoint-e.svg	e	y																																															
-w-y	west	waypoint-w.svg	w	y																																															
-n-m	north	waypoint-n.svg	n	m																																															
-s-m	south	waypoint-s.svg	s	m																																															
-e-m	east	waypoint-e.svg	e	m																																															
-w-m	west	waypoint-w.svg	w	m																																															
+n-c	north	waypoint-n-c.svg	n	c																																															
+s-c	south	waypoint-s-c.svg	s	c																																															
+e-c	east	waypoint-e-c.svg	e	c																																															
+w-c	west	waypoint-w-c.svg	w	c																																															
+n-y	north	waypoint-n-y.svg	n	y																																															
+s-y	south	waypoint-s-y.svg	s	y																																															
+e-y	east	waypoint-e-y.svg	e	y																																															
+w-y	west	waypoint-w-y.svg	w	y																																															
+n-m	north	waypoint-n-m.svg	n	m																																															
+s-m	south	waypoint-s-m.svg	s	m																																															
+e-m	east	waypoint-e-m.svg	e	m																																															
+w-m	west	waypoint-w-m.svg	w	m																																															
 																																																			
 # landmarks #UNUSED																																																			
 # archetype	map	name	by_radius	at_position_x	at_position_y	at_position_z	on_position_x	on_position_y	on_position_z	in_position_x	in_position_y	in_position_z	under_position_x	under_position_y	under_position_z	within_position_x	within_position_y	within_position_z	before_position_x	before_position_y	before_position_z	against_position_x	against_position_y	against_position_z																											
@@ -113,7 +114,7 @@ w-m	west	waypoint-w.svg	w	m
 # colorcode	texture																																																		
 c	cyan.svg																																																		
 m	magenta.svg																																																		
-y	yellow																																																		
+y	yellow.svg																																																		
 																																																			
 # tile_archetypes				UNUSED	UNUSED	UNUSED																																													
 # archetype	top_texture	side_texture	max_erosion	has_detritus	is_moist	is_disturbed																																													
@@ -198,6 +199,21 @@ crate	crate.svg	x	0.45	0.9	0.9			crate
 villager	villager-front-0.svg	x	0.28	1.8	0.7		greet	villager																																											
 stick	stick.svg		0.12	0.28	0.55	x	collect_stick	stick																																											
 child	child-front-0.svg	x	0.24	1.1	0.65	x		you																																											
+n-c	waypoint-n-c.svg		0.35	1.0	0.65			north
+s-c	waypoint-s-c.svg		0.35	1.0	0.65			south
+e-c	waypoint-e-c.svg		0.35	1.0	0.65			east
+w-c	waypoint-w-c.svg		0.35	1.0	0.65			west
+waypoint-c	waypoint-c.svg		0.35	1.0	0.65			waypoint
+n-y	waypoint-n-y.svg		0.35	1.0	0.65			north
+s-y	waypoint-s-y.svg		0.35	1.0	0.65			south
+e-y	waypoint-e-y.svg		0.35	1.0	0.65			east
+w-y	waypoint-w-y.svg		0.35	1.0	0.65			west
+waypoint-y	waypoint-y.svg		0.35	1.0	0.65			waypoint
+n-m	waypoint-n-m.svg		0.35	1.0	0.65			north
+s-m	waypoint-s-m.svg		0.35	1.0	0.65			south
+e-m	waypoint-e-m.svg		0.35	1.0	0.65			east
+w-m	waypoint-w-m.svg		0.35	1.0	0.65			west
+waypoint-m	waypoint-m.svg		0.35	1.0	0.65			waypoint
 																																																			
 # box_archetypes																																																			
 # archetype	top_texture	side_texture	scale_x	scale_y	scale_z	is_collidable	action																																												
@@ -252,6 +268,7 @@ stone-table	stone.svg	stone-table.svg	1.0	1.0	1.0	x
 crate-box	crate2.svg	crate2.svg	1.0	1.0	1.0	x																																													
 clay-pot	clay-pot.svg	clay.svg	0.5	0.5	0.5	x																																													
 wicker-basket	wicker-basket.svg	thatch.svg	0.5	0.5	0.5	x																																													
+footbridge	wood.svg	wood.svg	1	2	0.25	x
 																																																			
 # seasonal_billboard_archetypes																																																			
 # archetype	leaf_state	texture																																																	
@@ -483,11 +500,18 @@ villager	running	1	1	villager-back-1.svg	0.12
 69	s-m																																																		
 70	e-m																																																		
 71	w-m																																																		
+72	waypoint-c
+73	waypoint-y
+74	waypoint-m
 																																																			
-# placements																																																			
-# entity	archetype	zone	x	y	z																																														
+# billboards
+# entity	archetype	zone	x	y	z
 player	child	farm-town	7	10	1																																														
+
+# boxes
+# entity	archetype	zone	x	y	z
 crate1	crate-box	farm-town	12.5	9.5	2.0																																														
+brook-footbridge	footbridge	babbling-brook	13.5	10	1.25
 																																																			
 # physics																																																			
 # entity	vertical_velocity	is_grounded																																																	
