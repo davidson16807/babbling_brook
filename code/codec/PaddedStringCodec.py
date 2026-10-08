@@ -15,5 +15,5 @@ class PaddedStringCodec:
         if self.leftpad:
             while text.startswith(self.leftpad): text = text[len(self.leftpad):]
         return text
-    def encode(self, content): return content
-    def decode(self, code): return self._unpad(code)
+    def encode(self, content): return self._unpad(content)
+    def decode(self, code): return (self.leftpad or '') + self._unpad(code) + (self.rightpad or '')
