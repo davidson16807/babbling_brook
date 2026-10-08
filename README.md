@@ -114,7 +114,9 @@ a `.game` or `.mod` extension are ignored:
 python -m babbling_brook data/world.game mod/weather.mod
 ```
 
-Use `--map /path/to/world.ppm` when the map is not `DATA/map/world.ppm`.
+Each zone's map is the `map_filename` in the `zone` table, relative to the game file
+that is loaded; zones whose maps are missing are skipped with a warning. See
+`doc/zone-travel.md` for how zones and waypoints work.
 
 | Input | Action |
 | --- | --- |

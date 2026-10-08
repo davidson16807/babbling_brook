@@ -28,7 +28,7 @@ cavern	10	10	0	0
 interior	25	15	0	0																																															
 																																																			
 # biome spawns																																																			
-biome	creature																																																		
+# biome	creature																																																		
 temperate	wolf																																																		
 temperate	bear																																																		
 temperate	snake																																																		
@@ -43,6 +43,7 @@ tidal-flat	tidal-flat	map/tidal-flat.ppm	coastal
 cavern1	cavern	map/cavern1.ppm	cavern																																																
 cavern2	cavern	map/cavern2.ppm	cavern																																																
 mormors-house	mormors-house	map/house.ppm	interior																																																
+babbling-brook	babbling-brook	map/babbling-brook.ppm	temperate																																																
 																																																			
 # zone water levels #UNUSED																																																			
 # zone	high_tide_liquid_level	low_tide_liquid_level	liquid																																																
@@ -68,24 +69,24 @@ rubble-threshold-c	c
 brick-threshold-c	c																																																		
 stucco-threshold-c	c																																																		
 stone-threshold-c	c																																																		
-wood-door-c	c																																																		
-stone-door-c	c																																																		
+wood-door-c	c	x																																																	
+stone-door-c	c	x																																																	
 wood-threshold-y	y																																																		
 rock-threshold-y	y																																																		
 rubble-threshold-y	y																																																		
 brick-threshold-y	y																																																		
 stucco-threshold-y	y																																																		
 stone-threshold-y	y																																																		
-wood-door-y	y																																																		
-stone-door-y	y																																																		
+wood-door-y	y	x																																																	
+stone-door-y	y	x																																																	
 wood-threshold-m	m																																																		
 rock-threshold-m	m																																																		
 rubble-threshold-m	m																																																		
 brick-threshold-m	m																																																		
 stucco-threshold-m	m																																																		
 stone-threshold-m	m																																																		
-wood-door-m	m																																																		
-stone-door-m	m																																																		
+wood-door-m	m	x																																																	
+stone-door-m	m	x																																																	
 waypoint-c	c																																																		
 waypoint-y	y																																																		
 waypoint-m	m																																																		
@@ -96,26 +97,14 @@ n-c	north	waypoint-n.svg	n	c
 s-c	south	waypoint-s.svg	s	c																																															
 e-c	east	waypoint-e.svg	e	c																																															
 w-c	west	waypoint-w.svg	w	c																																															
-ne-c	northeast	waypoint-ne.svg	ne	c																																															
-nw-c	northwest	waypoint-nw.svg	nw	c																																															
-se-c	southeast	waypoint-se.svg	se	c																																															
-sw-c	southwest	waypoint-sw.svg	sw	c																																															
 n-y	north	waypoint-n.svg	n	y																																															
 s-y	south	waypoint-s.svg	s	y																																															
 e-y	east	waypoint-e.svg	e	y																																															
 w-y	west	waypoint-w.svg	w	y																																															
-ne-y	northeast	waypoint-ne.svg	ne	y																																															
-nw-y	northwest	waypoint-nw.svg	nw	y																																															
-se-y	southeast	waypoint-se.svg	se	y																																															
-sw-y	southwest	waypoint-sw.svg	sw	y																																															
 n-m	north	waypoint-n.svg	n	m																																															
 s-m	south	waypoint-s.svg	s	m																																															
 e-m	east	waypoint-e.svg	e	m																																															
 w-m	west	waypoint-w.svg	w	m																																															
-ne-m	northeast	waypoint-ne.svg	ne	m																																															
-nw-m	northwest	waypoint-nw.svg	nw	m																																															
-se-m	southeast	waypoint-se.svg	se	m																																															
-sw-m	southwest	waypoint-sw.svg	sw	m																																															
 																																																			
 # landmarks #UNUSED																																																			
 # archetype	map	name	by_radius	at_position_x	at_position_y	at_position_z	on_position_x	on_position_y	on_position_z	in_position_x	in_position_y	in_position_z	under_position_x	under_position_y	under_position_z	within_position_x	within_position_y	within_position_z	before_position_x	before_position_y	before_position_z	against_position_x	against_position_y	against_position_z																											
@@ -211,7 +200,7 @@ stick	stick.svg		0.12	0.28	0.55	x	collect_stick	stick
 child	child-front-0.svg	x	0.24	1.1	0.65	x		you																																											
 																																																			
 # box_archetypes																																																			
-# archetype	top_texture	side_texture	scale_x	scale_y	scale_z	is_collidable																																													
+# archetype	top_texture	side_texture	scale_x	scale_y	scale_z	is_collidable	action																																												
 wood-window-glassless-lit	wood.svg	wood-window-glassless-lit.svg	0.9	0.9	0.9																																														
 wood-window-glassless-unlit	wood.svg	wood-window-glassless-unlit.svg	0.9	0.9	0.9																																														
 wood-window-glassy-lit	wood.svg	wood-window-glassy-lit.svg	0.9	0.9	0.9																																														
@@ -263,14 +252,6 @@ stone-table	stone.svg	stone-table.svg	1.0	1.0	1.0	x
 crate-box	crate2.svg	crate2.svg	1.0	1.0	1.0	x																																													
 clay-pot	clay-pot.svg	clay.svg	0.5	0.5	0.5	x																																													
 wicker-basket	wicker-basket.svg	thatch.svg	0.5	0.5	0.5	x																																													
-wood-threshold	wood.svg	wood-threshold.svg	0.9	0.9	1.8																																														
-rock-threshold	rubble-top.svg	rock-threshold.svg	0.9	0.9	1.8																																														
-rubble-threshold	rubble-top.svg	rubble-threshold.svg	0.9	0.9	1.8																																														
-brick-threshold	brick.svg	brick-threshold.svg	0.9	0.9	1.8																																														
-stucco-threshold	stucco.svg	stucco-threshold.svg	0.9	0.9	1.8																																														
-stone-threshold	stone.svg	stone-threshold.svg	0.9	0.9	1.8																																														
-wood-door	wood.svg	wood-door.svg	0.9	0.9	1.8																																														
-stone-door	stone.svg	stone-door.svg	0.9	0.9	1.8																																														
 																																																			
 # seasonal_billboard_archetypes																																																			
 # archetype	leaf_state	texture																																																	
@@ -454,14 +435,14 @@ villager	running	1	1	villager-back-1.svg	0.12
 20	stucco-hearth-unlit																																																		
 21	stone-hearth-lit																																																		
 22	stone-hearth-unlit																																																		
-23	wood-threshold																																																		
-24	rock-threshold																																																		
-25	rubble-threshold																																																		
-26	brick-threshold																																																		
-27	stucco-threshold																																																		
-28	stone-threshold																																																		
-29	wood-door																																																		
-30	stone-door																																																		
+23	wood-threshold-c																																																		
+24	rock-threshold-c																																																		
+25	rubble-threshold-c																																																		
+26	brick-threshold-c																																																		
+27	stucco-threshold-c																																																		
+28	stone-threshold-c																																																		
+29	wood-door-c																																																		
+30	stone-door-c																																																		
 31	wood-bookshelf																																																		
 32	stone-bookshelf																																																		
 33	wood-table																																																		
@@ -474,13 +455,38 @@ villager	running	1	1	villager-back-1.svg	0.12
 40	crate																																																		
 42	villager																																																		
 43	stick																																																		
+44	wood-threshold-y																																																		
+45	rock-threshold-y																																																		
+46	rubble-threshold-y																																																		
+47	brick-threshold-y																																																		
+48	stucco-threshold-y																																																		
+49	stone-threshold-y																																																		
+50	wood-door-y																																																		
+51	stone-door-y																																																		
+52	wood-threshold-m																																																		
+53	rock-threshold-m																																																		
+54	rubble-threshold-m																																																		
+55	brick-threshold-m																																																		
+56	stucco-threshold-m																																																		
+57	stone-threshold-m																																																		
+58	wood-door-m																																																		
+59	stone-door-m																																																		
+60	n-c																																																		
+61	s-c																																																		
+62	e-c																																																		
+63	w-c																																																		
+64	n-y																																																		
+65	s-y																																																		
+66	e-y																																																		
+67	w-y																																																		
+68	n-m																																																		
+69	s-m																																																		
+70	e-m																																																		
+71	w-m																																																		
 																																																			
-# billboards																																																			
+# placements																																																			
 # entity	archetype	zone	x	y	z																																														
 player	child	farm-town	7	10	1																																														
-																																																			
-# boxes																																																			
-# entity	archetype	zone	x	y	z																																														
 crate1	crate-box	farm-town	12.5	9.5	2.0																																														
 																																																			
 # physics																																																			
