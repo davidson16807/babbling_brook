@@ -91,6 +91,33 @@ stone-door-m	m	x
 waypoint-c	c																																																		
 waypoint-y	y																																																		
 waypoint-m	m																																																		
+wood-threshold-r	r																																																		
+rock-threshold-r	r																																																		
+rubble-threshold-r	r																																																		
+brick-threshold-r	r																																																		
+stucco-threshold-r	r																																																		
+stone-threshold-r	r																																																		
+wood-door-r	r	x																																																	
+stone-door-r	r	x																																																	
+waypoint-r	r																																																		
+wood-threshold-g	g																																																		
+rock-threshold-g	g																																																		
+rubble-threshold-g	g																																																		
+brick-threshold-g	g																																																		
+stucco-threshold-g	g																																																		
+stone-threshold-g	g																																																		
+wood-door-g	g	x																																																	
+stone-door-g	g	x																																																	
+waypoint-g	g																																																		
+wood-threshold-b	b																																																		
+rock-threshold-b	b																																																		
+rubble-threshold-b	b																																																		
+brick-threshold-b	b																																																		
+stucco-threshold-b	b																																																		
+stone-threshold-b	b																																																		
+wood-door-b	b	x																																																	
+stone-door-b	b	x																																																	
+waypoint-b	b																																																		
 																																																			
 # cardinal waypoints																																																			
 # archetype	name	texture	direction	colorcode																																															
@@ -106,6 +133,18 @@ n-m	north	waypoint-n.svg	n	m
 s-m	south	waypoint-s.svg	s	m																																															
 e-m	east	waypoint-e.svg	e	m																																															
 w-m	west	waypoint-w.svg	w	m																																															
+n-r	north	waypoint-n.svg	n	r																																															
+s-r	south	waypoint-s.svg	s	r																																															
+e-r	east	waypoint-e.svg	e	r																																															
+w-r	west	waypoint-w.svg	w	r																																															
+n-g	north	waypoint-n.svg	n	g																																															
+s-g	south	waypoint-s.svg	s	g																																															
+e-g	east	waypoint-e.svg	e	g																																															
+w-g	west	waypoint-w.svg	w	g																																															
+n-b	north	waypoint-n.svg	n	b																																															
+s-b	south	waypoint-s.svg	s	b																																															
+e-b	east	waypoint-e.svg	e	b																																															
+w-b	west	waypoint-w.svg	w	b																																															
 																																																			
 # landmarks #UNUSED																																																			
 # archetype	map	name	by_radius	at_position_x	at_position_y	at_position_z	on_position_x	on_position_y	on_position_z	in_position_x	in_position_y	in_position_z	under_position_x	under_position_y	under_position_z	within_position_x	within_position_y	within_position_z	before_position_x	before_position_y	before_position_z	against_position_x	against_position_y	against_position_z																											
@@ -115,6 +154,9 @@ w-m	west	waypoint-w.svg	w	m
 c	cyan.svg																																																		
 m	magenta.svg																																																		
 y	yellow.svg																																																		
+r	red.svg																																																		
+g	green.svg																																																		
+b	blue.svg																																																		
 																																																			
 # tile_archetypes				UNUSED	UNUSED	UNUSED																																													
 # archetype	top_texture	side_texture	max_erosion	has_detritus	is_moist	is_disturbed																																													
@@ -214,6 +256,21 @@ s-m	waypoint-s.svg		0.35	1.0	0.65		south
 e-m	waypoint-e.svg		0.35	1.0	0.65		east
 w-m	waypoint-w.svg		0.35	1.0	0.65		west
 waypoint-m	invisible.svg		0.35	1.0	0.65		waypoint
+n-r	waypoint-n.svg		0.35	1.0	0.65		north
+s-r	waypoint-s.svg		0.35	1.0	0.65		south
+e-r	waypoint-e.svg		0.35	1.0	0.65		east
+w-r	waypoint-w.svg		0.35	1.0	0.65		west
+waypoint-r	invisible.svg		0.35	1.0	0.65		waypoint
+n-g	waypoint-n.svg		0.35	1.0	0.65		north
+s-g	waypoint-s.svg		0.35	1.0	0.65		south
+e-g	waypoint-e.svg		0.35	1.0	0.65		east
+w-g	waypoint-w.svg		0.35	1.0	0.65		west
+waypoint-g	invisible.svg		0.35	1.0	0.65		waypoint
+n-b	waypoint-n.svg		0.35	1.0	0.65		north
+s-b	waypoint-s.svg		0.35	1.0	0.65		south
+e-b	waypoint-e.svg		0.35	1.0	0.65		east
+w-b	waypoint-w.svg		0.35	1.0	0.65		west
+waypoint-b	invisible.svg		0.35	1.0	0.65		waypoint
 																																																			
 # box_archetypes																																																			
 # archetype	top_texture	side_texture	scale_x	scale_y	scale_z	is_collidable																																													
@@ -269,6 +326,30 @@ crate-box	crate2.svg	crate2.svg	1.0	1.0	1.0	x
 clay-pot	clay-pot.svg	clay.svg	0.5	0.5	0.5	x																																													
 wicker-basket	wicker-basket.svg	thatch.svg	0.5	0.5	0.5	x																																													
 footbridge	wood.svg	wood.svg	1	2	0.25	x
+wood-threshold-r	wood.svg	wood-threshold.svg	0.9	0.9	1.8																																														
+rock-threshold-r	rubble-top.svg	rock-threshold.svg	0.9	0.9	1.8																																														
+rubble-threshold-r	rubble-top.svg	rubble-threshold.svg	0.9	0.9	1.8																																														
+brick-threshold-r	brick.svg	brick-threshold.svg	0.9	0.9	1.8																																														
+stucco-threshold-r	stucco.svg	stucco-threshold.svg	0.9	0.9	1.8																																														
+stone-threshold-r	stone.svg	stone-threshold.svg	0.9	0.9	1.8																																														
+wood-door-r	wood.svg	wood-door.svg	0.9	0.9	1.8																																														
+stone-door-r	stone.svg	stone-door.svg	0.9	0.9	1.8																																														
+wood-threshold-g	wood.svg	wood-threshold.svg	0.9	0.9	1.8																																														
+rock-threshold-g	rubble-top.svg	rock-threshold.svg	0.9	0.9	1.8																																														
+rubble-threshold-g	rubble-top.svg	rubble-threshold.svg	0.9	0.9	1.8																																														
+brick-threshold-g	brick.svg	brick-threshold.svg	0.9	0.9	1.8																																														
+stucco-threshold-g	stucco.svg	stucco-threshold.svg	0.9	0.9	1.8																																														
+stone-threshold-g	stone.svg	stone-threshold.svg	0.9	0.9	1.8																																														
+wood-door-g	wood.svg	wood-door.svg	0.9	0.9	1.8																																														
+stone-door-g	stone.svg	stone-door.svg	0.9	0.9	1.8																																														
+wood-threshold-b	wood.svg	wood-threshold.svg	0.9	0.9	1.8																																														
+rock-threshold-b	rubble-top.svg	rock-threshold.svg	0.9	0.9	1.8																																														
+rubble-threshold-b	rubble-top.svg	rubble-threshold.svg	0.9	0.9	1.8																																														
+brick-threshold-b	brick.svg	brick-threshold.svg	0.9	0.9	1.8																																														
+stucco-threshold-b	stucco.svg	stucco-threshold.svg	0.9	0.9	1.8																																														
+stone-threshold-b	stone.svg	stone-threshold.svg	0.9	0.9	1.8																																														
+wood-door-b	wood.svg	wood-door.svg	0.9	0.9	1.8																																														
+stone-door-b	stone.svg	stone-door.svg	0.9	0.9	1.8																																														
 																																																			
 # actionables
 # entity	action
@@ -509,6 +590,45 @@ villager	running	1	1	villager-back-1.svg	0.12
 72	waypoint-c
 73	waypoint-y
 74	waypoint-m
+75	wood-threshold-r
+76	rock-threshold-r
+77	rubble-threshold-r
+78	brick-threshold-r
+79	stucco-threshold-r
+80	stone-threshold-r
+81	wood-door-r
+82	stone-door-r
+83	waypoint-r
+84	n-r
+85	s-r
+86	e-r
+87	w-r
+88	wood-threshold-g
+89	rock-threshold-g
+90	rubble-threshold-g
+91	brick-threshold-g
+92	stucco-threshold-g
+93	stone-threshold-g
+94	wood-door-g
+95	stone-door-g
+96	waypoint-g
+97	n-g
+98	s-g
+99	e-g
+100	w-g
+101	wood-threshold-b
+102	rock-threshold-b
+103	rubble-threshold-b
+104	brick-threshold-b
+105	stucco-threshold-b
+106	stone-threshold-b
+107	wood-door-b
+108	stone-door-b
+109	waypoint-b
+110	n-b
+111	s-b
+112	e-b
+113	w-b
 																																																			
 # placements
 # entity	archetype	zone	x	y	z
