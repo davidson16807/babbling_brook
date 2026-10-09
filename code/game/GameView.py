@@ -49,8 +49,9 @@ class GameView:
             self.boxes.draw(game.instances.placements, game.archetypes.boxes, view)
         self.billboards.draw(
             camera,
-            game.instances,
-            game.archetypes,
+            game.instances.placements,
+            game.instances.characters,
+            game.archetypes.billboards,
             game.character_animation_frames,
             view,
         )

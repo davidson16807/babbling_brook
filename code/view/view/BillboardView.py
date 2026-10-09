@@ -10,17 +10,17 @@ class BillboardView:
     def __init__(self, program):
         self.program = program
 
-    def draw(self, camera, instances, archetypes, animation_frames, view_state: ViewState):
+    def draw(self, camera, placements, characters, archetypes, animation_frames, view_state: ViewState):
         toward_camera = glm.normalize(-camera.forward().xy)
         batches = defaultdict(lambda: ([], [], [], []))
-        for entity, placement in instances.placements.items():
+        for entity, placement in placements.items():
             key, position = placement.archetype, placement.position
-            definition = archetypes.billboards.get(key)
+            definition = archetypes.get(key)
             if definition is None:
                 continue  # This archetype has no billboard component.
             texture, mirrored = definition.texture, False
-            if entity in instances.characters:
-                state = instances.characters[entity]
+            if entity in characters:
+                state = characters[entity]
                 animation = state.animation
                 if (key, animation, 0, 0) not in animation_frames:
                     animation = 'standing'
