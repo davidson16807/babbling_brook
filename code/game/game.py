@@ -31,6 +31,7 @@ from ..model.query.CollisionQuery import CollisionQuery
 from ..model.query.LightQuery import LightQuery
 from ..model.system.CycleSystem import CycleSystem
 from ..model.query.InteractionQuery import InteractionQuery
+from ..model.query.WaypointQuery import WaypointQuery
 from ..model.system.GravitySystem import GravitySystem
 from ..model.system.CharacterAnimationSystem import CharacterAnimationSystem
 from ..model.system.WaypointSystem import WaypointSystem
@@ -104,7 +105,8 @@ def main(argv=None):
         movement = MovementUpdater(CollisionQuery(), VectorKeysUpdater(*'wasd'))
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
-        waypoints = WaypointSystem()
+        waypoint_query = WaypointQuery()
+        waypoints = WaypointSystem(waypoint_query)
         azimuths = tuple(pi/4 + index*pi/2 for index in range(4))
         elevations = (pi/6, pi/3)
         mouselook = LockedLookUpdater(
@@ -130,7 +132,7 @@ def main(argv=None):
             keylook,
             InteractionQuery(),
             ActionRegistry({'collect_apple': collect('apple'), 'collect_stick': collect('stick'), 'greet': greet}),
-            waypoints,
+            waypoint_query,
         )
         clock = pygame.time.Clock()
         accumulator = 0.0

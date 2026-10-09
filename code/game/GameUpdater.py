@@ -2,19 +2,21 @@
 
 from dataclasses import replace
 
+from pyglm import glm
+
 from ..messages import (KeyboardMessage, KeyboardAction, MouseButton, MouseMotionMessage,
     QuitMessage, WindowResizeMessage)
 from ..model.component.archetype import Waypoint
 from ..model.component.instance import VerticalPhysics
 
 class GameUpdater:
-    def __init__(self, mouselook, keylook, interactions, actions, waypoints, jump_speed=6):
+    def __init__(self, mouselook, keylook, interactions, actions, waypoint_query, jump_speed=6):
 
         self.mouselook = mouselook
         self.keylook = keylook
         self.interactions = interactions
         self.actions = actions
-        self.waypoints = waypoints
+        self.waypoint_query = waypoint_query
         self.jump_speed = jump_speed
 
     def update(self, game, message):
@@ -48,10 +50,14 @@ class GameUpdater:
                     return replace(game, message="Nothing to interact with nearby.")
                 entity, component = target
                 if isinstance(component, Waypoint):
-                    placements = self.waypoints.travel(
-                        'player', entity, game.instances.placements, game.maps,
+                    arrival = self.waypoint_query.destination(
+                        entity, game.instances.placements, game.maps,
                         game.archetypes.waypoints, game.archetypes.cardinal_waypoints,
                         game.zone_adjacencies, game.zone_directions)
+                    if arrival is None:
+                        return game
+                    placements = {**game.instances.placements, 'player': replace(
+                        player, zone=arrival.zone, position=glm.vec3(arrival.position))}
                     return replace(game, instances=replace(game.instances, placements=placements))
                 return self.actions.apply(component.action, game, entity)
             else:
