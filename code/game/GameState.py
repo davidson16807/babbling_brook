@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 
 from ..model.CameraState import CameraState
 from ..model.identifiers import ArchetypeId, EntityId
-from ..model.component.archetype import CardinalWaypoint
 from ..model.component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency
 from ..model.Map import Map
 from ..model.store import ArchetypeComponentStores, InstanceComponentStores
@@ -14,7 +13,7 @@ from ..model.store import ArchetypeComponentStores, InstanceComponentStores
 
 @dataclass(frozen=True)
 class GameState:
-    map: Map
+    maps: dict[str, Map] # terrain for each zone that has a map, keyed by zone
     globals: dict[str, None|bool|int|float|str] # globals for e.g. quest state
     archetypes: ArchetypeComponentStores
     instances: InstanceComponentStores = field(default_factory=InstanceComponentStores)
@@ -34,5 +33,4 @@ class GameState:
     zones: dict[str, Zone] = field(default_factory=dict)
     zone_directions: dict[str, ZoneDirections] = field(default_factory=dict)
     zone_adjacencies: dict[tuple[str, str], ZoneAdjacency] = field(default_factory=dict)
-    cardinal_waypoints: dict[str, CardinalWaypoint] = field(default_factory=dict)
     colorcodes: dict[str, str] = field(default_factory=dict)

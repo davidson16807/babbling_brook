@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 
 from ..component.archetype import (Actionable, CharacterArchetype, BillboardArchetype, TileArchetype, BoxArchetype,
-                                   CreatureArchetype, Liquid, SeasonalTileArchetype, Waypoint)
+                                   CardinalWaypoint, CreatureArchetype, Liquid, SeasonalTileArchetype, Waypoint)
 from ..identifiers import ArchetypeId
 
 '''
@@ -23,6 +23,7 @@ class ArchetypeComponentStores:
     creatures: dict[ArchetypeId, CreatureArchetype] = field(default_factory=dict)
     liquids: dict[ArchetypeId, Liquid] = field(default_factory=dict)
     waypoints: dict[ArchetypeId, Waypoint] = field(default_factory=dict)
+    cardinal_waypoints: dict[ArchetypeId, CardinalWaypoint] = field(default_factory=dict)
     seasonal_tiles: dict[ArchetypeId, SeasonalTileArchetype] = field(default_factory=dict)
     seasonal_billboards: dict[tuple[ArchetypeId, int], str] = field(default_factory=dict)
     boxes: dict[ArchetypeId, BoxArchetype] = field(default_factory=dict)

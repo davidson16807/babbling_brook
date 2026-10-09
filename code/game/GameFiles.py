@@ -26,30 +26,38 @@ class GameFiles:
 
     def load(
         self,
-        map_filename: Path,
         game_filenames: list[Path],
         save_filename: Path | None = None,
     ) -> GameState:
         plugins = [self._plugin(filename) for filename in game_filenames]
         plugin = self.plugin_ops.update(*plugins)
 
-        with open(map_filename, encoding='ascii') as file:
-            image = PpmImageCodec().decode(file.read())
-        map_ = MapCodec(plugin.tile_palette, plugin.tiles).decode(image)
+        # Each zone's map is relative to a loaded game file; later files take precedence.
+        maps, placements = {}, {}
+        for zone_id, zone in plugin.zones.items():
+            candidates = [filename.parent / zone.map_filename for filename in reversed(game_filenames)]
+            map_filename = next((candidate for candidate in candidates if candidate.is_file()), None)
+            if map_filename is None:
+                print(f"Warning: skipping zone {zone_id!r}; its map {zone.map_filename!r} was not found")
+                continue
+            with open(map_filename, encoding='ascii') as file:
+                image = PpmImageCodec().decode(file.read())
+            maps[zone_id] = MapCodec(plugin.tile_palette, plugin.tiles).decode(image)
+            # Map-generated IDs are coordinates, so they are qualified by zone to stay unique.
+            placements.update(
+                (f'{zone_id}{entity}', placement) for entity, placement
+                in ObjectPlacementCodec(plugin.object_palette, maps[zone_id], zone=zone_id).decode(image).items())
 
-        zone_ids = {key for key, zone in plugin.zones.items()
-                    if any((filename.parent / zone.map_filename).resolve() == map_filename.resolve()
-                           for filename in game_filenames)}
-        zone_id = next(iter(zone_ids)) if len(zone_ids) == 1 else ''
-
-        object_codec = ObjectPlacementCodec(
-            plugin.object_palette, map_, zone=zone_id)
         if save_filename is not None:
             plugin = self.plugin_ops.update(plugin, self._plugin(save_filename))
         else:
-            plugin = self.plugin_ops.update(Plugin(placements=object_codec.decode(image)), plugin)
+            plugin = self.plugin_ops.update(Plugin(placements=placements), plugin)
 
-        return self.plugin_ops.load(map_, plugin)
+        player = plugin.placements.get('player')
+        if player is not None and player.zone not in maps:
+            raise ValueError(f"The player's zone {player.zone!r} has no map")
+
+        return self.plugin_ops.load(maps, plugin)
 
     def save(self, filename: Path, state: GameState) -> None:
         plugin = self.plugin_ops.save(state)

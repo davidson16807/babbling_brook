@@ -18,7 +18,7 @@ class MovementUpdater:
         characters = game.instances.characters
         objects = game.archetypes.billboards
         boxes = game.archetypes.boxes
-        map_ = game.map
+        map_ = game.maps[zone]
         held = tuple(
             message for message in messages
             if isinstance(message, KeyboardMessage)

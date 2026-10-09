@@ -33,6 +33,7 @@ from ..model.system.CycleSystem import CycleSystem
 from ..model.query.InteractionQuery import InteractionQuery
 from ..model.system.GravitySystem import GravitySystem
 from ..model.system.CharacterAnimationSystem import CharacterAnimationSystem
+from ..model.system.WaypointSystem import WaypointSystem
 from ..model.plugin.PluginOps import PluginOps
 from ..codec.GameStateCodec import PluginStringCodec
 
@@ -44,7 +45,6 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=APPLICATION_TITLE)
     parser.add_argument('game_files', nargs='*', type=Path, help='Plugin files; only .game and .mod files are loaded')
     parser.add_argument('--data', type=Path, default=Path('data'), help='Directory containing world.game and map/')
-    parser.add_argument('--map', type=Path, help='PPM map file (defaults to DATA/map/world.ppm)')
     parser.add_argument('--save', type=Path, default=Path('save/slot.sav'), help='F5/F9 save slot')
     parser.add_argument('--load', action='store_true', help='Resume the save slot at startup')
     parser.add_argument('--frames', type=int, help='Exit after this many frames (smoke testing)')
@@ -59,9 +59,8 @@ def main(argv=None):
         parser.error('at least one .game or .mod file is required')
     if not args.game_files:
         args.game_files = [args.data / 'world.game']
-    map_filename = args.map or args.data / 'map' / 'world.ppm'
     game_files = GameFiles(PluginOps(), PluginStringCodec())
-    model = game_files.load(map_filename, args.game_files, args.save if args.load else None)
+    model = game_files.load(args.game_files, args.save if args.load else None)
     light_query = LightQuery(full_moon_color=.15, sun_color=1)
     light = light_query.query(model.instances.cycles)
     cycles = CycleSystem()
@@ -105,6 +104,7 @@ def main(argv=None):
         movement = MovementUpdater(CollisionQuery(), VectorKeysUpdater(*'wasd'))
         gravity = GravitySystem()
         animations = CharacterAnimationSystem()
+        waypoints = WaypointSystem()
         azimuths = tuple(pi/4 + index*pi/2 for index in range(4))
         elevations = (pi/6, pi/3)
         mouselook = LockedLookUpdater(
@@ -129,7 +129,8 @@ def main(argv=None):
             mouselook,
             keylook,
             InteractionQuery(),
-            ActionRegistry({'collect_apple': collect('apple'), 'collect_stick': collect('stick'), 'greet': greet})
+            ActionRegistry({'collect_apple': collect('apple'), 'collect_stick': collect('stick'), 'greet': greet}),
+            waypoints,
         )
         clock = pygame.time.Clock()
         accumulator = 0.0
@@ -144,7 +145,7 @@ def main(argv=None):
                             game_files.save(args.save, model)
                             model = replace(model, message='Game saved.')
                         else:
-                            restored = game_files.load(map_filename, args.game_files, args.save)
+                            restored = game_files.load(args.game_files, args.save)
                             model = replace(restored, viewport=model.viewport, camera=model.camera, message='Game loaded.')
                             light = light_query.query(model.instances.cycles)
                             accumulator = 0.0
@@ -155,6 +156,7 @@ def main(argv=None):
             accumulator += elapsed
             while accumulator >= 1 / 120:
                 seconds = 1 / 120
+                before = model.instances.placements
                 model = movement.update(model, seconds, messages)
                 instances = model.instances
                 billboards, boxes = model.archetypes.billboards, model.archetypes.boxes
@@ -164,7 +166,7 @@ def main(argv=None):
                 placements, physics = gravity.step(
                     local,
                     {entity: state for entity, state in instances.physics.items() if entity in local},
-                    model.map, seconds,
+                    model.maps[zone], seconds,
                     {entity: boxes[item.archetype].bounds(item.position)
                      for entity, item in local.items()
                      if item.archetype in boxes and boxes[item.archetype].is_collidable},
@@ -174,11 +176,17 @@ def main(argv=None):
                      for entity, item in local.items()},
                 )
                 characters = animations.step(instances.characters, seconds)
+                # Characters that walk or fall into a waypoint travel through it.
+                placements = waypoints.step(
+                    before, {**instances.placements, **placements}, instances.characters,
+                    billboards, boxes, model.maps, model.archetypes.waypoints,
+                    model.archetypes.cardinal_waypoints, model.zone_adjacencies, model.zone_directions,
+                )
                 model = replace(
                     model,
                     instances=replace(
                         instances,
-                        placements={**instances.placements, **placements},
+                        placements=placements,
                         physics={**instances.physics, **physics},
                         characters=characters,
                         cycles=cycles.step(instances.cycles, seconds / 60),

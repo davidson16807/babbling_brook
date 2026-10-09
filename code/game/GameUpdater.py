@@ -4,15 +4,17 @@ from dataclasses import replace
 
 from ..messages import (KeyboardMessage, KeyboardAction, MouseButton, MouseMotionMessage,
     QuitMessage, WindowResizeMessage)
+from ..model.component.archetype import Waypoint
 from ..model.component.instance import VerticalPhysics
 
 class GameUpdater:
-    def __init__(self, mouselook, keylook, interactions, actions, jump_speed=6):
+    def __init__(self, mouselook, keylook, interactions, actions, waypoints, jump_speed=6):
 
         self.mouselook = mouselook
         self.keylook = keylook
         self.interactions = interactions
         self.actions = actions
+        self.waypoints = waypoints
         self.jump_speed = jump_speed
 
     def update(self, game, message):
@@ -38,12 +40,20 @@ class GameUpdater:
                     # Only placements in the player's zone can be interacted with.
                     {entity: placement for entity, placement in game.instances.placements.items()
                      if placement.zone == player.zone},
-                    game.archetypes.actionables,
+                    # Doors are waypoints activated by interaction.
+                    {**game.archetypes.actionables,
+                     **{key: waypoint for key, waypoint in game.archetypes.waypoints.items() if waypoint.door}},
                 )
                 if target is None:
                     return replace(game, message="Nothing to interact with nearby.")
-                entity, actionable = target
-                return self.actions.apply(actionable.action, game, entity)
+                entity, component = target
+                if isinstance(component, Waypoint):
+                    placements = self.waypoints.travel(
+                        'player', entity, game.instances.placements, game.maps,
+                        game.archetypes.waypoints, game.archetypes.cardinal_waypoints,
+                        game.zone_adjacencies, game.zone_directions)
+                    return replace(game, instances=replace(game.instances, placements=placements))
+                return self.actions.apply(component.action, game, entity)
             else:
                 game = replace(
                     game,

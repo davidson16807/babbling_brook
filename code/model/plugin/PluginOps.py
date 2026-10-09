@@ -27,7 +27,7 @@ class PluginOps:
             })
         return combined
 
-    def load(self, map_: Map, plugin: Plugin) -> GameState:
+    def load(self, maps: dict[str, Map], plugin: Plugin) -> GameState:
 
         animation_ids = {(key, name) for key, name, _, _ in plugin.animation_frames}
         for key, name in animation_ids:
@@ -54,6 +54,7 @@ class PluginOps:
             creatures=dict(plugin.creatures),
             liquids=dict(plugin.liquids),
             waypoints=dict(plugin.waypoints),
+            cardinal_waypoints=dict(plugin.cardinal_waypoints),
             tiles=dict(plugin.tiles),
             seasonal_tiles=dict(plugin.seasonal_tiles),
             seasonal_billboards=dict(plugin.seasonal_billboards),
@@ -64,8 +65,9 @@ class PluginOps:
             key, position = placement.archetype, placement.position
             definition = archetypes.billboards.get(key)
             if definition is not None and definition.has_gravity:
-                ground = map_.height(glm.vec2(position))
-                physics[entity] = VerticalPhysics(0.0, abs(position.z - ground) < 1e-5)
+                map_ = maps.get(placement.zone)
+                ground = map_.height(glm.vec2(position)) if map_ is not None else None
+                physics[entity] = VerticalPhysics(0.0, ground is not None and abs(position.z - ground) < 1e-5)
             if key in character_keys:
                 characters[entity] = CharacterAnimationState()
 
@@ -80,7 +82,7 @@ class PluginOps:
         )
 
         return GameState(
-            map=map_,
+            maps=dict(maps),
             globals=dict(plugin.globals),
             archetypes=archetypes,
             character_animation_frames=dict(plugin.animation_frames),
@@ -91,7 +93,6 @@ class PluginOps:
             zones=dict(plugin.zones),
             zone_directions=dict(plugin.zone_directions),
             zone_adjacencies=dict(plugin.zone_adjacencies),
-            cardinal_waypoints=dict(plugin.cardinal_waypoints),
             colorcodes=dict(plugin.colorcodes),
         )
 
@@ -115,7 +116,7 @@ class PluginOps:
             zones=dict(state.zones),
             zone_directions=dict(state.zone_directions),
             zone_adjacencies=dict(state.zone_adjacencies),
-            cardinal_waypoints=dict(state.cardinal_waypoints),
+            cardinal_waypoints=dict(state.archetypes.cardinal_waypoints),
             colorcodes=dict(state.colorcodes),
             cycles=dict(state.instances.cycles),
             landmarks=dict(state.instances.landmarks),

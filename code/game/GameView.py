@@ -48,7 +48,7 @@ class GameView:
             projection * glm.lookAt(target + -camera.forward() * 30, target, glm.vec3(0, 0, 1)), 
             camera.right(), light.direction, light.color
         )
-        self.tiles.draw(game.map, view)
+        self.tiles.draw(game.maps[player.zone], view)
         if self.boxes is not None:
             self.boxes.draw(placements, game.archetypes.boxes, view)
         self.billboards.draw(
