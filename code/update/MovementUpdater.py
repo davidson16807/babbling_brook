@@ -11,7 +11,10 @@ class MovementUpdater:
         self.vector_updater = vector_updater
 
     def update(self, game, seconds, messages):
-        placements = game.instances.placements
+        # Only placements in the player's zone collide.
+        zone = game.instances.placements['player'].zone
+        placements = {entity: placement for entity, placement in game.instances.placements.items()
+                      if placement.zone == zone}
         characters = game.instances.characters
         objects = game.archetypes.billboards
         boxes = game.archetypes.boxes
@@ -44,7 +47,7 @@ class MovementUpdater:
         return replace(game, 
             instances=replace(game.instances, 
                 placements={
-                    **placements,
+                    **game.instances.placements,
                     'player': replace(placements['player'], position=after),
                 },
                 characters={

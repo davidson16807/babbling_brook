@@ -158,23 +158,28 @@ def main(argv=None):
                 model = movement.update(model, seconds, messages)
                 instances = model.instances
                 billboards, boxes = model.archetypes.billboards, model.archetypes.boxes
+                # Only placements in the player's zone fall and support one another.
+                zone = instances.placements['player'].zone
+                local = {entity: item for entity, item in instances.placements.items() if item.zone == zone}
                 placements, physics = gravity.step(
-                    instances.placements, instances.physics, model.map, seconds,
+                    local,
+                    {entity: state for entity, state in instances.physics.items() if entity in local},
+                    model.map, seconds,
                     {entity: boxes[item.archetype].bounds(item.position)
-                     for entity, item in instances.placements.items()
+                     for entity, item in local.items()
                      if item.archetype in boxes and boxes[item.archetype].is_collidable},
                     # A body is as tall as its tallest component; none means zero.
                     {entity: max(billboards[item.archetype].height if item.archetype in billboards else 0.0,
                                  boxes[item.archetype].scale.z if item.archetype in boxes else 0.0)
-                     for entity, item in instances.placements.items()},
+                     for entity, item in local.items()},
                 )
                 characters = animations.step(instances.characters, seconds)
                 model = replace(
                     model,
                     instances=replace(
                         instances,
-                        placements=placements,
-                        physics=physics,
+                        placements={**instances.placements, **placements},
+                        physics={**instances.physics, **physics},
                         characters=characters,
                         cycles=cycles.step(instances.cycles, seconds / 60),
                     ),

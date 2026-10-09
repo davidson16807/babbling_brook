@@ -31,10 +31,13 @@ class GameUpdater:
                 physics = {**game.instances.physics, 'player': VerticalPhysics(self.jump_speed, False)}
                 return replace(game, instances=replace(game.instances, physics=physics))
             if message.key == 'e':
+                player = game.instances.placements['player']
                 target = self.interactions.nearest(
-                    game.instances.placements['player'].position,
+                    player.position,
                     game.instances.characters['player'].facing,
-                    game.instances.placements,
+                    # Only placements in the player's zone can be interacted with.
+                    {entity: placement for entity, placement in game.instances.placements.items()
+                     if placement.zone == player.zone},
                     game.archetypes.actionables,
                 )
                 if target is None:
