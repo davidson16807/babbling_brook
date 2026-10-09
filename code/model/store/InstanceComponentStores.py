@@ -19,7 +19,7 @@ a system should only operate on the fewest component collections needed to do it
 
 @dataclass(frozen=True)
 class InstanceComponentStores:
-    # Billboards and boxes alike; see ObjectPlacement.
+    # Every placed entity, whatever its archetype's components; see ObjectPlacement.
     placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
     physics: dict[EntityId, VerticalPhysics] = field(default_factory=dict)
     characters: dict[EntityId, CharacterAnimationState] = field(default_factory=dict)

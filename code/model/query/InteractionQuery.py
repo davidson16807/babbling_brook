@@ -6,7 +6,7 @@ from pyglm import glm
 
 class InteractionQuery:
     def nearest(self, origin, facing, placements, objects):
-        # `objects` maps archetypes of any kind (billboard or box) that have an action.
+        # `objects` maps archetypes to a component (billboard or box) carrying their action.
         candidates = [
             (entity, objects[placement.archetype], placement.position)
             for entity, placement in placements.items()

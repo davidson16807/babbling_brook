@@ -9,9 +9,9 @@ from ...identifiers import ArchetypeId
 class ObjectPlacement:
     """An archetype instance positioned at its bottom-center.
 
-    Billboards and boxes share this component and one entity-keyed table.
-    Whether an entity renders and collides as a billboard or as a box is
-    decided by which archetype table defines its archetype.
+    Every placed entity shares this component and one entity-keyed table.
+    How it renders and collides comes from its archetype's other components:
+    a billboard component, a box component, both, or neither.
     """
     archetype: ArchetypeId
     zone: str

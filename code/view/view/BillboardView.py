@@ -17,7 +17,7 @@ class BillboardView:
             key, position = placement.archetype, placement.position
             definition = archetypes.billboards.get(key)
             if definition is None:
-                continue  # Not a billboard; e.g. a box drawn by BoxView.
+                continue  # This archetype has no billboard component.
             texture, mirrored = definition.texture, False
             if entity in instances.characters:
                 state = instances.characters[entity]

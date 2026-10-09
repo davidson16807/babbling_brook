@@ -340,7 +340,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 PrimitiveListCodec(str),
             ),
             GameTableCodec(
-                # Billboard and box instances; the archetype decides which.
+                # All placed entities; their archetypes' components decide rendering and collision.
                 '# placements\n# '+'\t'.join('entity archetype zone x y z'.split()),
                 PrimitiveListCodec(str),
                 ObjectListCodec(ObjectPlacement,

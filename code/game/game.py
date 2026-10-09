@@ -163,8 +163,9 @@ def main(argv=None):
                     {entity: boxes[item.archetype].bounds(item.position)
                      for entity, item in instances.placements.items()
                      if item.archetype in boxes and boxes[item.archetype].is_collidable},
-                    {entity: billboards[item.archetype].height if item.archetype in billboards
-                     else boxes[item.archetype].scale.z
+                    # A body is as tall as its tallest component; none means zero.
+                    {entity: max(billboards[item.archetype].height if item.archetype in billboards else 0.0,
+                                 boxes[item.archetype].scale.z if item.archetype in boxes else 0.0)
                      for entity, item in instances.placements.items()},
                 )
                 characters = animations.step(instances.characters, seconds)

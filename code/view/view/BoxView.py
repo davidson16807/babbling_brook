@@ -10,7 +10,7 @@ class BoxView:
         self.program = program
 
     def draw(self, placements, archetypes, view_state):
-        """Draw the placements whose archetype is a box archetype; skip others."""
+        """Draw the placements whose archetype has a box component; skip others."""
         batches = defaultdict(lambda: ([], [], []))
         for box in placements.values():
             archetype = archetypes.get(box.archetype)

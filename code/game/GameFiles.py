@@ -43,8 +43,7 @@ class GameFiles:
         zone_id = next(iter(zone_ids)) if len(zone_ids) == 1 else ''
 
         object_codec = ObjectPlacementCodec(
-            plugin.object_palette, map_, box_archetypes=plugin.box_archetypes,
-            billboard_archetypes=plugin.billboard_archetypes, zone=zone_id)
+            plugin.object_palette, map_, zone=zone_id)
         if save_filename is not None:
             plugin = self.plugin_ops.update(plugin, self._plugin(save_filename))
         else:

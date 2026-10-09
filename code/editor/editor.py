@@ -12,7 +12,6 @@ from ..adapter.PygameImages import PygameImages
 from ..adapter.PygameMessageQueue import PygameMessageQueue
 from ..codec.GameStateCodec import PluginStringCodec
 from ..codec.map.MapCodec import MapCodec
-from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..messages import KeyboardAction, KeyboardMessage, KeyboardModifiers
 from .EditorFiles import EditorFiles
 from ..update.CursorUpdater import CursorUpdater
@@ -63,8 +62,6 @@ def main(argv=None):
         if any(not 1 <= index <= 65535 for index in plugin.object_palette):
             raise ValueError('Object palette IDs must be between 1 and 65535; zero means empty')
         map_codec = MapCodec(plugin.tile_palette, plugin.tiles)
-        ObjectPlacementCodec(plugin.object_palette, None, box_archetypes=plugin.box_archetypes,
-                             billboard_archetypes=plugin.billboard_archetypes)
         files = EditorFiles(map_codec, plugin.object_palette,
                             game_filename=game_filename, plugin=plugin)
         state = replace(files.load(filename), cycles=dict(plugin.cycles))

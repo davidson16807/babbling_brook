@@ -1,7 +1,7 @@
 """Decode the shared blue-channel palette into ECS placement components.
 
-Billboard and box archetypes share the palette and decode to the same
-`ObjectPlacement` table; archetype tables are used only for validation.
+Every palette entry decodes to the same `ObjectPlacement` table, whatever
+components (billboard, box, both, or none) its archetype has.
 """
 
 from pyglm import glm
@@ -14,16 +14,9 @@ from ...model.identifiers import ArchetypeId, EntityId
 
 class ObjectPlacementCodec:
     def __init__(self, object_palette: dict[int, ArchetypeId], map: Map,
-                 disable_validation: bool = False, box_archetypes=None, billboard_archetypes=None, zone=""):
+                 disable_validation: bool = False, zone=""):
         self.zone = zone
         self.object_palette = object_palette
-        box_archetypes = box_archetypes or {}
-        if billboard_archetypes is not None:
-            for key in object_palette.values():
-                if key in box_archetypes and key in billboard_archetypes:
-                    raise ValueError(f"Ambiguous object palette entry: {key}")
-                if key not in box_archetypes and key not in billboard_archetypes:
-                    raise ValueError(f"Unknown object palette entry: {key}")
         self.map = map
         self.disable_validation = disable_validation
 

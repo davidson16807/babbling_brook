@@ -12,7 +12,7 @@ class LineOfSightQuery:
 
     def is_clear(self, source, target, placements, objects, map_, disabled=(), excluded=()):
         # USAGE NOTE: excluded should include source and target entities
-        # Placements whose archetype is not in `objects` (e.g. boxes) are ignored.
+        # Only placements whose archetype has a component in `objects` occlude.
         heights = {}
         for entity, placement in placements.items():
             if entity in disabled or entity in excluded: continue

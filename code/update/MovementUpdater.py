@@ -35,9 +35,9 @@ class MovementUpdater:
         after = self.collisions.move(
             'player', before, direction * (4.0 if tries_running else 2.5) * seconds,
             placements, objects, map_,
-            tuple(boxes[placement.archetype].bounds(placement.position)
-                  for placement in placements.values()
-                  if placement.archetype in boxes and boxes[placement.archetype].is_collidable))
+            {entity: boxes[placement.archetype].bounds(placement.position)
+             for entity, placement in placements.items()
+             if placement.archetype in boxes and boxes[placement.archetype].is_collidable})
         is_moving = glm.distance(glm.vec2(before), glm.vec2(after)) > 1e-6
         player = characters['player']
         animation = 'standing' if not is_moving else 'running' if tries_running else 'walking'

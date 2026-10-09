@@ -14,7 +14,7 @@ class EditorContent:
     # Authoritative samples, including heights before erosion.
     image: PpmImage
     # Treat dictionaries and their GLM vectors as values: replace, don't mutate.
-    # Billboards and boxes alike; the archetype decides which.
+    # Every placed entity, whatever its archetype's components.
     placements: dict[EntityId, ObjectPlacement] = field(default_factory=dict)
     # Named character placements retain their ECS entity IDs and are always
     # serialized in the game's placements table.

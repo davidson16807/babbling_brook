@@ -81,7 +81,7 @@ class EditorView:
         for placement in (*state.content.placements.values(), *state.content.character_instances.values()):
             definition = self.billboard_archetypes.get(placement.archetype)
             if definition is None:
-                continue  # Boxes are drawn above.
+                continue  # No billboard component.
             origins, sizes = batches[definition.texture]
             origins.append(placement.position)
             sizes.append(glm.vec2(definition.width, definition.height))
