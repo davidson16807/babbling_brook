@@ -86,7 +86,8 @@ class EditorView:
         if self.boxes is not None:
             self.boxes.draw(state.content.placements, self.box_archetypes, view)
         batches = defaultdict(lambda: ([], []))
-        def add(texture, origin, size):
+        markers = defaultdict(lambda: ([], []))
+        def add(batches, texture, origin, size):
             origins, sizes = batches[texture]
             origins.append(origin)
             sizes.append(size)
@@ -95,17 +96,22 @@ class EditorView:
             cardinal = self.cardinal_waypoints.get(placement.archetype)
             if cardinal is not None:
                 # Cardinal waypoints show their own texture as a unit billboard, in place of any billboard component.
-                add(cardinal.texture, placement.position, glm.vec2(1))
+                add(batches, cardinal.texture, placement.position, glm.vec2(1))
             elif definition is not None:
-                add(definition.texture, placement.position, glm.vec2(definition.width, definition.height))
+                add(batches, definition.texture, placement.position, glm.vec2(definition.width, definition.height))
             # Every waypoint is marked one unit above it with its colorcode's texture.
             waypoint = cardinal or self.waypoints.get(placement.archetype)
             if waypoint is not None and waypoint.colorcode in self.colorcodes:
-                add(self.colorcodes[waypoint.colorcode], placement.position + glm.vec3(0, 0, 1), glm.vec2(.25))
+                add(markers, self.colorcodes[waypoint.colorcode], placement.position + glm.vec3(0, 0, 1), glm.vec2(.25))
         for texture, (origins, sizes) in batches.items():
             self.billboards.draw(texture, tuple(origins), tuple(sizes),
                                  (glm.vec4(0, 0, 1, 1),) * len(origins),
                                  (False,) * len(origins), view)
+        # Markers are drawn last and over the scene, so doors set in walls and boxes stay marked.
+        for texture, (origins, sizes) in markers.items():
+            self.billboards.draw(texture, tuple(origins), tuple(sizes),
+                                 (glm.vec4(0, 0, 1, 1),) * len(origins),
+                                 (False,) * len(origins), view, depth_test=False)
         self.highlights.draw(
             state.cursor,
             tuple(state.map.corner_heights(xy) for xy in state.cursor),

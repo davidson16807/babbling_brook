@@ -94,13 +94,15 @@ void main() {
         sizes: tuple[glm.vec2, ...],
         uv_rects: tuple[glm.vec4, ...],
         mirrored: tuple[bool, ...],
-        view: ViewState
+        view: ViewState,
+        depth_test: bool = True,
     ) -> None:
+        # Without a depth test, billboards draw over the scene and leave depth unchanged (e.g. editor markers).
         if self.released or not origins:
             return
         if len({len(values) for values in (origins, sizes, uv_rects, mirrored)}) != 1:
             raise ValueError("Billboard attributes must have equal lengths")
-        self.gl.enable_only(gl.DEPTH_TEST)
+        self.gl.enable_only(gl.DEPTH_TEST if depth_test else gl.NOTHING)
         self.gl.fbo.depth_mask = True
         self.gl.depth_func = "<="
         self.program["clip_from_world"].write(view.clip_from_world.to_bytes())
