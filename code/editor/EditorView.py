@@ -10,7 +10,8 @@ from ..view.UiPanel import UiPanel, UiText
 
 class EditorView:
     def __init__(self, tiles, billboards, highlights, ui, billboard_archetypes,
-                 filename, map_codec, object_palette, boxes=None, box_archetypes=None):
+                 filename, map_codec, object_palette, boxes=None, box_archetypes=None,
+                 waypoints=None, cardinal_waypoints=None, colorcodes=None):
         self.tiles = tiles
         self.billboards = billboards
         self.highlights = highlights
@@ -21,6 +22,13 @@ class EditorView:
         self.object_palette = object_palette
         self.boxes = boxes
         self.box_archetypes = box_archetypes or {}
+        self.waypoints = waypoints or {}
+        self.cardinal_waypoints = cardinal_waypoints or {}
+        self.colorcodes = colorcodes or {}
+        for archetype, waypoint in (*self.waypoints.items(), *self.cardinal_waypoints.items()):
+            if waypoint.colorcode not in self.colorcodes:
+                print(f"Warning: waypoint {archetype!r} has colorcode {waypoint.colorcode!r}, "
+                      "which has no texture; its marker will not be drawn")
 
     def ui_panels(self, state):
         x, y = state.cursor[-1]
@@ -78,13 +86,22 @@ class EditorView:
         if self.boxes is not None:
             self.boxes.draw(state.content.placements, self.box_archetypes, view)
         batches = defaultdict(lambda: ([], []))
+        def add(texture, origin, size):
+            origins, sizes = batches[texture]
+            origins.append(origin)
+            sizes.append(size)
         for placement in (*state.content.placements.values(), *state.content.character_instances.values()):
             definition = self.billboard_archetypes.get(placement.archetype)
-            if definition is None:
-                continue  # No billboard component.
-            origins, sizes = batches[definition.texture]
-            origins.append(placement.position)
-            sizes.append(glm.vec2(definition.width, definition.height))
+            cardinal = self.cardinal_waypoints.get(placement.archetype)
+            if cardinal is not None:
+                # Cardinal waypoints show their own texture as a unit billboard, in place of any billboard component.
+                add(cardinal.texture, placement.position, glm.vec2(1))
+            elif definition is not None:
+                add(definition.texture, placement.position, glm.vec2(definition.width, definition.height))
+            # Every waypoint is marked one unit above it with its colorcode's texture.
+            waypoint = cardinal or self.waypoints.get(placement.archetype)
+            if waypoint is not None and waypoint.colorcode in self.colorcodes:
+                add(self.colorcodes[waypoint.colorcode], placement.position + glm.vec3(0, 0, 1), glm.vec2(.25))
         for texture, (origins, sizes) in batches.items():
             self.billboards.draw(texture, tuple(origins), tuple(sizes),
                                  (glm.vec4(0, 0, 1, 1),) * len(origins),

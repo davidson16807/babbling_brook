@@ -85,7 +85,8 @@ def main(argv=None):
                           HighlightProgram(gl),
                           PygameUiView(UiProgram(gl)), plugin.billboard_archetypes,
                           filename.name, map_codec, plugin.object_palette,
-                          BoxView(TileProgram(gl, textures)), plugin.box_archetypes)
+                          BoxView(TileProgram(gl, textures)), plugin.box_archetypes,
+                          plugin.waypoints, plugin.cardinal_waypoints, plugin.colorcodes)
         updater = make_updater(map_codec, plugin.object_palette)
         queue = PygameMessageQueue(monitored_keys='wasdzq')
         clock = pygame.time.Clock()
