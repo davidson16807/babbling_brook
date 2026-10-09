@@ -5,20 +5,18 @@ from pyglm import glm
 
 
 class InteractionQuery:
-    def nearest(self, origin, facing, placements, objects):
-        # `objects` maps archetypes to a component (billboard or box) carrying their action.
+    def nearest(self, origin, facing, placements, actionables):
         candidates = [
-            (entity, objects[placement.archetype], placement.position)
+            (entity, actionables[placement.archetype], placement.position)
             for entity, placement in placements.items()
             if entity != 'player'
-            and placement.archetype in objects
-            and objects[placement.archetype].action
+            and placement.archetype in actionables
         ]
         ranked = []
-        for entity, archetype, position in candidates:
+        for entity, actionable, position in candidates:
             offset = glm.vec2(position - origin)
             distance = glm.length(offset)
             if distance > 1.0: continue
             alignment = glm.dot(facing, offset / distance) if distance > 0 else 1.0
-            ranked.append((distance - .2 * alignment, entity, archetype))
+            ranked.append((distance - .2 * alignment, entity, actionable))
         return min(ranked, key=lambda item: item[0])[1:] if ranked else None

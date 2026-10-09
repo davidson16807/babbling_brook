@@ -11,5 +11,4 @@ class BillboardArchetype:
     height: float = 1.0
     width: float = 0.9
     has_gravity: bool = True
-    action: str = ""
     lexeme: str = ""

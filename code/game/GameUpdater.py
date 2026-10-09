@@ -35,15 +35,12 @@ class GameUpdater:
                     game.instances.placements['player'].position,
                     game.instances.characters['player'].facing,
                     game.instances.placements,
-                    # Either component may carry the action; the billboard's wins if both do.
-                    {key: component
-                     for table in (game.archetypes.boxes, game.archetypes.billboards)
-                     for key, component in table.items() if component.action},
+                    game.archetypes.actionables,
                 )
                 if target is None:
                     return replace(game, message="Nothing to interact with nearby.")
-                entity, archetype = target
-                return self.actions.apply(archetype.action, game, entity)
+                entity, actionable = target
+                return self.actions.apply(actionable.action, game, entity)
             else:
                 game = replace(
                     game,

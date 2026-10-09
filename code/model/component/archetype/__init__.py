@@ -5,6 +5,7 @@ Application data. No window, event-library, GPU, or filesystem dependencies.
 Component tables are ordinary dictionaries. Treat stored GLM vectors as values:
 systems/updaters replace them, never mutate their coordinates in place.
 """
+from .Actionable import Actionable
 from .BillboardArchetype import BillboardArchetype
 from .BoxArchetype import BoxArchetype
 from .CardinalWaypoint import CardinalWaypoint

@@ -20,7 +20,7 @@ from .PrefixedStringCodec import PrefixedStringCodec
 from .PaddedStringCodec import PaddedStringCodec
 from .SetListCodec import SetListCodec
 from ..model.plugin.Plugin import Plugin
-from ..model.component.archetype import (TileArchetype, BoxArchetype, BillboardArchetype, CharacterArchetype,
+from ..model.component.archetype import (Actionable, TileArchetype, BoxArchetype, BillboardArchetype, CharacterArchetype,
                                         CreatureArchetype, Liquid, SeasonalTileArchetype,
                                         Waypoint, CardinalWaypoint)
 from ..model.component.Cycle import Cycle
@@ -216,7 +216,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
             ),
             GameTableCodec(
                 '# billboard_archetypes\n'+
-                '\t'.join('archetype texture is_collidable radius height width has_gravity action lexeme'.split()),
+                '\t'.join('archetype texture is_collidable radius height width has_gravity lexeme'.split()),
                 PrimitiveListCodec(str),
                 ObjectListCodec(BillboardArchetype,
                     ('texture', PrimitiveListCodec(str)),
@@ -225,20 +225,23 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('height', PrimitiveListCodec(float)),
                     ('width', PrimitiveListCodec(float)),
                     ('has_gravity', BooleanListCodec()),
-                    ('action', PrimitiveListCodec(str)),
                     ('lexeme', PrimitiveListCodec(str)),
                 ),
             ),
             GameTableCodec(
-                '# box_archetypes\n# archetype\ttop_texture\tside_texture\tscale_x\tscale_y\tscale_z\tis_collidable\taction',
+                '# box_archetypes\n# archetype\ttop_texture\tside_texture\tscale_x\tscale_y\tscale_z\tis_collidable',
                 PrimitiveListCodec(str),
                 ObjectListCodec(BoxArchetype,
                     ('top_texture', PrimitiveListCodec(str)),
                     ('side_texture', PrimitiveListCodec(str)),
                     ('scale', ContainerListCodec(glm.vec3, float, 3)),
                     ('is_collidable', BooleanListCodec()),
-                    ('action', PrimitiveListCodec(str)),
                 ),
+            ),
+            GameTableCodec(
+                '# actionables\n# '+'\t'.join('entity action'.split()),
+                PrimitiveListCodec(str),
+                ObjectListCodec(Actionable, ('action', PrimitiveListCodec(str))),
             ),
             GameTableCodec(
                 '# seasonal_billboard_archetypes #UNUSED\n# archetype\tleaf_state\ttexture',

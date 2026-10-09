@@ -48,6 +48,7 @@ class PluginOps:
         archetypes = ArchetypeComponentStores(
             billboards=dict(plugin.billboard_archetypes),
             boxes=dict(plugin.box_archetypes),
+            actionables=dict(plugin.actionables),
             characters={**{key: CharacterArchetype() for key in character_keys},
                         **plugin.character_archetypes},
             creatures=dict(plugin.creatures),
@@ -104,6 +105,7 @@ class PluginOps:
             seasonal_billboards=dict(state.archetypes.seasonal_billboards),
             billboard_archetypes=dict(state.archetypes.billboards),
             box_archetypes=dict(state.archetypes.boxes),
+            actionables=dict(state.archetypes.actionables),
             character_archetypes=dict(state.archetypes.characters),
             creatures=dict(state.archetypes.creatures),
             liquids=dict(state.archetypes.liquids),

@@ -192,31 +192,31 @@ sand	sand.svg	leaves.svg	sand.svg	snow.svg
 grass	grass.svg	leaves.svg	grass-dead.svg	snow.svg																																															
 																																																			
 # billboard_archetypes																																																			
-# archetype	texture	is_collidable	radius	height	width	has_gravity	action	name																																											
-tree	tree.svg	x	0.35	3.0	1.0			tree																																											
-apple	apple.svg		0.15	0.32	0.32	x	collect_apple	apple																																											
-crate	crate.svg	x	0.45	0.9	0.9			crate																																											
-villager	villager-front-0.svg	x	0.28	1.8	0.7		greet	villager																																											
-stick	stick.svg		0.12	0.28	0.55	x	collect_stick	stick																																											
-child	child-front-0.svg	x	0.24	1.1	0.65	x		you																																											
-n-c	waypoint-n-c.svg		0.35	1.0	0.65			north
-s-c	waypoint-s-c.svg		0.35	1.0	0.65			south
-e-c	waypoint-e-c.svg		0.35	1.0	0.65			east
-w-c	waypoint-w-c.svg		0.35	1.0	0.65			west
-waypoint-c	waypoint-c.svg		0.35	1.0	0.65			waypoint
-n-y	waypoint-n-y.svg		0.35	1.0	0.65			north
-s-y	waypoint-s-y.svg		0.35	1.0	0.65			south
-e-y	waypoint-e-y.svg		0.35	1.0	0.65			east
-w-y	waypoint-w-y.svg		0.35	1.0	0.65			west
-waypoint-y	waypoint-y.svg		0.35	1.0	0.65			waypoint
-n-m	waypoint-n-m.svg		0.35	1.0	0.65			north
-s-m	waypoint-s-m.svg		0.35	1.0	0.65			south
-e-m	waypoint-e-m.svg		0.35	1.0	0.65			east
-w-m	waypoint-w-m.svg		0.35	1.0	0.65			west
-waypoint-m	waypoint-m.svg		0.35	1.0	0.65			waypoint
+# archetype	texture	is_collidable	radius	height	width	has_gravity	name																																												
+tree	tree.svg	x	0.35	3.0	1.0		tree																																												
+apple	apple.svg		0.15	0.32	0.32	x	apple																																												
+crate	crate.svg	x	0.45	0.9	0.9		crate																																												
+villager	villager-front-0.svg	x	0.28	1.8	0.7		villager																																												
+stick	stick.svg		0.12	0.28	0.55	x	stick																																												
+child	child-front-0.svg	x	0.24	1.1	0.65	x	you																																												
+n-c	waypoint-n-c.svg		0.35	1.0	0.65		north
+s-c	waypoint-s-c.svg		0.35	1.0	0.65		south
+e-c	waypoint-e-c.svg		0.35	1.0	0.65		east
+w-c	waypoint-w-c.svg		0.35	1.0	0.65		west
+waypoint-c	waypoint-c.svg		0.35	1.0	0.65		waypoint
+n-y	waypoint-n-y.svg		0.35	1.0	0.65		north
+s-y	waypoint-s-y.svg		0.35	1.0	0.65		south
+e-y	waypoint-e-y.svg		0.35	1.0	0.65		east
+w-y	waypoint-w-y.svg		0.35	1.0	0.65		west
+waypoint-y	waypoint-y.svg		0.35	1.0	0.65		waypoint
+n-m	waypoint-n-m.svg		0.35	1.0	0.65		north
+s-m	waypoint-s-m.svg		0.35	1.0	0.65		south
+e-m	waypoint-e-m.svg		0.35	1.0	0.65		east
+w-m	waypoint-w-m.svg		0.35	1.0	0.65		west
+waypoint-m	waypoint-m.svg		0.35	1.0	0.65		waypoint
 																																																			
 # box_archetypes																																																			
-# archetype	top_texture	side_texture	scale_x	scale_y	scale_z	is_collidable	action																																												
+# archetype	top_texture	side_texture	scale_x	scale_y	scale_z	is_collidable																																													
 wood-window-glassless-lit	wood.svg	wood-window-glassless-lit.svg	0.9	0.9	0.9																																														
 wood-window-glassless-unlit	wood.svg	wood-window-glassless-unlit.svg	0.9	0.9	0.9																																														
 wood-window-glassy-lit	wood.svg	wood-window-glassy-lit.svg	0.9	0.9	0.9																																														
@@ -268,8 +268,14 @@ stone-table	stone.svg	stone-table.svg	1.0	1.0	1.0	x
 crate-box	crate2.svg	crate2.svg	1.0	1.0	1.0	x																																													
 clay-pot	clay-pot.svg	clay.svg	0.5	0.5	0.5	x																																													
 wicker-basket	wicker-basket.svg	thatch.svg	0.5	0.5	0.5	x																																													
-footbridge	wood.svg	wood.svg	1	2	0.25	x	
+footbridge	wood.svg	wood.svg	1	2	0.25	x
 																																																			
+# actionables
+# entity	action
+apple	collect_apple
+villager	greet
+stick	collect_stick
+
 # seasonal_billboard_archetypes																																																			
 # archetype	leaf_state	texture																																																	
 tree	0	spring-tree.svg																																																	
