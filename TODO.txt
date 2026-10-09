@@ -15,21 +15,9 @@
 	ground for liquid tiles is calculated as an offset to ground for solid tiles, calcualted from a wave_depth, wave_depth_amplitude, wave_period, and wave_phase, so that characters appear to bob and float in it
 	wave_phase is stored in phase table, other wave_* variables are passed to the constructor to the class that calculates ground height
 
-* new "WaterLevel" component
-	map_id
-	high_tide_liquid_level
-	low_tide_liquid_level
-	liquid_id (or none if no liquid present)
-
 * add behavior that seasonally changes grass, leaves, trees, and snow
 
 * add overlay for rain, snow, and fog
-
-* behavior for "Waypoint" object archetype components:
-	game state is updated so:
-		map is newly loaded from file for the map component that's referred to by the activated waypoint
-		view only displays object placements for the new map
-		player position is updated to the opposite waypoint marker of the adjacent map indicated by the waypoint that was activated
 
 * dynamic character generation
 	* edited svgs are created from template and stored for each character upon application startup along with entries in character animation table
