@@ -76,10 +76,12 @@ class EditorView:
         view = self.view_state(state, light)
         self.tiles.draw(state.map, view)
         if self.boxes is not None:
-            self.boxes.draw(state.content.boxes, self.box_archetypes, view)
+            self.boxes.draw(state.content.placements, self.box_archetypes, view)
         batches = defaultdict(lambda: ([], []))
-        for placement in (*state.content.billboards.values(), *state.content.character_instances.values()):
-            definition = self.billboard_archetypes[placement.archetype]
+        for placement in (*state.content.placements.values(), *state.content.character_instances.values()):
+            definition = self.billboard_archetypes.get(placement.archetype)
+            if definition is None:
+                continue  # Boxes are drawn above.
             origins, sizes = batches[definition.texture]
             origins.append(placement.position)
             sizes.append(glm.vec2(definition.width, definition.height))

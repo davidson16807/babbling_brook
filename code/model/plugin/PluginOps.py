@@ -29,9 +29,6 @@ class PluginOps:
 
     def load(self, map_: Map, plugin: Plugin) -> GameState:
 
-        if any(box.archetype not in plugin.box_archetypes for box in plugin.boxes.values()):
-            raise ValueError("Box refers to an unknown box archetype")
-
         animation_ids = {(key, name) for key, name, _, _ in plugin.animation_frames}
         for key, name in animation_ids:
             frames = {
@@ -62,16 +59,16 @@ class PluginOps:
         )
 
         physics, characters = {}, {}
-        for entity, placement in plugin.billboards.items():
+        for entity, placement in plugin.placements.items():
             key, position = placement.archetype, placement.position
-            definition = archetypes.billboards[key]
-            if definition.has_gravity:
+            definition = archetypes.billboards.get(key)
+            if definition is not None and definition.has_gravity:
                 ground = map_.height(glm.vec2(position))
                 physics[entity] = VerticalPhysics(0.0, abs(position.z - ground) < 1e-5)
             if key in character_keys:
                 characters[entity] = CharacterAnimationState()
 
-        instances = InstanceComponentStores(dict(plugin.billboards), physics, characters)
+        instances = InstanceComponentStores(dict(plugin.placements), physics, characters)
         instances = replace(
             instances,
             physics={**instances.physics, **plugin.physics},
@@ -79,7 +76,6 @@ class PluginOps:
             cycles=dict(plugin.cycles),
             landmarks=dict(plugin.landmarks),
             waterlevels=dict(plugin.waterlevels),
-            boxes=dict(plugin.boxes),
         )
 
         return GameState(
@@ -123,8 +119,7 @@ class PluginOps:
             landmarks=dict(state.instances.landmarks),
             waterlevels=dict(state.instances.waterlevels),
             animation_frames=dict(state.character_animation_frames),
-            billboards=dict(state.instances.billboards),
-            boxes=dict(state.instances.boxes),
+            placements=dict(state.instances.placements),
             physics=dict(state.instances.physics),
             characters=dict(state.instances.characters),
         )

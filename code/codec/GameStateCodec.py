@@ -26,7 +26,7 @@ from ..model.component.archetype import (TileArchetype, BoxArchetype, BillboardA
 from ..model.component.Cycle import Cycle
 from ..model.component.zone import Biome, Zone, ZoneDirections, ZoneAdjacency, Waterlevel
 from ..model.component.Landmark import Landmark
-from ..model.component.instance import BillboardPlacement, BoxPlacement, VerticalPhysics, CharacterAnimationState
+from ..model.component.instance import ObjectPlacement, VerticalPhysics, CharacterAnimationState
 
 
 class PluginListCodec:
@@ -230,13 +230,14 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 ),
             ),
             GameTableCodec(
-                '# box_archetypes\n# archetype\ttop_texture\tside_texture\tscale_x\tscale_y\tscale_z\tis_collidable',
+                '# box_archetypes\n# archetype\ttop_texture\tside_texture\tscale_x\tscale_y\tscale_z\tis_collidable\taction',
                 PrimitiveListCodec(str),
                 ObjectListCodec(BoxArchetype,
                     ('top_texture', PrimitiveListCodec(str)),
                     ('side_texture', PrimitiveListCodec(str)),
                     ('scale', ContainerListCodec(glm.vec3, float, 3)),
                     ('is_collidable', BooleanListCodec()),
+                    ('action', PrimitiveListCodec(str)),
                 ),
             ),
             GameTableCodec(
@@ -339,18 +340,10 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 PrimitiveListCodec(str),
             ),
             GameTableCodec(
-                '# billboards\n #'+'\t'.join('entity archetype zone x y z'.split()),
+                # Billboard and box instances; the archetype decides which.
+                '# placements\n# '+'\t'.join('entity archetype zone x y z'.split()),
                 PrimitiveListCodec(str),
-                ObjectListCodec(BillboardPlacement,
-                    ('archetype', PrimitiveListCodec(str)),
-                    ('zone', PrimitiveListCodec(str)),
-                    ('position', ContainerListCodec(glm.vec3, float, 3)),
-                ),
-            ),
-            GameTableCodec(
-                '# boxes\n# '+'\t'.join('entity archetype zone x y z'.split()),
-                PrimitiveListCodec(str),
-                ObjectListCodec(BoxPlacement,
+                ObjectListCodec(ObjectPlacement,
                     ('archetype', PrimitiveListCodec(str)),
                     ('zone', PrimitiveListCodec(str)),
                     ('position', ContainerListCodec(glm.vec3, float, 3)),

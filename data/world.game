@@ -268,7 +268,7 @@ stone-table	stone.svg	stone-table.svg	1.0	1.0	1.0	x
 crate-box	crate2.svg	crate2.svg	1.0	1.0	1.0	x																																													
 clay-pot	clay-pot.svg	clay.svg	0.5	0.5	0.5	x																																													
 wicker-basket	wicker-basket.svg	thatch.svg	0.5	0.5	0.5	x																																													
-footbridge	wood.svg	wood.svg	1	2	0.25	x
+footbridge	wood.svg	wood.svg	1	2	0.25	x	
 																																																			
 # seasonal_billboard_archetypes																																																			
 # archetype	leaf_state	texture																																																	
@@ -504,12 +504,9 @@ villager	running	1	1	villager-back-1.svg	0.12
 73	waypoint-y
 74	waypoint-m
 																																																			
-# billboards
+# placements
 # entity	archetype	zone	x	y	z
 player	child	farm-town	7	10	1																																														
-
-# boxes
-# entity	archetype	zone	x	y	z
 crate1	crate-box	farm-town	12.5	9.5	2.0																																														
 brook-footbridge	footbridge	babbling-brook	13.5	10	1.25
 																																																			

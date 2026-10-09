@@ -13,9 +13,11 @@ class BillboardView:
     def draw(self, camera, instances, archetypes, animation_frames, view_state: ViewState):
         toward_camera = glm.normalize(-camera.forward().xy)
         batches = defaultdict(lambda: ([], [], [], []))
-        for entity, placement in instances.billboards.items():
+        for entity, placement in instances.placements.items():
             key, position = placement.archetype, placement.position
-            definition = archetypes.billboards[key]
+            definition = archetypes.billboards.get(key)
+            if definition is None:
+                continue  # Not a billboard; e.g. a box drawn by BoxView.
             texture, mirrored = definition.texture, False
             if entity in instances.characters:
                 state = instances.characters[entity]

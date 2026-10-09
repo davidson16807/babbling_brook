@@ -32,7 +32,7 @@ from ..view.view.TileView import TileView
 from ..view.view.BoxView import BoxView
 
 
-def make_updater(map_codec, object_palette, box_archetypes=None):
+def make_updater(map_codec, object_palette):
     # Keep keyboard look identical to the regular game; only mouse look is free.
     keylook = LockedLookUpdater(
         BoundedVectorUpdater(VectorKeysUpdater(*'ijkl', magnitude=(pi/2, pi/6)),
@@ -44,7 +44,7 @@ def make_updater(map_codec, object_palette, box_archetypes=None):
             DirectLookUpdater(BoundedVectorUpdater(VectorMouseUpdater(-.01), y0=0, y1=pi/2)),
             keylook,
             AppHistoryTraversal(max_history_size=100), 
-            CycleSystem(), box_archetypes=box_archetypes)
+            CycleSystem())
 
 
 def main(argv=None):
@@ -65,10 +65,8 @@ def main(argv=None):
         map_codec = MapCodec(plugin.tile_palette, plugin.tiles)
         ObjectPlacementCodec(plugin.object_palette, None, box_archetypes=plugin.box_archetypes,
                              billboard_archetypes=plugin.billboard_archetypes)
-        files = EditorFiles(map_codec, plugin.object_palette, plugin.box_archetypes,
+        files = EditorFiles(map_codec, plugin.object_palette,
                             game_filename=game_filename, plugin=plugin)
-        if any(box.archetype not in plugin.box_archetypes for box in plugin.boxes.values()):
-            raise ValueError('Box refers to an unknown box archetype')
         state = replace(files.load(filename), cycles=dict(plugin.cycles))
     except (OSError, ValueError, KeyError) as error:
         parser.exit(1, f'Cannot open level: {error}\n')
@@ -91,7 +89,7 @@ def main(argv=None):
                           PygameUiView(UiProgram(gl)), plugin.billboard_archetypes,
                           filename.name, map_codec, plugin.object_palette,
                           BoxView(TileProgram(gl, textures)), plugin.box_archetypes)
-        updater = make_updater(map_codec, plugin.object_palette, plugin.box_archetypes)
+        updater = make_updater(map_codec, plugin.object_palette)
         queue = PygameMessageQueue(monitored_keys='wasdzq')
         clock = pygame.time.Clock()
         while state.running:

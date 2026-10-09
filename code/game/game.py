@@ -157,22 +157,22 @@ def main(argv=None):
                 seconds = 1 / 120
                 model = movement.update(model, seconds, messages)
                 instances = model.instances
+                billboards, boxes = model.archetypes.billboards, model.archetypes.boxes
                 placements, physics = gravity.step(
-                    {**instances.billboards, **instances.boxes}, instances.physics, model.map, seconds,
-                    {entity: model.archetypes.boxes[box.archetype].bounds(box.position)
-                     for entity, box in instances.boxes.items()
-                     if model.archetypes.boxes[box.archetype].is_collidable},
-                    {**{entity: model.archetypes.billboards[item.archetype].height
-                        for entity, item in instances.billboards.items()},
-                     **{entity: model.archetypes.boxes[box.archetype].scale.z for entity, box in instances.boxes.items()}},
+                    instances.placements, instances.physics, model.map, seconds,
+                    {entity: boxes[item.archetype].bounds(item.position)
+                     for entity, item in instances.placements.items()
+                     if item.archetype in boxes and boxes[item.archetype].is_collidable},
+                    {entity: billboards[item.archetype].height if item.archetype in billboards
+                     else boxes[item.archetype].scale.z
+                     for entity, item in instances.placements.items()},
                 )
                 characters = animations.step(instances.characters, seconds)
                 model = replace(
                     model,
                     instances=replace(
                         instances,
-                        billboards={entity: placements[entity] for entity in instances.billboards},
-                        boxes={entity: placements[entity] for entity in instances.boxes},
+                        placements=placements,
                         physics=physics,
                         characters=characters,
                         cycles=cycles.step(instances.cycles, seconds / 60),

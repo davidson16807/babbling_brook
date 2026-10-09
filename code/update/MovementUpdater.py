@@ -11,9 +11,10 @@ class MovementUpdater:
         self.vector_updater = vector_updater
 
     def update(self, game, seconds, messages):
-        billboards = game.instances.billboards
+        placements = game.instances.placements
         characters = game.instances.characters
         objects = game.archetypes.billboards
+        boxes = game.archetypes.boxes
         map_ = game.map
         held = tuple(
             message for message in messages
@@ -30,21 +31,21 @@ class MovementUpdater:
         if glm.length(direction) > 0:
             direction = glm.normalize(direction)
         tries_running = any(message.key in ('shift', 'right shift') for message in held)
-        before = billboards['player'].position
+        before = placements['player'].position
         after = self.collisions.move(
             'player', before, direction * (4.0 if tries_running else 2.5) * seconds,
-            billboards, objects, map_,
-            tuple(game.archetypes.boxes[box.archetype].bounds(box.position)
-                  for box in game.instances.boxes.values()
-                  if game.archetypes.boxes[box.archetype].is_collidable))
+            placements, objects, map_,
+            tuple(boxes[placement.archetype].bounds(placement.position)
+                  for placement in placements.values()
+                  if placement.archetype in boxes and boxes[placement.archetype].is_collidable))
         is_moving = glm.distance(glm.vec2(before), glm.vec2(after)) > 1e-6
         player = characters['player']
         animation = 'standing' if not is_moving else 'running' if tries_running else 'walking'
         return replace(game, 
             instances=replace(game.instances, 
-                billboards={
-                    **billboards,
-                    'player': replace(billboards['player'], position=after),
+                placements={
+                    **placements,
+                    'player': replace(placements['player'], position=after),
                 },
                 characters={
                     **characters, 

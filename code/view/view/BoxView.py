@@ -9,10 +9,13 @@ class BoxView:
     def __init__(self, program):
         self.program = program
 
-    def draw(self, boxes, archetypes, view_state):
+    def draw(self, placements, archetypes, view_state):
+        """Draw the placements whose archetype is a box archetype; skip others."""
         batches = defaultdict(lambda: ([], [], []))
-        for box in boxes.values():
-            archetype = archetypes[box.archetype]
+        for box in placements.values():
+            archetype = archetypes.get(box.archetype)
+            if archetype is None:
+                continue
             coordinates, heights, bases = batches[box.archetype]
             coordinates.append(tuple(archetype.bounds(box.position).minimum.xy))
             heights.append(glm.mat2(*(box.position.z + 1,) * 4))

@@ -17,7 +17,7 @@ def collect(item):
         inventory = defaultdict(int, model.inventory)
         inventory['player', item] += 1
         instances = replace(model.instances, **{name: {key: value for key, value in getattr(model.instances, name).items() if key != entity}
-            for name in ('billboards', 'physics', 'characters')})
+            for name in ('placements', 'physics', 'characters')})
         return replace(model, instances=instances, inventory=inventory, message=f"Picked up {item}. Press Tab to see your inventory.")
     return action
 

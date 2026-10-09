@@ -159,6 +159,13 @@ filesystem and invalid-data errors and reports them through `GameState.message`.
 - `Map` owns the tile `Field` instances. Runtime entity-indexed component
   dictionaries, including `ObjectPlacement`, stay in `InstanceComponentStores`.
   Systems receive the specific dictionaries they need, rather than entire stores.
+- Billboards and boxes share one `ObjectPlacement` component and one entity-keyed
+  `placements` table (the `# placements` section of `.game` and save files). The
+  archetype decides the kind: `billboard_archetypes` entries render as billboards
+  and collide as cylinders; `box_archetypes` entries render with the tile program
+  and collide as boxes. Interaction, pickup, gravity support, and save/load use the
+  same table for both, so a box archetype with an `action` is interactable. An
+  archetype defined in both archetype tables, or in neither, is rejected at load.
 - `PluginStringCodec.decode` returns a `Plugin`. `PluginOps.update` overlays plugin
   tables in load order, and `PluginOps.load` combines the result with a decoded
   `Map` to create the runtime `GameState`.

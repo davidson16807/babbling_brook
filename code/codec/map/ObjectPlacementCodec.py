@@ -1,10 +1,14 @@
-"""Decode the shared blue-channel palette into ECS placement components."""
+"""Decode the shared blue-channel palette into ECS placement components.
+
+Billboard and box archetypes share the palette and decode to the same
+`ObjectPlacement` table; archetype tables are used only for validation.
+"""
 
 from pyglm import glm
 
 from ...model.Map import Map
 from .PpmImageCodec import PpmImage
-from ...model.component.instance import BillboardPlacement, BoxPlacement
+from ...model.component.instance import ObjectPlacement
 from ...model.identifiers import ArchetypeId, EntityId
 
 
@@ -13,17 +17,17 @@ class ObjectPlacementCodec:
                  disable_validation: bool = False, box_archetypes=None, billboard_archetypes=None, zone=""):
         self.zone = zone
         self.object_palette = object_palette
-        self.box_archetypes = box_archetypes or {}
+        box_archetypes = box_archetypes or {}
         if billboard_archetypes is not None:
             for key in object_palette.values():
-                if key in self.box_archetypes and key in billboard_archetypes:
+                if key in box_archetypes and key in billboard_archetypes:
                     raise ValueError(f"Ambiguous object palette entry: {key}")
-                if key not in self.box_archetypes and key not in billboard_archetypes:
+                if key not in box_archetypes and key not in billboard_archetypes:
                     raise ValueError(f"Unknown object palette entry: {key}")
         self.map = map
         self.disable_validation = disable_validation
 
-    def decode(self, image: PpmImage) -> dict[EntityId, BillboardPlacement | BoxPlacement]:
+    def decode(self, image: PpmImage) -> dict[EntityId, ObjectPlacement]:
         if not self.disable_validation and (image.width, image.height) != tuple(self.map.dimensions):
             raise ValueError("Object image and tile map dimensions must agree")
         objects = {}
@@ -39,15 +43,5 @@ class ObjectPlacementCodec:
             coordinate = i % image.width, i // image.width
             position = glm.vec2(*coordinate) + glm.vec2(0.5)
             origin = glm.vec3(position, self.map.height(position))
-            objects[str(coordinate)] = (
-                BoxPlacement(archetype, self.zone, origin)
-                if archetype in self.box_archetypes else BillboardPlacement(archetype, self.zone, origin)
-            )
+            objects[str(coordinate)] = ObjectPlacement(archetype, self.zone, origin)
         return objects
-
-    def decode_components(self, image):
-        objects = self.decode(image)
-        return (
-            {key: value for key, value in objects.items() if isinstance(value, BillboardPlacement)},
-            {key: value for key, value in objects.items() if isinstance(value, BoxPlacement)},
-        )

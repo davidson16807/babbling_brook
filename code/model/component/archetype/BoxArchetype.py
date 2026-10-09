@@ -9,11 +9,12 @@ from ..Bounds import Bounds
 
 @dataclass(frozen=True)
 class BoxArchetype:
-    """Shared material, dimensions, and collision setting for a kind of box."""
+    """Shared material, dimensions, collision setting, and action for a kind of box."""
     top_texture: str
     side_texture: str
     scale: glm.vec3 = field(default_factory=lambda: glm.vec3(1))
     is_collidable: bool = True
+    action: str = ""
 
     def bounds(self, position):
         """World bounds at a placement's bottom-center."""

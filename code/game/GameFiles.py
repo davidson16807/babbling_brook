@@ -48,8 +48,7 @@ class GameFiles:
         if save_filename is not None:
             plugin = self.plugin_ops.update(plugin, self._plugin(save_filename))
         else:
-            billboards, boxes = object_codec.decode_components(image)
-            plugin = self.plugin_ops.update(Plugin(billboards=billboards, boxes=boxes), plugin)
+            plugin = self.plugin_ops.update(Plugin(placements=object_codec.decode(image)), plugin)
 
         return self.plugin_ops.load(map_, plugin)
 

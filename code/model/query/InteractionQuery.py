@@ -5,10 +5,11 @@ from pyglm import glm
 
 
 class InteractionQuery:
-    def nearest(self, origin, facing, billboards, objects):
+    def nearest(self, origin, facing, placements, objects):
+        # `objects` maps archetypes of any kind (billboard or box) that have an action.
         candidates = [
             (entity, objects[placement.archetype], placement.position)
-            for entity, placement in billboards.items()
+            for entity, placement in placements.items()
             if entity != 'player'
             and placement.archetype in objects
             and objects[placement.archetype].action

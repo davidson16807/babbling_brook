@@ -13,10 +13,9 @@ from ..messages import (FocusLostMessage, KeyboardAction, KeyboardMessage,
 
 
 class EditorUpdater:
-    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history, cycle_system, box_archetypes=None):
+    def __init__(self, map_codec, object_palette, cursor, mouselook, keylook, history, cycle_system):
         self.map_codec = map_codec
         self.object_palette = object_palette
-        self.box_archetypes = box_archetypes or {}
         self.cursor = cursor
         self.mouselook = mouselook  # A vector updater, with no angle locking.
         self.keylook = keylook      # The regular game's composed look updater.
@@ -88,18 +87,16 @@ class EditorUpdater:
         image = replace(state.content.image, pixels=pixels,
                         maximum=max(state.content.image.maximum, max(max(p) for p in pixels)))
         map_ = self.map_codec.decode(image)
-        billboards, boxes = ObjectPlacementCodec(
+        placements = ObjectPlacementCodec(
             self.object_palette, map_, disable_validation=True,
-            box_archetypes=self.box_archetypes, zone=state.content.zone).decode_components(image)
+            zone=state.content.zone).decode(image)
         # Regenerate map placements after a pixel edit, retaining explicit ones.
         previous = ObjectPlacementCodec(
             self.object_palette, state.map, disable_validation=True,
-            box_archetypes=self.box_archetypes, zone=state.content.zone).decode(state.content.image)
-        billboards.update((key, value) for key, value in state.content.billboards.items()
+            zone=state.content.zone).decode(state.content.image)
+        placements.update((key, value) for key, value in state.content.placements.items()
                           if key not in previous)
-        boxes.update((key, value) for key, value in state.content.boxes.items()
-                     if key not in previous)
-        content = replace(state.content, image=image, billboards=billboards, boxes=boxes)
+        content = replace(state.content, image=image, placements=placements)
         return replace(self.history.do(state, content), map=map_,
                        message=message, quit_requested=False)
 
@@ -107,8 +104,7 @@ class EditorUpdater:
         # Keep the same group when switching precision, even after it has moved.
         tiles = set(state.cursor)
         selected = state.selected_objects if state.object_step is not None else frozenset(
-            key for table in (state.content.billboards, state.content.boxes,
-                              state.content.character_instances)
+            key for table in (state.content.placements, state.content.character_instances)
             for key, item in table.items()
             if (floor(item.position.x), floor(item.position.y)) in tiles
         )
@@ -122,8 +118,8 @@ class EditorUpdater:
         content = state.content
         pixels = list(content.image.pixels)
         mapped = ObjectPlacementCodec(self.object_palette, state.map, disable_validation=True,
-                                      box_archetypes=self.box_archetypes, zone=state.content.zone).decode(content.image)
-        tables = [dict(content.billboards), dict(content.boxes), dict(content.character_instances)]
+                                      zone=state.content.zone).decode(content.image)
+        tables = [dict(content.placements), dict(content.character_instances)]
         occupied = set().union(*tables)
         selected = set(state.selected_objects)
         for table in tables:
@@ -149,7 +145,7 @@ class EditorUpdater:
                 del table[key]
                 table[new_key] = replace(item, position=position)
         content = replace(content, image=replace(content.image, pixels=tuple(pixels)),
-                          billboards=tables[0], boxes=tables[1], character_instances=tables[2])
+                          placements=tables[0], character_instances=tables[1])
         return replace(self.history.do(state, content), selected_objects=frozenset(selected),
                        quit_requested=False, message='Objects snapped.' if snap else 'Objects moved.')
 
