@@ -92,6 +92,55 @@ mode changes, channel assignment, copy/paste, undo/redo, saving, and reload.
 The history port also matches the supplied JavaScript across 300 model-only
 operations. Interactive desktop play has not been manually tested.
 
+## Dialog harness
+
+The statement-composing GUI that trainer mode will open, runnable without the world:
+
+```sh
+python dialog.py                      # data/lexicon/english.tsv
+python dialog.py --demo --seed 7      # start with the mockup's "you give the red ball to the boy"
+python dialog.py --headless --demo --frames 2 --screenshot dialog.png
+```
+
+| Input | Dialog action |
+| --- | --- |
+| Drag from the inventory | Place a word; its inflection grid opens with the default selected |
+| Drag a placed word | Reorder it; drop it on the inventory to remove it |
+| Drag an adjective onto a noun phrase | Place it among the phrase's article, adposition, and noun |
+| Click a placed word | Open or close its inflection grid |
+| Click a grid cell | Choose that inflection; the grid stays open |
+| Escape / X | Cancel a drag, else collapse the grid (keeping the choice), else dismiss |
+| Delete / Backspace | Remove the word whose grid is open |
+| E / talk (E) | Speak: prints the statement and each word's interpretations |
+| Wheel | Scroll the inventory or the grid under the pointer |
+
+`DialogState`, `DialogUpdater`, and `DialogView` form a separate MVU application,
+meant to be nested in trainer mode. `DialogLayout` is a pure function of the state
+that both the view (to draw) and the updater (to hit-test) call, so no positions
+are remembered between frames. Boxes from the layout carry style names;
+`PygameUiBoxView` rasterizes each distinct text box once into an atlas and draws
+everything in one `UiProgram` call, so dragging changes only rects. Its caches,
+like `PygameFonts`', are pure functions of their keys. Mouse button and wheel
+messages now carry the pointer `position`.
+
+Each inflection grid's order is shuffled per lexeme and per dialog session
+(`random.Random(f'{seed}/{lexeme}')`). Adjectives store their place relative to
+the noun, so reinflecting "the red ball" to "to the ball" keeps "red" by "ball".
+`Spoke.playmat` is the statement as arranged; each word's inflection text maps,
+through the lexicon, to every tagpoint it could mean.
+
+`data/lexicon/english.tsv` is generated from
+[the languages repo](https://github.com/davidson16807/languages); the game never
+imports it:
+
+```sh
+python tool/build_lexicon.py ../languages/language-learning data/lexicon/english.tsv
+```
+
+The builder renders every inflection with that repo's `Language.map`, swapping its
+`formatting` for one that returns ordered (part, text) tokens. Rows are tagpoints;
+rows with the same lexeme and tokens are one inflection's interpretations.
+
 ## Run
 
 Requires Python 3.10+, an OpenGL 3.3-capable desktop, and the dependencies below.

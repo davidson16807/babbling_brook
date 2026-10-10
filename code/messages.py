@@ -52,12 +52,14 @@ class MouseButtonMessage:
     button: MouseButton
     action: ButtonAction
     modifiers: KeyboardModifiers = KeyboardModifiers.NONE
+    position: glm.vec2 | None = None  # viewport pixels; None when unknown
 
 
 @dataclass(frozen=True, slots=True)
 class ScrollMessage:
     offset: glm.vec2
     modifiers: KeyboardModifiers = KeyboardModifiers.NONE
+    position: glm.vec2 | None = None  # pointer, in viewport pixels; None when unknown
 
 
 @dataclass(frozen=True, slots=True)
