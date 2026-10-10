@@ -1,7 +1,8 @@
 """A language's playable vocabulary: what the dialog shows, and what it can mean.
 
-`tool/build_lexicon.py` generates lexicons offline from the languages repo
-(github.com/davidson16807/languages), so the game never imports that repo.
+`lexicon/` generates lexicons at startup with the languages repo
+(github.com/davidson16807/languages); these classes don't depend on it.
+Tagpoints are the dictkeys of the traversals they were rendered from.
 The text of an inflection may have several interpretations. English "give" is
 any present plural or a 1st/2nd person singular, for instance. Every
 interpretation is kept as a tagpoint in the inflection's `tagpoints`, so that

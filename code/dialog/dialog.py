@@ -15,7 +15,7 @@ from .. import APPLICATION_TITLE
 from ..adapter.PygameFonts import PygameFonts
 from ..adapter.PygameMessageQueue import PygameMessageQueue
 from ..adapter.PygameUiBoxView import PygameUiBoxView
-from ..codec.LexiconCodec import LexiconStringCodec
+from ..adapter.LanguagesLibrary import LanguagesLibrary
 from ..messages import QuitMessage
 from ..view.program.UiProgram import UiProgram
 from .DialogDemo import DialogDemo
@@ -25,13 +25,13 @@ from .DialogUpdater import DialogUpdater
 from .DialogView import DialogView, dialog_styles
 from .playmat import describe, tokens
 
-ROOT = Path(__file__).resolve().parents[2]
 BACKGROUND = (.29, .38, .64)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=f'{APPLICATION_TITLE} dialog harness')
-    parser.add_argument('--lexicon', type=Path, default=ROOT / 'data' / 'lexicon' / 'english.tsv')
+    parser.add_argument('--languages', type=Path,
+                        help='The languages repo (default: lib/languages, then ../languages)')
     parser.add_argument('--font', type=Path, help='TTF/OTF file; defaults to a monospaced system font')
     parser.add_argument('--font-size', type=int, default=22)
     parser.add_argument('--seed', type=int, help='Inflection grid order (default: new each run)')
@@ -45,9 +45,11 @@ def main(argv=None):
     if args.headless and args.frames is None:
         args.frames = 1
     try:
-        lexicon = LexiconStringCodec().decode(args.lexicon.read_text(encoding='utf-8'))
-    except (OSError, ValueError) as error:
-        parser.exit(1, f'Cannot read lexicon: {error}\n')
+        library = LanguagesLibrary(args.languages)
+    except FileNotFoundError as error:
+        parser.exit(1, f'{error}\n')
+    print(f'Building the English lexicon with {library.directory}…', flush=True)
+    lexicon = library.import_module('babbling_brook.lexicon.english').english_lexicon()
 
     gl = view = framebuffer = fonts = None
     try:
