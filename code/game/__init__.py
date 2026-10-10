@@ -1,1 +1,0 @@
-"""Babbling Brook game application."""

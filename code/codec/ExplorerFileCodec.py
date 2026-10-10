@@ -4,7 +4,7 @@ from .EscapedTextCodec import EscapedTextCodec
 from .MappedCodec import MappedCodec
 
 
-class GameFileCodec:
+class ExplorerFileCodec:
     """Named TSV tables. Unknown sections survive decoding; consumers validate names."""
 
     def __init__(self):

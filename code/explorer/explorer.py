@@ -1,6 +1,6 @@
 # HUMAN VETTED
 
-"""Desktop composition root: Pygame window/timing, internal messages, MVU."""
+"""Explorer composition root: Pygame window/timing, internal messages, MVU."""
 import argparse
 from dataclasses import replace
 from math import pi
@@ -19,9 +19,9 @@ from ..view.program.UiProgram import UiProgram
 from ..view.view.TileView import TileView
 from ..view.view.BoxView import BoxView
 from ..view.view.BillboardView import BillboardView
-from .GameView import GameView
+from .ExplorerView import ExplorerView
 
-from .GameUpdater import GameUpdater
+from .ExplorerUpdater import ExplorerUpdater
 from ..update.LookUpdater import LockedLookUpdater
 from ..update.VectorUpdater import BoundedVectorUpdater, VectorKeysUpdater, VectorMouseUpdater
 from ..update.MovementUpdater import MovementUpdater
@@ -36,14 +36,14 @@ from ..model.system.GravitySystem import GravitySystem
 from ..model.system.CharacterAnimationSystem import CharacterAnimationSystem
 from ..model.system.WaypointSystem import WaypointSystem
 from ..model.plugin.PluginOps import PluginOps
-from ..codec.GameStateCodec import PluginStringCodec
+from ..codec.ExplorerStateCodec import PluginStringCodec
 
 from .. import APPLICATION_TITLE
-from .GameFiles import GameFiles
+from .ExplorerFiles import ExplorerFiles
 from ..messages import KeyboardMessage, KeyboardAction
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=APPLICATION_TITLE)
+    parser = argparse.ArgumentParser(description=f'{APPLICATION_TITLE} explorer')
     parser.add_argument('game_files', nargs='*', type=Path, help='Plugin files; only .game and .mod files are loaded')
     parser.add_argument('--data', type=Path, default=Path('data'), help='Directory containing world.game and map/')
     parser.add_argument('--save', type=Path, default=Path('save/slot.sav'), help='F5/F9 save slot')
@@ -60,7 +60,7 @@ def main(argv=None):
         parser.error('at least one .game or .mod file is required')
     if not args.game_files:
         args.game_files = [args.data / 'world.game']
-    game_files = GameFiles(PluginOps(), PluginStringCodec())
+    game_files = ExplorerFiles(PluginOps(), PluginStringCodec())
     model = game_files.load(args.game_files, args.save if args.load else None)
     light_query = LightQuery(full_moon_color=.15, sun_color=1)
     light = light_query.query(model.instances.cycles)
@@ -80,7 +80,7 @@ def main(argv=None):
             pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
             pygame.display.gl_set_attribute(pygame.GL_DEPTH_SIZE, 24)
             pygame.display.set_mode(model.viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE)
-            pygame.display.set_caption(APPLICATION_TITLE)
+            pygame.display.set_caption(f'{APPLICATION_TITLE} - Explorer')
             gl = moderngl.create_context(require=330)
             gl.screen.use()
             queue = PygameMessageQueue(
@@ -99,7 +99,7 @@ def main(argv=None):
         )
         for name in sorted(names):
             textures.get(name)
-        view = GameView(TileView(TileProgram(gl, textures)),
+        view = ExplorerView(TileView(TileProgram(gl, textures)),
                         BillboardView(BillboardProgram(gl, textures)), 
                         PygameUiView(UiProgram(gl)), BoxView(TileProgram(gl, textures)))
         movement = MovementUpdater(CollisionQuery(), VectorKeysUpdater(*'wasd'))
@@ -127,7 +127,7 @@ def main(argv=None):
             azimuths,
             elevations,
         )
-        updater = GameUpdater(
+        updater = ExplorerUpdater(
             mouselook,
             keylook,
             InteractionQuery(),

@@ -8,12 +8,12 @@ from pathlib import Path
 from ..codec.map.MapCodec import MapCodec
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..codec.map.PpmImageCodec import PpmImageCodec
-from .GameState import GameState
+from .ExplorerState import ExplorerState
 from ..model.plugin.Plugin import Plugin
 from ..model.plugin.PluginOps import PluginOps
 
 
-class GameFiles:
+class ExplorerFiles:
     """Compose game plugins with a map and persist game state."""
 
     def __init__(self, plugin_ops: PluginOps, plugin_string_codec):
@@ -28,7 +28,7 @@ class GameFiles:
         self,
         game_filenames: list[Path],
         save_filename: Path | None = None,
-    ) -> GameState:
+    ) -> ExplorerState:
         plugins = [self._plugin(filename) for filename in game_filenames]
         plugin = self.plugin_ops.update(*plugins)
 
@@ -59,7 +59,7 @@ class GameFiles:
 
         return self.plugin_ops.load(maps, plugin)
 
-    def save(self, filename: Path, state: GameState) -> None:
+    def save(self, filename: Path, state: ExplorerState) -> None:
         plugin = self.plugin_ops.save(state)
         filename.parent.mkdir(parents=True, exist_ok=True)
         temporary = filename.with_name(filename.name + '.tmp')

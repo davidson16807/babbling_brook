@@ -9,7 +9,7 @@ from ..messages import (KeyboardMessage, KeyboardAction, MouseButton, MouseMotio
 from ..model.component.archetype import Waypoint
 from ..model.component.instance import VerticalPhysics
 
-class GameUpdater:
+class ExplorerUpdater:
     def __init__(self, mouselook, keylook, interactions, actions, waypoint_query, jump_speed=6):
 
         self.mouselook = mouselook

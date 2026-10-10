@@ -7,7 +7,7 @@ from math import isfinite
 
 from pyglm import glm
 
-from ...game.GameState import GameState
+from ...explorer.ExplorerState import ExplorerState
 from ..Map import Map
 from .Plugin import Plugin
 from ..component.archetype import CharacterArchetype
@@ -27,7 +27,7 @@ class PluginOps:
             })
         return combined
 
-    def load(self, maps: dict[str, Map], plugin: Plugin) -> GameState:
+    def load(self, maps: dict[str, Map], plugin: Plugin) -> ExplorerState:
 
         animation_ids = {(key, name) for key, name, _, _ in plugin.animation_frames}
         for key, name in animation_ids:
@@ -81,7 +81,7 @@ class PluginOps:
             waterlevels=dict(plugin.waterlevels),
         )
 
-        return GameState(
+        return ExplorerState(
             maps=dict(maps),
             globals=dict(plugin.globals),
             archetypes=archetypes,
@@ -96,7 +96,7 @@ class PluginOps:
             colorcodes=dict(plugin.colorcodes),
         )
 
-    def save(self, state: GameState) -> Plugin:
+    def save(self, state: ExplorerState) -> Plugin:
         return Plugin(
             format={'version': 1},
             globals=dict(state.globals),

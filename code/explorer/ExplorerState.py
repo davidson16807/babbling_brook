@@ -12,7 +12,7 @@ from ..model.store import ArchetypeComponentStores, InstanceComponentStores
 
 
 @dataclass(frozen=True)
-class GameState:
+class ExplorerState:
     maps: dict[str, Map] # terrain for each zone that has a map, keyed by zone
     globals: dict[str, None|bool|int|float|str] # globals for e.g. quest state
     archetypes: ArchetypeComponentStores

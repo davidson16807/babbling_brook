@@ -10,7 +10,7 @@ import pygame
 from ..adapter.PygameUiView import PygameUiView
 from ..adapter.PygameImages import PygameImages
 from ..adapter.PygameMessageQueue import PygameMessageQueue
-from ..codec.GameStateCodec import PluginStringCodec
+from ..codec.ExplorerStateCodec import PluginStringCodec
 from ..codec.map.MapCodec import MapCodec
 from ..messages import KeyboardAction, KeyboardMessage, KeyboardModifiers
 from .EditorFiles import EditorFiles

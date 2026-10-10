@@ -37,28 +37,28 @@ class PluginListCodec:
     def decode(self, code):
         return Plugin.from_tables(code)
 
-def GameRowCodec(record_codec, column_delimiter='\t'):
+def ExplorerRowCodec(record_codec, column_delimiter='\t'):
 	return ComposedCodec(
 		record_codec,
 		MappedCodec(EscapedTextCodec()),
 		DelimitedStringsCodec(column_delimiter),
 	)
 
-def GameTableCodec(header, key_codec, value_codec,
+def ExplorerTableCodec(header, key_codec, value_codec,
 		column_delimiter='\t', row_delimiter='\n', comment_delimiter='#'):
 	"""A table whose rows are key cells followed by value cells, decoded as a dictionary."""
 	return ComposedCodec(
 			DictionaryListCodec(),
-			GameRecordTableCodec(header, ConcatenatedContainerCodec(list, key_codec, value_codec),
+			ExplorerRecordTableCodec(header, ConcatenatedContainerCodec(list, key_codec, value_codec),
 				column_delimiter=column_delimiter, row_delimiter=row_delimiter,
 				comment_delimiter=comment_delimiter),
 		)
 
-def GameRecordTableCodec(header, record_codec,
+def ExplorerRecordTableCodec(header, record_codec,
 		column_delimiter='\t', row_delimiter='\n', comment_delimiter='#'):
 	"""A table decoded as a list with one record per row."""
 	return ComposedCodec(
-			MappedCodec(GameRowCodec(record_codec, column_delimiter=column_delimiter)),
+			MappedCodec(ExplorerRowCodec(record_codec, column_delimiter=column_delimiter)),
 			DelimitedStringsCodec(row_delimiter),
 			CommentedStringCodec(comment_delimiter),
 			PrefixedStringCodec(header+row_delimiter),
@@ -69,17 +69,17 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
     return ComposedCodec(
         PluginListCodec(),
         ZippedCodec(
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# format\n #'+'\t'.join('key value'.split()),
                 PrimitiveListCodec(str),
                 PrimitiveListCodec(int),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# globals #UNUSED\n #'+'\t'.join('key value'.split()),
                 PrimitiveListCodec(str),
                 PrimitiveListCodec(float),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# cycles\n# id\tphase\tperiod\twarp\twarp_until_phase',
                 PrimitiveListCodec(str),
                 ObjectListCodec(Cycle,
@@ -89,7 +89,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('warp_until_phase', PrimitiveListCodec(float)),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# biome\n# biome\tsummer_temperature\twinter_temperature\tleaf_state\tgrass_state\tis_snowy',
                 PrimitiveListCodec(str),
                 ObjectListCodec(Biome,
@@ -102,12 +102,12 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
             ),
             ComposedCodec(
                 SetListCodec(),
-                GameRecordTableCodec(
+                ExplorerRecordTableCodec(
                     '# biome spawns\n# biome\tcreature',
                     ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(str)),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# zone\n# zone\tname\tmap_filename\tbiome',
                 PrimitiveListCodec(str),
                 ObjectListCodec(Zone,
@@ -116,7 +116,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('biome', PrimitiveListCodec(str)),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# zone water levels #UNUSED\n# zone\thigh_tide_liquid_level\tlow_tide_liquid_level\tliquid',
                 PrimitiveListCodec(str),
                 ObjectListCodec(Waterlevel,
@@ -125,7 +125,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('liquid', OptionalValueListCodec(str)),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# zone directions\n# zone\tnorth\tsouth\teast\twest',
                 PrimitiveListCodec(str),
                 ObjectListCodec(ZoneDirections,
@@ -134,7 +134,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
             ),
             ComposedCodec(
                 MultiKeyDictionaryListCodec(('zone1', 'colorcode'), ('zone2', 'colorcode')),
-                GameRecordTableCodec(
+                ExplorerRecordTableCodec(
                     '# zone adjacencies\n# zone1\tzone2\tcolorcode\tpreposition_to1\tpreposition_to2\tkey_to1\tkey_to2',
                     ObjectListCodec(ZoneAdjacency,
                         ('zone1', PrimitiveListCodec(str)),
@@ -147,7 +147,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# waypoints\n# archetype\tcolorcode\tdoor',
                 PrimitiveListCodec(str),
                 ObjectListCodec(Waypoint,
@@ -155,14 +155,14 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('door', BooleanListCodec()),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# cardinal waypoints\n# archetype\tname\ttexture\tdirection\tcolorcode',
                 PrimitiveListCodec(str),
                 ObjectListCodec(CardinalWaypoint,
                     *((name, PrimitiveListCodec(str)) for name in ('name', 'texture', 'direction', 'colorcode')),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# landmarks #UNUSED\n# id\tmap\tlexeme\tby_radius\tat_position_x\tat_position_y\tat_position_z\ton_position_x\ton_position_y\ton_position_z\tin_position_x\tin_position_y\tin_position_z\tunder_position_x\tunder_position_y\tunder_position_z\twithin_position_x\twithin_position_y\twithin_position_z\tbefore_position_x\tbefore_position_y\tbefore_position_z\tagainst_position_x\tagainst_position_y\tagainst_position_z',
                 PrimitiveListCodec(str),
                 ObjectListCodec(Landmark,
@@ -178,8 +178,8 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('against_position', ContainerListCodec(glm.vec3, float, 3)),
                 ),
             ),
-            GameTableCodec('# colorcodes\n# colorcode\ttexture', PrimitiveListCodec(str), PrimitiveListCodec(str)),
-            GameTableCodec(
+            ExplorerTableCodec('# colorcodes\n# colorcode\ttexture', PrimitiveListCodec(str), PrimitiveListCodec(str)),
+            ExplorerTableCodec(
                 '# tile_archetypes\n #'+'\t'.join('archetype top_texture side_texture max_erosion has_detritus is_moist is_disturbed'.split()),
                 PrimitiveListCodec(str),
                 ObjectListCodec(TileArchetype,
@@ -191,7 +191,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('is_disturbed', BooleanListCodec()),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# liquid_archetypes #UNUSED\n# archetype\ttop_texture1\ttop_texture2\tside_texture\tfreezing_temperature\tfrozen_texture\tviscosity\tis_unpassable',
                 PrimitiveListCodec(str),
                 ObjectListCodec(Liquid,
@@ -204,7 +204,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('is_unpassable', BooleanListCodec()),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# seasonal_tile_archetypes #UNUSED\n# id\tdefault\tfallen_leaves\tdead_grass\tsnowy',
                 PrimitiveListCodec(str),
                 ObjectListCodec(SeasonalTileArchetype,
@@ -214,7 +214,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('snowy', PrimitiveListCodec(str)),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# billboard_archetypes\n'+
                 '\t'.join('archetype texture is_collidable radius height width has_gravity lexeme'.split()),
                 PrimitiveListCodec(str),
@@ -228,7 +228,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('lexeme', PrimitiveListCodec(str)),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# box_archetypes\n# archetype\ttop_texture\tside_texture\tscale_x\tscale_y\tscale_z\tis_collidable',
                 PrimitiveListCodec(str),
                 ObjectListCodec(BoxArchetype,
@@ -238,17 +238,17 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('is_collidable', BooleanListCodec()),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# actionables\n# '+'\t'.join('entity action'.split()),
                 PrimitiveListCodec(str),
                 ObjectListCodec(Actionable, ('action', PrimitiveListCodec(str))),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# seasonal_billboard_archetypes #UNUSED\n# archetype\tleaf_state\ttexture',
                 ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(int)),
                 PrimitiveListCodec(str),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# character_archetypes #UNUSED\n# archetype\tmale\tlifestage\tskin\thair\tbald_prone\tdwarf\tstrong\tfat\tattractive\thungry\tthirsty\twants\tloves\tharasses\tfollows\tavoids\tguards\twanders\trun_speed\tswim_speed\tclimb_speed\tcolorblind\tdeaf\tblind\tspeaks_native\tspeaks_foreign\tnumeracy\tliteracy\tplaces_known\tpeople_known\trespect_level\trespects_level\twealth_level\theals\tmends\tcooks\tsmiths\tcarpents\tmasons\tpicks_locks\tcontrols_weather\tcreature_friend\towes_player\tunescortable\tcriminal',
                 PrimitiveListCodec(str),
                 ObjectListCodec(CharacterArchetype,
@@ -299,7 +299,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('criminal', BooleanListCodec()),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# creature_archetypes #UNUSED\n# archetype\trun_speed\tswim_speed\tclimb_speed\tfly_speed\twarm_blooded\tcolorblind\tuv_vision\theat_vision\tforages\thunts_alone\tpack_hunts\teats_berries\teats_seeds\teats_grass\teats_fish\teats_small_game\teats_big_game',
                 PrimitiveListCodec(str),
                 ObjectListCodec(CreatureArchetype,
@@ -322,7 +322,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('eats_big_game', BooleanListCodec()),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# character_animation_frames\n #'+'\t'.join('archetype animation direction frame texture seconds_per_frame'.split()),
                 ConcatenatedContainerCodec(tuple,
                     PrimitiveListCodec(str),
@@ -332,17 +332,17 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                 ),
                 ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(float)),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# tile_palette\n #'+'\t'.join('index archetype'.split()),
                 PrimitiveListCodec(int),
                 PrimitiveListCodec(str),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# object_palette\n #'+'\t'.join('index archetype'.split()),
                 PrimitiveListCodec(int),
                 PrimitiveListCodec(str),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 # All placed entities; their archetypes' components decide rendering and collision.
                 '# placements\n# '+'\t'.join('entity archetype zone x y z'.split()),
                 PrimitiveListCodec(str),
@@ -352,12 +352,12 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('position', ContainerListCodec(glm.vec3, float, 3)),
                 ),
             ),
-            GameTableCodec('# physics\n #'+'\t'.join('entity vertical_velocity is_grounded'.split()), 
+            ExplorerTableCodec('# physics\n #'+'\t'.join('entity vertical_velocity is_grounded'.split()), 
                 PrimitiveListCodec(str),
                 ObjectListCodec(VerticalPhysics,
                     ('vertical_velocity', PrimitiveListCodec(float)),
                     ('is_grounded', BooleanListCodec()))),
-            GameTableCodec('# actor_states\n #'+'\t'.join('entity facing_x facing_y animation elapsed hurt tired asleep hot cold angry sad afraid happy'.split()), 
+            ExplorerTableCodec('# actor_states\n #'+'\t'.join('entity facing_x facing_y animation elapsed hurt tired asleep hot cold angry sad afraid happy'.split()), 
                 PrimitiveListCodec(str),
                 ObjectListCodec(CharacterAnimationState,
                     ('facing', ContainerListCodec(glm.vec2, float, 2)),
@@ -374,7 +374,7 @@ def PluginStringCodec(table_delimiter='\n\n', table_regex_delimiter=r'\n\t*\n'):
                     ('happy', BooleanListCodec()),
                 ),
             ),
-            GameTableCodec(
+            ExplorerTableCodec(
                 '# inventory\n #'+'\t'.join('character item quantity'.split()),
                 ConcatenatedContainerCodec(tuple, PrimitiveListCodec(str), PrimitiveListCodec(str)),
                 PrimitiveListCodec(int),

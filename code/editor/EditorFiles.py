@@ -8,7 +8,7 @@ from tempfile import NamedTemporaryFile
 
 from pyglm import glm
 
-from ..codec.GameStateCodec import PluginStringCodec
+from ..codec.ExplorerStateCodec import PluginStringCodec
 from ..codec.map.ObjectPlacementCodec import ObjectPlacementCodec
 from ..codec.map.PpmImageCodec import PpmImageCodec
 from ..model.plugin.Plugin import Plugin
@@ -39,7 +39,7 @@ class EditorFiles:
                       if key in self.plugin.characters or item.archetype in self.plugin.character_archetypes
                       or any(frame[0] == item.archetype for frame in self.plugin.animation_frames)}
         placements.update((key, item) for key, item in self.plugin.placements.items() if key not in characters)
-        # Explicit ECS IDs take precedence over generated map IDs, as in GameFiles.
+        # Explicit ECS IDs take precedence over generated map IDs, as in ExplorerFiles.
         for key in characters:
             placements.pop(key, None)
         content = EditorContent(image, placements, characters, zone_id)

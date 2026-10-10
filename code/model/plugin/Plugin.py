@@ -18,7 +18,7 @@ AnimationFrameId = tuple[ArchetypeId, str, int, int]
 AnimationFrame = tuple[str, float]
 
 """
-A `Plugin` represents all of `GameState` that cannot be represented within `Map`s.
+A `Plugin` represents all of `ExplorerState` that cannot be represented within `Map`s.
 This is effectively all dictionaries for storing ECS components 
 and values for things like global variables and map palettes.
 `Plugin`s have interesting structure in that there is an `update` function

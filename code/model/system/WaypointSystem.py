@@ -1,7 +1,7 @@
 """Move characters between zones through the non-door waypoints they enter.
 
 Where a waypoint leads is decided by the injected `WaypointQuery`; doors are
-activated by interaction instead (see `GameUpdater`).
+activated by interaction instead (see `ExplorerUpdater`).
 """
 from dataclasses import replace
 

@@ -7,7 +7,7 @@ from ..view.UiPanel import UiPanel, UiText
 from ..view.program.ViewState import ViewState
 
 
-class GameView:
+class ExplorerView:
     def __init__(self, tiles, billboards, ui, boxes=None):
         self.tiles = tiles
         self.billboards = billboards
