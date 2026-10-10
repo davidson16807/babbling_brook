@@ -1,6 +1,6 @@
 """A language's playable vocabulary: what the dialog shows, and what it can mean.
 
-`lexicon/` generates lexicons at startup with the languages repo
+`inflection/` generates lexicons at startup with the languages repo
 (github.com/davidson16807/languages); these classes don't depend on it.
 Tagpoints are the complete dictkeys that were rendered, defaults included.
 The text of an inflection may have several interpretations. English "give" is

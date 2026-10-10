@@ -49,7 +49,7 @@ def main(argv=None):
     except FileNotFoundError as error:
         parser.exit(1, f'{error}\n')
     print(f'Building the English lexicon with {library.directory}…', flush=True)
-    lexicon = library.import_module('babbling_brook.lexicon.english').english_lexicon()
+    lexicon = library.import_module('babbling_brook.inflection.english').english_lexicon()
 
     gl = view = framebuffer = fonts = None
     try:

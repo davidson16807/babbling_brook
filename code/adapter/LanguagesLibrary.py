@@ -8,7 +8,7 @@ imported modules need neither the folder nor the working directory: `Language.ma
 and the dictstores read no files.
 
 The `inflections_for_*.py` scripts write flashcard decks when imported, so they
-are not imported; game modules play their part instead (see `lexicon/`).
+are not imported; game modules play their part instead (see `inflection/`).
 """
 import importlib
 import os
