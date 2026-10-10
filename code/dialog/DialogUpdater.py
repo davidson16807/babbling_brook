@@ -11,9 +11,9 @@ from ..messages import (ButtonAction, FocusLostMessage, KeyboardAction, Keyboard
                         MouseButton, MouseButtonMessage, MouseMotionMessage, ScrollMessage,
                         WindowResizeMessage)
 from .DialogLayout import (ButtonTarget, CellTarget, InventoryTarget, PhraseDrop,
-                           PlaymatDrop, RemoveDrop, WordTarget)
-from .DialogState import Dismissed, Drag, Press, Spoke, Word
-from .playmat import find, insert_modifier, reinflect, without
+                           PlaymatDrop, RemoveDrop, SlotTarget, WordTarget)
+from .DialogState import Dismissed, Drag, Press, Slot, Spoke
+from .playmat import find, insert_item, owner, placed, reinflect, replaced, without
 
 
 class DialogUpdater:
@@ -54,9 +54,9 @@ class DialogUpdater:
         if isinstance(target, ButtonTarget):
             return self.talk(state) if target.name == 'talk' else self.close(state)
         if isinstance(target, CellTarget):
-            playmat = reinflect(state.playmat, target.id, target.inflection)
+            playmat = reinflect(state.playmat, target.id, target.inflection, self.lexicon)
             return replace(state, playmat=playmat, message=''), None
-        if isinstance(target, (WordTarget, InventoryTarget)):
+        if isinstance(target, (WordTarget, SlotTarget, InventoryTarget)):
             return replace(state, press=Press(target, position)), None
         return state, None
 
@@ -74,9 +74,12 @@ class DialogUpdater:
         left, top, _, _ = self.layout.layout(state).anchors[target]
         grab = state.press.position - glm.vec2(left, top)
         if isinstance(target, InventoryTarget):
-            lexeme = self.lexicon.lexemes[target.lexeme]
-            return Drag(Word(state.next_id, lexeme.id, lexeme.default), False, grab, position)
-        return Drag(find(state.playmat, target.id), True, grab, position)
+            word = placed(self.lexicon.lexemes[target.lexeme], state.next_id)
+            return Drag(word, None, False, grab, position)
+        if isinstance(target, SlotTarget):
+            return Drag(target.slot, target.id, True, grab, position)
+        phrase = owner(state.playmat, target.id)
+        return Drag(find(state.playmat, target.id), phrase.id if phrase else None, True, grab, position)
 
     def release(self, state, position):
         if state.drag is not None:
@@ -87,21 +90,23 @@ class DialogUpdater:
         return state
 
     def drop(self, state, drop):
-        word, fresh = state.drag.word, not state.drag.from_playmat
+        drag = state.drag
         state = replace(state, drag=None)
         if drop is None:
             return state
-        playmat = without(state.playmat, word.id)
+        if isinstance(drag.item, Slot):
+            # Layout only offers the slot's own phrase.
+            phrase = insert_item(find(state.playmat, drag.phrase), drag.item, drop.index)
+            return replace(state, playmat=replaced(state.playmat, phrase))
+        word = drag.item
         if isinstance(drop, RemoveDrop):
             return self.remove(state, word.id)
+        playmat = without(state.playmat, word.id)
         if isinstance(drop, PlaymatDrop):
             playmat = (*playmat[:drop.index], word, *playmat[drop.index:])
         elif isinstance(drop, PhraseDrop):
-            phrase = find(playmat, drop.id)
-            inflection = self.lexicon.lexemes[phrase.lexeme].inflection(phrase.inflection)
-            phrase = insert_modifier(phrase, inflection, word, drop.index)
-            playmat = tuple(phrase if item.id == phrase.id else item for item in playmat)
-        if fresh:
+            playmat = replaced(playmat, insert_item(find(playmat, drop.id), word, drop.index))
+        if not drag.from_playmat:
             # A newly placed word shows its grid, with its default inflection selected.
             return replace(state, playmat=playmat, next_id=state.next_id + 1,
                            grid=word.id, grid_scroll=None)
@@ -110,7 +115,8 @@ class DialogUpdater:
     def click(self, state, target):
         if isinstance(target, InventoryTarget):
             return replace(state, message='Drag a word onto the bar below to use it.')
-        if isinstance(target, WordTarget):
+        if isinstance(target, (WordTarget, SlotTarget)):
+            # Clicking any word that came with a phrase's inflection opens the phrase's grid.
             return replace(state, grid=None if state.grid == target.id else target.id,
                            grid_scroll=None, message='')
         return state

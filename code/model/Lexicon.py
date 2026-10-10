@@ -2,7 +2,7 @@
 
 `lexicon/` generates lexicons at startup with the languages repo
 (github.com/davidson16807/languages); these classes don't depend on it.
-Tagpoints are the dictkeys of the traversals they were rendered from.
+Tagpoints are the complete dictkeys that were rendered, defaults included.
 The text of an inflection may have several interpretations. English "give" is
 any present plural or a 1st/2nd person singular, for instance. Every
 interpretation is kept as a tagpoint in the inflection's `tagpoints`, so that
@@ -24,7 +24,7 @@ def tagpoint(tags: dict[str, str]) -> Tagpoint:
 
 @dataclass(frozen=True)
 class Token:
-    part: str  # 'adposition', 'det', 'adj', 'n', or 'v'
+    part: str  # 'adposition', 'det', 'adj', 'n', 'v', or 'vp' (as for the auxiliary "will")
     text: str
 
 
@@ -36,12 +36,6 @@ class Inflection:
     @property
     def text(self) -> str:
         return ' '.join(token.text for token in self.tokens)
-
-    @property
-    def head(self) -> int:
-        """Index of the noun in a noun phrase, around which adjectives are placed."""
-        nouns = [index for index, token in enumerate(self.tokens) if token.part == 'n']
-        return nouns[-1] if nouns else len(self.tokens) - 1
 
 
 @dataclass(frozen=True)

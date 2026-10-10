@@ -11,25 +11,24 @@ from pyglm import glm
 
 
 @dataclass(frozen=True)
-class Word:
-    """A lexeme placed on the playmat, as one chip or one noun phrase."""
-    id: int                               # stable for the dialog session
-    lexeme: str
-    inflection: str                       # text of the chosen inflection
-    modifiers: tuple[Modifier, ...] = ()  # adjectives, for noun phrases only
+class Slot:
+    """A word that comes with a noun phrase's inflection, such as its article or adposition.
+
+    It is the `index`th token of `part` in whichever inflection the phrase has.
+    """
+    part: str
+    index: int = 0
 
 
 @dataclass(frozen=True)
-class Modifier:
-    """An adjective within a noun phrase.
-
-    `offset` locates the adjective relative to the noun rather than to articles or
-    adpositions, so it stays put when the phrase is reinflected (the red ball → to
-    the red ball). -1 is directly before the noun, -2 is one generated token
-    further left, and so on; +1 is directly after the noun.
-    """
-    word: Word
-    offset: int
+class Word:
+    """A lexeme placed on the playmat, as one chip or one noun phrase."""
+    id: int                                  # stable for the dialog session
+    lexeme: str
+    inflection: str                          # text of the chosen inflection
+    # Noun phrases only: their words in the player's order, as the slots of the
+    # inflection's tokens and the adjectives placed among them.
+    arrangement: tuple[Slot | Word, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -41,7 +40,8 @@ class Press:
 
 @dataclass(frozen=True)
 class Drag:
-    word: Word            # a new Word when it comes from the inventory
+    item: Word | Slot     # a new Word when it comes from the inventory
+    phrase: int | None    # id of the noun phrase the item is dragged out of, if any
     from_playmat: bool
     grab: glm.vec2        # pointer offset from the dragged chip's top-left corner
     pointer: glm.vec2

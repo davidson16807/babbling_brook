@@ -1,20 +1,27 @@
 """English for the dialog, written like the languages repo's `inflections_for_*.py` scripts.
 
 Vocabulary, traversals, and masks are dictstores built with `TermParsing`; syntax
-trees are `ListParsing` strings like those of `data/inflection/template-trees.tsv`.
-Each part of speech renders every tagpoint of its traversal with the repo's own
-`english_language`, so adding a word or a tag here is the whole change.
+trees are `ListParsing` strings. Each word is rendered on its own, without the
+clause or phrase around it: the tags of its traversal and of its `tag_templates`
+carry everything that context would. Demonstrations are the repo's
+`LanguageSpecificTextDemonstration`, over an `Orthography` of a `ListTreeLanguage`
+built from the repo's `english_language`.
 
 This module imports library modules: import it through
 `adapter.LanguagesLibrary.import_module`.
 """
-from tools.dictstores import DictSpace
+from tools.dictstores import DictSpace, UniformDictLookup
 from tools.indexing import DictTupleIndexing
-from tools.inflections import dict_bundle_to_map, parse_any, tag_defaults, termaxis_to_terms
+from tools.inflections import (dict_bundle_to_map, parse_any, tag_defaults, termaxis_to_terms,
+                               LanguageSpecificTextDemonstration)
+from tools.orthography import Orthography
 from tools.parsing import TermParsing
 from languages.english import english_language
 
-from .LexiconGeneration import LexiconGeneration, PartOfSpeech
+from ..model.Lexicon import Lexicon
+from .InflectionGeneration import InflectionGeneration
+from .ListTreeLanguage import ListTreeLanguage, list_tree_tokens
+from .bundles import lexeme
 
 english_termaxis_to_terms = {
     **termaxis_to_terms,
@@ -25,11 +32,40 @@ english_termaxis_to_terms = {
     '''),
 }
 
-parse = TermParsing(dict_bundle_to_map(english_termaxis_to_terms))
+english_term_to_termaxis = dict_bundle_to_map(english_termaxis_to_terms)
+
+parse = TermParsing(english_term_to_termaxis)
+
+constant = {
+    term: DictSpace(term, DictTupleIndexing([termaxis]), {termaxis: term})
+    for (term, termaxis) in english_term_to_termaxis.items()
+}
 
 defaults = DictSpace('defaults', DictTupleIndexing([]), {**tag_defaults})
 
-# Where a noun phrase sits in its clause; the adpositions come from case-usage.tsv.
+nouns = parse.terms('ball boy dog house')
+verbs = parse.terms('give talk walk')
+adjectives = parse.terms('big red')
+
+english_demonstration = LanguageSpecificTextDemonstration(
+    Orthography('latin', ListTreeLanguage(
+        english_language.semantics,
+        english_language.grammar,
+        english_language.tags,
+        english_language.substitutions,
+    )),
+    lambda tags, tree: tree,  # no context, such as the mood templates of flashcards
+    list_tree_tokens,
+)
+
+noun_phrase_demonstration = english_demonstration.generator(
+    tree_lookup=UniformDictLookup('test np [adposition] [n noun]'))
+verb_phrase_demonstration = english_demonstration.generator(
+    tree_lookup=UniformDictLookup('test vp [v verb]'))
+adjective_demonstration = english_demonstration.generator(
+    tree_lookup=UniformDictLookup('test adj adjective'))
+
+# Where a noun phrase sits in its clause; its adposition comes from case-usage.tsv.
 placement_traversal = parse.termpath(
     'placement_traversal',
     'subjectivity motion role',
@@ -41,11 +77,6 @@ placement_traversal = parse.termpath(
     adverbial      associated  interior   # in
     adverbial      associated  company    # with
     ''')
-
-noun_space = parse.termspace(
-    'noun_space',
-    'noun',
-    'noun: ball boy dog house')
 
 definiteness_number_space = parse.termspace(
     'definiteness_number_space',
@@ -69,11 +100,6 @@ pronoun_traversal = parse.termpath(
     man  3  plural    masculine
     ''')
 
-verb_space = parse.termspace(
-    'verb_space',
-    'verb',
-    'verb: give talk walk')
-
 conjugation_subject_traversal = parse.termpath(
     'conjugation_subject_traversal',
     'person number',
@@ -94,58 +120,52 @@ tense_progress_space = parse.termspace(
     progress: atelic unfinished finished
     ''')
 
-adjective_space = parse.termspace(
-    'adjective_space',
-    'adjective',
-    'adjective: big red')
-
 degree_space = parse.termspace(
     'degree_space',
     'degree',
     'degree: positive comparative superlative')
 
-noun = PartOfSpeech(
-    'noun',
-    'clause [test np [adposition] [n noun]]',
-    parse.termaxis_to_term('common'),
-    frozenset({'adposition', 'det', 'n'}),
-    # Bare and singular, so the default matches what the inventory shows.
-    parse.termmask('noun_default', 'definiteness number subjectivity', 'adefinite singular subject'),
-)
+noun_templates = {'test': parse.termaxis_to_term('common')}
+pronoun_templates = {'test': parse.termaxis_to_term('personal')}
+verb_templates = {}
+# Agreement needs a case, which semantics derives from where the noun phrase sits.
+adjective_templates = {'test': parse.termaxis_to_term('direct-object associated patient')}
 
-pronoun = PartOfSpeech(
-    'pronoun',
-    'clause [test np [adposition] [n noun]]',
-    parse.termaxis_to_term('personal definite'),
-    frozenset({'adposition', 'n'}),
-    parse.termmask('pronoun_default', 'person number subjectivity', '1 singular subject'),
-)
-
-verb = PartOfSpeech(
-    'verb',
-    'clause [test [np [n noun]] [vp v verb]]',
-    # The subject is a pronoun, so that person and number reach the verb.
-    parse.termaxis_to_term('man personal subject associated agent'),
-    frozenset({'v', 'vp'}),
-    parse.termmask('verb_default', 'person number tense progress', '1 singular present atelic'),
-)
-
-adjective = PartOfSpeech(
-    'adjective',
-    'clause [test np [adj adjective] [n noun]]',
-    parse.termaxis_to_term('ball common definite singular direct-object associated patient'),
-    frozenset({'adj'}),
-    parse.termmask('adjective_default', 'degree', 'positive'),
-)
-
+# The inflection a newly placed word starts with; the noun's matches the inventory.
+noun_default = parse.termmask('noun_default', 'definiteness number subjectivity', 'adefinite singular subject')
+pronoun_default = parse.termmask('pronoun_default', 'person number subjectivity', '1 singular subject')
+verb_default = parse.termmask('verb_default', 'person number tense progress', '1 singular present atelic')
+adjective_default = parse.termmask('adjective_default', 'degree', 'positive')
 pronoun_listing = parse.termmask('pronoun_listing', 'number subjectivity', 'singular subject')
+
+inflection_generation = InflectionGeneration()
 
 
 def english_lexicon():
-    generation = LexiconGeneration(english_language, defaults)
-    return generation.lexicon('english', [
-        generation.lexeme(pronoun, pronoun_traversal * placement_traversal, 'pronoun', pronoun_listing),
-        *generation.lexemes(noun, definiteness_number_space * placement_traversal * noun_space, 'noun'),
-        *generation.lexemes(verb, tense_progress_space * conjugation_subject_traversal * verb_space, 'verb'),
-        *generation.lexemes(adjective, degree_space * adjective_space, 'adjective'),
-    ])
+    generate = inflection_generation.generate
+    lexemes = [
+        lexeme('pronoun', 'pronoun',
+               generate([noun_phrase_demonstration],
+                        defaults.override(pronoun_traversal * placement_traversal),
+                        pronoun_templates),
+               pronoun_default, pronoun_listing),
+        *(lexeme(noun, 'noun',
+                 generate([noun_phrase_demonstration],
+                          defaults.override(definiteness_number_space * placement_traversal * constant[noun]),
+                          noun_templates),
+                 noun_default)
+          for noun in nouns),
+        *(lexeme(verb, 'verb',
+                 generate([verb_phrase_demonstration],
+                          defaults.override(tense_progress_space * conjugation_subject_traversal * constant[verb]),
+                          verb_templates),
+                 verb_default)
+          for verb in verbs),
+        *(lexeme(adjective, 'adjective',
+                 generate([adjective_demonstration],
+                          defaults.override(degree_space * constant[adjective]),
+                          adjective_templates),
+                 adjective_default)
+          for adjective in adjectives),
+    ]
+    return Lexicon('english', {lexeme.id: lexeme for lexeme in lexemes})

@@ -12,9 +12,8 @@ from math import ceil
 
 from pyglm import glm
 
-from ..model.Lexicon import Token
-from .DialogState import Word
-from .playmat import find, phrase_sequence, without
+from .DialogState import Slot, Word
+from .playmat import arrange, find, phrase_items, texts as slot_texts, without, without_slot
 
 Rect = tuple[int, int, int, int]  # left, top, width, height in viewport pixels
 
@@ -26,7 +25,12 @@ class InventoryTarget:
 
 @dataclass(frozen=True)
 class WordTarget:
-    id: int
+    id: int          # a placed word; pressing a phrase's noun refers to the phrase
+
+@dataclass(frozen=True)
+class SlotTarget:
+    id: int          # the noun phrase
+    slot: Slot       # its article, adposition, or other word that came with its inflection
 
 @dataclass(frozen=True)
 class CellTarget:
@@ -50,7 +54,7 @@ class PlaymatDrop:
 @dataclass(frozen=True)
 class PhraseDrop:
     id: int          # the noun phrase
-    index: int       # in its display sequence, not counting the dragged adjective
+    index: int       # in its arrangement, not counting the dragged item
 
 @dataclass(frozen=True)
 class RemoveDrop:
@@ -141,9 +145,11 @@ class DialogLayout:
     def chip_height(self) -> int:
         return self.chip_size('')[1]
 
-    def phrase_texts(self, lexeme, inflection_text: str, modifiers) -> list[str]:
-        return [item.text if isinstance(item, Token) else item.word.inflection
-                for item in phrase_sequence(lexeme.inflection(inflection_text), modifiers)]
+    def phrase_texts(self, word: Word, inflection_text: str) -> list[str]:
+        """The phrase's words as they would read with `inflection_text`, in the player's order."""
+        inflection = self.lexicon.lexemes[word.lexeme].inflection(inflection_text)
+        rearranged = Word(word.id, word.lexeme, inflection_text, arrange(word.arrangement, inflection))
+        return [text for _, text in phrase_items(rearranged, inflection)]
 
     def word(self, word: Word, x: int, y: int, grid, interactive=True, suffix=''):
         """Lay out one placed word with its top-left at (x, y): (rect, boxes, child rects)."""
@@ -157,17 +163,17 @@ class DialogLayout:
             return rect, [LaidBox(rect, 'chip' + (suffix or selected), word.inflection, target)], []
         boxes, children = [], []
         cx = x + m.phrase_padding
-        for item in phrase_sequence(lexeme.inflection(word.inflection), word.modifiers):
-            if isinstance(item, Token):
-                w, h = self.chip_size(item.text)
-                rect = (cx, y + m.phrase_padding, w, h)
-                boxes.append(LaidBox(rect, 'token', item.text, target))
+        for item, text in phrase_items(word, lexeme.inflection(word.inflection)):
+            w, h = self.chip_size(text)
+            rect = (cx, y + m.phrase_padding, w, h)
+            if isinstance(item, Word):
+                style = 'chip-selected' if grid == item.id and not suffix else 'chip'
+                item_target = WordTarget(item.id)
             else:
-                w, h = self.chip_size(item.word.inflection)
-                rect = (cx, y + m.phrase_padding, w, h)
-                style = 'chip-selected' if grid == item.word.id and not suffix else 'chip'
-                boxes.append(LaidBox(rect, style, item.word.inflection,
-                                     WordTarget(item.word.id) if interactive else None))
+                # The noun stands for its phrase: pressing it moves or opens the phrase.
+                style = 'token'
+                item_target = target if item.part == 'n' else SlotTarget(word.id, item)
+            boxes.append(LaidBox(rect, style, text, item_target if interactive else None))
             children.append(rect)
             cx += w + m.gap // 2
         width = cx - m.gap // 2 + m.phrase_padding - x
@@ -216,8 +222,11 @@ class DialogLayout:
         bar = (left, vh - m.margin - bar_h, vw - left - m.margin, bar_h)
         boxes.append(LaidBox(bar, 'panel', target=PanelTarget('playmat')))
         drag = state.drag
-        dragged = drag.word.id if drag is not None and drag.from_playmat else None
-        playmat = without(state.playmat, dragged) if dragged is not None else state.playmat
+        playmat = state.playmat
+        if drag is not None and drag.from_playmat:
+            # The dragged item leaves its place, and the rest close up around the gap.
+            playmat = (without_slot(playmat, drag.phrase, drag.item) if isinstance(drag.item, Slot)
+                       else without(playmat, drag.item.id))
         placed = []
         x, y = bar[0] + m.padding, bar[1] + m.padding
         for word in playmat:
@@ -225,7 +234,8 @@ class DialogLayout:
             boxes += word_boxes
             anchors[WordTarget(word.id)] = rect
             for box in word_boxes:
-                if isinstance(box.target, WordTarget) and box.target.id != word.id:
+                if (isinstance(box.target, SlotTarget)
+                        or isinstance(box.target, WordTarget) and box.target.id != word.id):
                     anchors[box.target] = box.rect
             placed.append(_Placed(word, rect, children))
             x += rect[2] + m.gap
@@ -242,7 +252,7 @@ class DialogLayout:
         if selected is not None:
             lexeme = self.lexicon.lexemes[selected.lexeme]
             options = self.options(state.seed, lexeme)
-            texts = ([' '.join(self.phrase_texts(lexeme, option, selected.modifiers)) for option in options]
+            texts = ([' '.join(self.phrase_texts(selected, option)) for option in options]
                      if lexeme.is_noun_phrase else options)
             cell_w = max(self.chip_size(text)[0] for text in texts)
             inner_w = bar[2] - 2 * m.padding - m.gap - m.scrollbar
@@ -269,25 +279,29 @@ class DialogLayout:
             w, h = self.chip_size(state.message)
             boxes.append(LaidBox((left, m.margin, w, h), 'message', state.message))
 
-        # Where a drag would land, its caret, and the dragged word itself.
+        # Where a drag would land, its caret, and the dragged item itself.
         drop = None
         if drag is not None:
             pointer = drag.pointer
-            part = self.lexicon.lexemes[drag.word.lexeme].part
-            if part == 'adjective':
-                for item in placed:
-                    if (self.lexicon.lexemes[item.word.lexeme].part == 'noun'
-                            and contains(item.rect, pointer, m.gap)):
-                        index = sum(1 for r in item.children if r[0] + r[2] / 2 < pointer.x)
-                        drop = PhraseDrop(item.word.id, index)
-                        boxes.append(self.caret(item.children, index, item.rect, m.gap // 2))
-                        break
+            def phrase_drop(item):
+                index = sum(1 for r in item.children if r[0] + r[2] / 2 < pointer.x)
+                boxes.append(self.caret(item.children, index, item.rect, m.gap // 2))
+                return PhraseDrop(item.word.id, index)
+            if isinstance(drag.item, Slot):
+                # Articles and adpositions stay in their own phrase.
+                drop = next((phrase_drop(item) for item in placed
+                             if item.word.id == drag.phrase and contains(item.rect, pointer, m.gap)), None)
+            elif self.lexicon.lexemes[drag.item.lexeme].part == 'adjective':
+                drop = next((phrase_drop(item) for item in placed
+                             if self.lexicon.lexemes[item.word.lexeme].part == 'noun'
+                             and contains(item.rect, pointer, m.gap)), None)
             elif contains(bar, pointer):
                 index = sum(1 for item in placed if item.rect[0] + item.rect[2] / 2 < pointer.x)
                 drop = PlaymatDrop(index)
                 rects = [item.rect for item in placed]
                 boxes.append(self.caret(rects, index, (bar[0] + m.padding, y, 0, phrase_h), m.gap))
-            if drop is None and drag.from_playmat and contains(inventory, pointer):
+            if (drop is None and drag.from_playmat and not isinstance(drag.item, Slot)
+                    and contains(inventory, pointer)):
                 drop = RemoveDrop()
                 label_w, label_h = self.chip_size('remove')
                 boxes += [LaidBox(inventory, 'remove'),
@@ -295,11 +309,17 @@ class DialogLayout:
                                    inventory[1] + inventory[3] - m.padding - label_h, label_w, label_h),
                                   'remove', 'remove')]
             origin = pointer - drag.grab
-            if not self.lexicon.lexemes[drag.word.lexeme].is_noun_phrase:
-                origin.y -= m.phrase_padding  # `word()` insets single chips by this much
-            _, ghost, _ = self.word(drag.word, round(origin.x), round(origin.y), None,
-                                    interactive=False, suffix='-dragged')
-            boxes += ghost
+            if isinstance(drag.item, Slot):
+                phrase = find(state.playmat, drag.phrase)
+                text = slot_texts(self.lexicon.lexemes[phrase.lexeme].inflection(phrase.inflection))[drag.item]
+                boxes.append(LaidBox((round(origin.x), round(origin.y), *self.chip_size(text)),
+                                     'chip-dragged', text))
+            else:
+                if not self.lexicon.lexemes[drag.item.lexeme].is_noun_phrase:
+                    origin.y -= m.phrase_padding  # `word()` insets single chips by this much
+                _, ghost, _ = self.word(drag.item, round(origin.x), round(origin.y), None,
+                                        interactive=False, suffix='-dragged')
+                boxes += ghost
         return Layout(tuple(boxes), anchors, drop, limits, scroll)
 
     def caret(self, rects, index, container: Rect, gap: int) -> LaidBox:
