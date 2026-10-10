@@ -107,11 +107,11 @@ def main(argv=None):
         animations = CharacterAnimationSystem()
         waypoint_query = WaypointQuery()
         waypoints = WaypointSystem(waypoint_query)
-        azimuths = tuple(pi/4 + index*pi/2 for index in range(4))
-        elevations = (pi/6, pi/3)
+        azimuths = tuple(pi/4 + index*pi/4 for index in range(8))
+        elevations = (pi/6, pi/4, pi/3)
         mouselook = LockedLookUpdater(
             BoundedVectorUpdater(
-                VectorMouseUpdater(-.01),
+                VectorMouseUpdater(-.003),
                 y0=pi/6,
                 y1=pi/3,
             ),
