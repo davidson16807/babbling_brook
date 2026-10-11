@@ -6,7 +6,6 @@ colors; `DialogView` maps names to appearances.
 """
 from __future__ import annotations
 
-import random
 from dataclasses import dataclass, field
 from math import ceil
 
@@ -34,7 +33,7 @@ class SlotTarget:
 @dataclass(frozen=True)
 class CellTarget:
     id: int          # the word whose grid this is
-    inflection: str
+    index: int       # of the inflection, among the grid's options
 
 @dataclass(frozen=True)
 class ButtonTarget:
@@ -125,16 +124,6 @@ class DialogLayout:
         self.playmats = playmats        # see Playmats.py
         self.metrics = metrics
 
-    def options(self, seed: int, lexeme: str) -> list[str]:
-        """Inflection texts in grid order: shuffled per lexeme and dialog session.
-
-        Seeding with a string keeps the order identical across processes;
-        `hash()` would not.
-        """
-        texts = self.playmats.inflection_texts(lexeme)
-        random.Random(f'{seed}/{lexeme}').shuffle(texts)
-        return texts
-
     def chip_size(self, text: str) -> tuple[int, int]:
         m = self.metrics
         return (m.text.width(text, m.font_size) + 2 * m.chip_padding[0],
@@ -144,19 +133,16 @@ class DialogLayout:
     def chip_height(self) -> int:
         return self.chip_size('')[1]
 
-    def phrase_texts(self, word: Word, inflection_text: str) -> list[str]:
-        """The phrase's words as they would read with `inflection_text`, in the player's order."""
-        return [text for _, text in self.playmats.items(self.playmats.reinflected(word, inflection_text))]
-
     def word(self, word: Word, x: int, y: int, grid, interactive=True, suffix=''):
         """Lay out one placed word with its top-left at (x, y): (rect, boxes, child rects)."""
         m = self.metrics
         selected = '-selected' if grid == word.id else ''
         target = WordTarget(word.id) if interactive else None
         if not self.playmats.is_phrase(word):
-            w, h = self.chip_size(word.inflection)
+            text = self.playmats.text(word)
+            w, h = self.chip_size(text)
             rect = (x, y + m.phrase_padding, w, h)
-            return rect, [LaidBox(rect, 'chip' + (suffix or selected), word.inflection, target)], []
+            return rect, [LaidBox(rect, 'chip' + (suffix or selected), text, target)], []
         boxes, children = [], []
         cx = x + m.phrase_padding
         for item, text in self.playmats.items(word):
@@ -225,8 +211,9 @@ class DialogLayout:
                        else self.playmats.without(playmat, drag.item.id))
         placed = []
         x, y = bar[0] + m.padding, bar[1] + m.padding
+        open_id = state.grid.id if state.grid is not None else None
         for word in playmat:
-            rect, word_boxes, children = self.word(word, x, y, state.grid)
+            rect, word_boxes, children = self.word(word, x, y, open_id)
             boxes += word_boxes
             anchors[WordTarget(word.id)] = rect
             for box in word_boxes:
@@ -244,11 +231,11 @@ class DialogLayout:
         boxes.append(LaidBox(talk, 'talk', self.TALK, ButtonTarget('talk')))
 
         # Inflection grid for the selected word, above the playmat.
-        selected = self.playmats.find(state.playmat, state.grid) if state.grid is not None else None
+        selected = self.playmats.find(state.playmat, open_id) if open_id is not None else None
         if selected is not None:
-            options = self.options(state.seed, selected.lexeme)
-            texts = ([' '.join(self.phrase_texts(selected, option)) for option in options]
-                     if self.playmats.is_phrase(selected) else options)
+            options = state.grid.options
+            # Each cell reads as the word would with that inflection, adjectives and all.
+            texts = [self.playmats.text(self.playmats.reinflected(selected, option)) for option in options]
             cell_w = max(self.chip_size(text)[0] for text in texts)
             inner_w = bar[2] - 2 * m.padding - m.gap - m.scrollbar
             columns = max(1, (inner_w + m.gap) // (cell_w + m.gap))
@@ -267,7 +254,7 @@ class DialogLayout:
                 rect = (grid[0] + m.padding + column * (cell_w + m.gap),
                         grid[1] + m.padding + row * row_h, cell_w, chip_h)
                 style = 'cell-selected' if options[index] == selected.inflection else 'cell'
-                boxes.append(LaidBox(rect, style, texts[index], CellTarget(selected.id, options[index])))
+                boxes.append(LaidBox(rect, style, texts[index], CellTarget(selected.id, index)))
             boxes += self.scrollbar(grid, first_row, visible_rows, rows)
 
         if state.message:

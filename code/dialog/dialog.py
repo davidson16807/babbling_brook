@@ -22,24 +22,12 @@ from ..view.program.UiProgram import UiProgram
 from .Arrangements import Arrangements
 from .DialogDemo import DialogDemo
 from .DialogLayout import DialogLayout, DialogMetrics
-from .DialogState import DialogState, Dismissed, Spoke, Word
+from .DialogState import DialogState, Dismissed, Spoke
 from .DialogUpdater import DialogUpdater
 from .DialogView import DialogView, dialog_styles
 from .Playmats import Playmats
 
 BACKGROUND = (.29, .38, .64)
-
-
-def describe(playmat, playmats, language) -> str:
-    """The statement and how many tagpoints each word's text could have come from."""
-    def line(word, indent):
-        count = len(language.fibers[word.lexeme][word.inflection])
-        return f'{indent}{word.inflection:24} {word.lexeme:10} {count} interpretation{"s" * (count != 1)}'
-    lines = [' '.join(playmats.tokens(playmat))]
-    for word in playmat:
-        lines.append(line(word, '  '))
-        lines += [line(item, '    ') for item in word.arrangement if isinstance(item, Word)]
-    return '\n'.join(lines)
 
 
 def main(argv=None):
@@ -62,7 +50,7 @@ def main(argv=None):
         library = LanguagesLibrary(args.languages)
     except FileNotFoundError as error:
         parser.exit(1, f'{error}\n')
-    print(f'Generating English inflections with {library.directory}…', flush=True)
+    print(f'Building English with {library.directory}…', flush=True)
     english = library.import_module('babbling_brook.inflection.english')
 
     gl = view = framebuffer = fonts = None
@@ -84,10 +72,9 @@ def main(argv=None):
             queue = PygameMessageQueue()
         fonts = PygameFonts(args.font)
         list_trees = ListTrees()
-        playmats = Playmats(Arrangements(list_trees), list_trees,
-                            english.inflections, english.default_inflections)
-        layout = DialogLayout(english.inventory, playmats, DialogMetrics(fonts, args.font_size))
-        updater = DialogUpdater(layout)
+        playmats = Playmats(Arrangements(list_trees), list_trees)
+        layout = DialogLayout(english.inventory(), playmats, DialogMetrics(fonts, args.font_size))
+        updater = DialogUpdater(layout, english.inflections, english.default_inflection)
         view = DialogView(layout, PygameUiBoxView(UiProgram(gl), fonts), dialog_styles(args.font_size))
         seed = args.seed if args.seed is not None else time.time_ns()
         state = DialogState(viewport=viewport, seed=seed)
@@ -104,8 +91,9 @@ def main(argv=None):
                     break
                 state, outcome = updater.update(state, message)
                 if isinstance(outcome, Spoke):
-                    print(describe(outcome.playmat, playmats, english), flush=True)
-                    state = replace(state, message=f'You said: "{" ".join(playmats.tokens(outcome.playmat))}"')
+                    said = ' '.join(playmats.tokens(outcome.playmat))
+                    print(said, flush=True)
+                    state = replace(state, message=f'You said: "{said}"')
                 elif isinstance(outcome, Dismissed):
                     state = replace(state, message='Dismissed. Trainer mode would close the dialog here.')
             gl.viewport = (0, 0, *state.viewport)

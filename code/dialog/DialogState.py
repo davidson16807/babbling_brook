@@ -1,7 +1,9 @@
 """Model for composing a statement. Everything the dialog GUI remembers is here.
 
-Positions, sizes, and grid cells are never stored: `DialogLayout` derives them
-from this state whenever they are needed, for drawing and for hit-testing alike.
+Positions and sizes are never stored: `DialogLayout` derives them from this state
+whenever they are needed, for drawing and for hit-testing alike. Inflections are
+list trees (see inflection/ListTrees.py), generated when a word is placed or its
+grid opens, and kept here; drawing never generates them.
 """
 from __future__ import annotations
 
@@ -25,10 +27,17 @@ class Word:
     """A lexeme placed on the playmat, as one chip or one noun phrase."""
     id: int                                  # stable for the dialog session
     lexeme: str
-    inflection: str                          # text of the chosen inflection
+    inflection: list                         # list tree of the chosen inflection
     # Noun phrases only: their words in the player's order, as the slots of the
     # inflection's tokens and the adjectives placed among them.
     arrangement: tuple[Slot | Word, ...] = ()
+
+
+@dataclass(frozen=True)
+class Grid:
+    """An open inflection grid: the word it inflects, and every inflection of its lexeme."""
+    id: int
+    options: tuple[list, ...]  # list trees, without repeats, in grid order
 
 
 @dataclass(frozen=True)
@@ -50,9 +59,9 @@ class Drag:
 @dataclass(frozen=True)
 class DialogState:
     viewport: tuple[int, int] = (1280, 720)
-    seed: int = 0                     # orders every inflection grid, once per dialog session
+    seed: int = 0                     # orders each lexeme's grid, once per dialog session
     playmat: tuple[Word, ...] = ()
-    grid: int | None = None           # id of the word whose inflection grid is open
+    grid: Grid | None = None
     press: Press | None = None
     drag: Drag | None = None
     inventory_scroll: int = 0         # rows

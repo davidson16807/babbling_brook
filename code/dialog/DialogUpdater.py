@@ -2,7 +2,10 @@
 
 Every pointer message is resolved against `DialogLayout`, the same layout the
 view draws, so a press always lands on what the player sees under the pointer.
+Inflections are generated here, when a word is placed or its grid opens, and kept
+in the state, so the layout never generates them.
 """
+import random
 from dataclasses import replace
 
 from pyglm import glm
@@ -12,14 +15,34 @@ from ..messages import (ButtonAction, FocusLostMessage, KeyboardAction, Keyboard
                         WindowResizeMessage)
 from .DialogLayout import (ButtonTarget, CellTarget, InventoryTarget, PhraseDrop,
                            PlaymatDrop, RemoveDrop, SlotTarget, WordTarget)
-from .DialogState import Dismissed, Drag, Press, Slot, Spoke
+from .DialogState import Dismissed, Drag, Grid, Press, Slot, Spoke
 
 
 class DialogUpdater:
-    def __init__(self, layout, drag_threshold=4.0):
+    def __init__(self, layout, inflections, default_inflection, drag_threshold=4.0):
+        """`inflections(lexeme)` generates every list tree of a lexeme, and
+        `default_inflection(lexeme)` the one a newly placed word starts with."""
         self.layout = layout
         self.playmats = layout.playmats
+        self.inflections = inflections
+        self.default_inflection = default_inflection
         self.drag_threshold = drag_threshold
+
+    def options(self, seed, lexeme) -> tuple:
+        """Every inflection of `lexeme`, without repeats, in an order fixed per lexeme and dialog session.
+
+        Seeding with a string keeps the order identical across processes; `hash()` would not.
+        """
+        options = []
+        for tree in self.inflections(lexeme):
+            if tree not in options:
+                options.append(tree)
+        random.Random(f'{seed}/{lexeme}').shuffle(options)
+        return tuple(options)
+
+    def open(self, state, word):
+        """Open `word`'s grid, scrolled to show its inflection."""
+        return replace(state, grid=Grid(word.id, self.options(state.seed, word.lexeme)), grid_scroll=None)
 
     def update(self, state, message):
         """Return (state, outcome), where outcome is None, `Spoke`, or `Dismissed`."""
@@ -43,7 +66,7 @@ class DialogUpdater:
             if message.key == 'e':
                 return self.talk(state)
             if message.key in ('delete', 'backspace') and state.grid is not None and state.drag is None:
-                return self.remove(state, state.grid), None
+                return self.remove(state, state.grid.id), None
         return state, None
 
     def press(self, state, position):
@@ -53,7 +76,7 @@ class DialogUpdater:
         if isinstance(target, ButtonTarget):
             return self.talk(state) if target.name == 'talk' else self.close(state)
         if isinstance(target, CellTarget):
-            playmat = self.playmats.reinflect(state.playmat, target.id, target.inflection)
+            playmat = self.playmats.reinflect(state.playmat, target.id, state.grid.options[target.index])
             return replace(state, playmat=playmat, message=''), None
         if isinstance(target, (WordTarget, SlotTarget, InventoryTarget)):
             return replace(state, press=Press(target, position)), None
@@ -73,7 +96,7 @@ class DialogUpdater:
         left, top, _, _ = self.layout.layout(state).anchors[target]
         grab = state.press.position - glm.vec2(left, top)
         if isinstance(target, InventoryTarget):
-            word = self.playmats.placed(target.lexeme, state.next_id)
+            word = self.playmats.placed(target.lexeme, self.default_inflection(target.lexeme), state.next_id)
             return Drag(word, None, False, grab, position)
         if isinstance(target, SlotTarget):
             return Drag(target.slot, target.id, True, grab, position)
@@ -107,8 +130,7 @@ class DialogUpdater:
             playmat = self.playmats.replaced(playmat, self.playmats.insert(self.playmats.find(playmat, drop.id), word, drop.index))
         if not drag.from_playmat:
             # A newly placed word shows its grid, with its default inflection selected.
-            return replace(state, playmat=playmat, next_id=state.next_id + 1,
-                           grid=word.id, grid_scroll=None)
+            return self.open(replace(state, playmat=playmat, next_id=state.next_id + 1), word)
         return replace(state, playmat=playmat)
 
     def click(self, state, target):
@@ -116,8 +138,10 @@ class DialogUpdater:
             return replace(state, message='Drag a word onto the bar below to use it.')
         if isinstance(target, (WordTarget, SlotTarget)):
             # Clicking any word that came with a phrase's inflection opens the phrase's grid.
-            return replace(state, grid=None if state.grid == target.id else target.id,
-                           grid_scroll=None, message='')
+            state = replace(state, message='')
+            if state.grid is not None and state.grid.id == target.id:
+                return replace(state, grid=None)
+            return self.open(state, self.playmats.find(state.playmat, target.id))
         return state
 
     def scroll(self, state, message):
@@ -132,7 +156,7 @@ class DialogUpdater:
 
     def remove(self, state, id):
         playmat = self.playmats.without(state.playmat, id)
-        grid = state.grid if state.grid is not None and self.playmats.find(playmat, state.grid) is not None else None
+        grid = state.grid if state.grid is not None and self.playmats.find(playmat, state.grid.id) is not None else None
         return replace(state, playmat=playmat, grid=grid)
 
     def close(self, state):

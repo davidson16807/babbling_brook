@@ -52,7 +52,7 @@ class Arrangements:
     def items(self, arrangement, tree) -> list[tuple[object, str]]:
         """(slot or adjective, text) for each item of `arrangement`, read with `tree`."""
         slot_texts = self.texts(tree)
-        return [(item, slot_texts[item] if isinstance(item, Slot) else item.inflection)
+        return [(item, slot_texts[item] if isinstance(item, Slot) else self.list_trees.text(item.inflection))
                 for item in arrangement]
 
     def remove(self, arrangement, item) -> tuple:
