@@ -1,38 +1,33 @@
-"""Group generated inflections by their text: the bundle text → tagpoints.
+"""Group generated inflections by text: the bundle text → tagpoints.
 
-`InflectionGeneration` maps each tagpoint to tokens. A text the player picks may
-have come from several tagpoints (English "give"), so a `Lexeme` keeps, for each
-distinct text, every tagpoint that renders to it.
+A text the player picks may have been rendered from several tagpoints (English
+"give"), so each text keeps a `DictList` of every tagpoint that renders to it.
+
+This module imports library modules: import it through
+`adapter.LanguagesLibrary.import_module`.
 """
-from ..model.Lexicon import Inflection, Lexeme, tagpoint
+from tools.dictstores import DictList
+
+from .listtrees import text
 
 
-def bundle(generated) -> dict:
-    """tokens → tagpoints, from (tags, tokens) pairs, in first-generated order."""
-    fibers = {}
-    for tags, tokens in generated:
-        if tokens:
-            fibers.setdefault(tokens, []).append(tagpoint(tags))
-    return fibers
+def bundle(generated, traversal, default):
+    """(text → list tree, text → DictList of tagpoints) from `generate`'s (tags, tree) pairs.
 
-
-def lexeme(id, part, generated, default, listing=None) -> Lexeme:
-    """A lexeme from (tags, tokens) pairs.
-
-    `default` is a DictSet that selects the inflection a newly placed word starts
-    with, the first one whose tags it contains. The inventory shows that
-    inflection, or, given a `listing` DictSet, the first three texts it selects
-    (as in "I, you, he…").
+    `traversal` is the one generated from; `default` is a DictSet that selects the
+    inflection a newly placed word starts with, which comes first in both.
     """
-    generated = list(generated)
-    text = lambda tokens: ' '.join(token.text for token in tokens)
-    defaults = [tokens for tags, tokens in generated if tokens and tags in default]
-    if not defaults:
-        raise ValueError(f'{default.name} selects no inflection of {id!r}')
-    inflections = tuple(Inflection(tokens, tuple(points)) for tokens, points in bundle(generated).items())
-    if listing is None:
-        display = text(defaults[0])
-    else:
-        listed = list(dict.fromkeys(tokens for tags, tokens in generated if tokens and tags in listing))
-        display = ', '.join(text(tokens) for tokens in listed[:3]) + '…'
-    return Lexeme(id, part, display, text(defaults[0]), inflections)
+    trees, tagpoints, first = {}, {}, None
+    for tags, tree in generated:
+        rendered = text(tree)
+        if not rendered:
+            continue
+        trees.setdefault(rendered, tree)
+        tagpoints.setdefault(rendered, []).append(tags)
+        if first is None and tags in default:
+            first = rendered
+    if first is None:
+        raise ValueError(f'{default.name} selects no inflection of {traversal.name}')
+    order = [first, *(rendered for rendered in trees if rendered != first)]
+    return ({rendered: trees[rendered] for rendered in order},
+            {rendered: DictList(rendered, traversal.indexing, tagpoints[rendered]) for rendered in order})

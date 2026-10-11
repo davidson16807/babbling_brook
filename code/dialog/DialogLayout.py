@@ -13,7 +13,8 @@ from math import ceil
 from pyglm import glm
 
 from .DialogState import Slot, Word
-from .playmat import arrange, find, phrase_items, texts as slot_texts, without, without_slot
+from ..inflection.listtrees import kind
+from .playmat import arrange, find, is_phrase, phrase_items, texts as slot_texts, without, without_slot
 
 Rect = tuple[int, int, int, int]  # left, top, width, height in viewport pixels
 
@@ -121,19 +122,19 @@ class DialogLayout:
     TALK = 'talk (E)'
     CLOSE = 'X'
 
-    def __init__(self, lexicon, metrics: DialogMetrics):
-        self.lexicon = lexicon
+    def __init__(self, inventory, inflections, metrics: DialogMetrics):
+        self.inventory = inventory      # lexeme → the text the inventory shows, in order
+        self.inflections = inflections  # lexeme → text → list tree; the first is the default
         self.metrics = metrics
-        self.inventory = lexicon.sorted()
 
-    def options(self, seed: int, lexeme) -> list[str]:
+    def options(self, seed: int, lexeme: str) -> list[str]:
         """Inflection texts in grid order: shuffled per lexeme and dialog session.
 
         Seeding with a string keeps the order identical across processes;
         `hash()` would not.
         """
-        texts = [inflection.text for inflection in lexeme.inflections]
-        random.Random(f'{seed}/{lexeme.id}').shuffle(texts)
+        texts = list(self.inflections[lexeme])
+        random.Random(f'{seed}/{lexeme}').shuffle(texts)
         return texts
 
     def chip_size(self, text: str) -> tuple[int, int]:
@@ -147,23 +148,23 @@ class DialogLayout:
 
     def phrase_texts(self, word: Word, inflection_text: str) -> list[str]:
         """The phrase's words as they would read with `inflection_text`, in the player's order."""
-        inflection = self.lexicon.lexemes[word.lexeme].inflection(inflection_text)
-        rearranged = Word(word.id, word.lexeme, inflection_text, arrange(word.arrangement, inflection))
-        return [text for _, text in phrase_items(rearranged, inflection)]
+        tree = self.inflections[word.lexeme][inflection_text]
+        rearranged = Word(word.id, word.lexeme, inflection_text, arrange(word.arrangement, tree))
+        return [text for _, text in phrase_items(rearranged, tree)]
 
     def word(self, word: Word, x: int, y: int, grid, interactive=True, suffix=''):
         """Lay out one placed word with its top-left at (x, y): (rect, boxes, child rects)."""
         m = self.metrics
-        lexeme = self.lexicon.lexemes[word.lexeme]
+        tree = self.inflections[word.lexeme][word.inflection]
         selected = '-selected' if grid == word.id else ''
         target = WordTarget(word.id) if interactive else None
-        if not lexeme.is_noun_phrase:
+        if not is_phrase(tree):
             w, h = self.chip_size(word.inflection)
             rect = (x, y + m.phrase_padding, w, h)
             return rect, [LaidBox(rect, 'chip' + (suffix or selected), word.inflection, target)], []
         boxes, children = [], []
         cx = x + m.phrase_padding
-        for item, text in phrase_items(word, lexeme.inflection(word.inflection)):
+        for item, text in phrase_items(word, tree):
             w, h = self.chip_size(text)
             rect = (cx, y + m.phrase_padding, w, h)
             if isinstance(item, Word):
@@ -199,19 +200,19 @@ class DialogLayout:
         chip_h = self.chip_height
         row_h = chip_h + m.gap
 
-        # Inventory: every lexeme, pronouns first, then alphabetical.
-        inventory_w = (max((self.chip_size(lexeme.display)[0] for lexeme in self.inventory), default=0)
+        # Inventory: every lexeme, in the order given.
+        inventory_w = (max((self.chip_size(label)[0] for label in self.inventory.values()), default=0)
                        + 2 * m.padding + m.gap + m.scrollbar)
         inventory = (m.margin, m.margin, inventory_w, vh - 2 * m.margin)
         boxes.append(LaidBox(inventory, 'panel', target=PanelTarget('inventory')))
         visible = max(1, (inventory[3] - 2 * m.padding + m.gap) // row_h)
         limits['inventory'] = max(0, len(self.inventory) - visible)
         first = scroll['inventory'] = max(0, min(state.inventory_scroll, limits['inventory']))
-        for row, lexeme in enumerate(self.inventory[first:first + visible]):
-            target = InventoryTarget(lexeme.id)
+        for row, (lexeme, label) in enumerate(list(self.inventory.items())[first:first + visible]):
+            target = InventoryTarget(lexeme)
             rect = (inventory[0] + m.padding, inventory[1] + m.padding + row * row_h,
-                    *self.chip_size(lexeme.display))
-            boxes.append(LaidBox(rect, 'chip', lexeme.display, target))
+                    *self.chip_size(label))
+            boxes.append(LaidBox(rect, 'chip', label, target))
             anchors[target] = rect
         boxes += self.scrollbar(inventory, first, visible, len(self.inventory))
 
@@ -250,10 +251,9 @@ class DialogLayout:
         # Inflection grid for the selected word, above the playmat.
         selected = find(state.playmat, state.grid) if state.grid is not None else None
         if selected is not None:
-            lexeme = self.lexicon.lexemes[selected.lexeme]
-            options = self.options(state.seed, lexeme)
+            options = self.options(state.seed, selected.lexeme)
             texts = ([' '.join(self.phrase_texts(selected, option)) for option in options]
-                     if lexeme.is_noun_phrase else options)
+                     if is_phrase(self.inflections[selected.lexeme][selected.inflection]) else options)
             cell_w = max(self.chip_size(text)[0] for text in texts)
             inner_w = bar[2] - 2 * m.padding - m.gap - m.scrollbar
             columns = max(1, (inner_w + m.gap) // (cell_w + m.gap))
@@ -291,9 +291,9 @@ class DialogLayout:
                 # Articles and adpositions stay in their own phrase.
                 drop = next((phrase_drop(item) for item in placed
                              if item.word.id == drag.phrase and contains(item.rect, pointer, m.gap)), None)
-            elif self.lexicon.lexemes[drag.item.lexeme].part == 'adjective':
+            elif kind(self.inflections[drag.item.lexeme][drag.item.inflection]) == 'adj':
                 drop = next((phrase_drop(item) for item in placed
-                             if self.lexicon.lexemes[item.word.lexeme].part == 'noun'
+                             if is_phrase(self.inflections[item.word.lexeme][item.word.inflection])
                              and contains(item.rect, pointer, m.gap)), None)
             elif contains(bar, pointer):
                 index = sum(1 for item in placed if item.rect[0] + item.rect[2] / 2 < pointer.x)
@@ -311,11 +311,11 @@ class DialogLayout:
             origin = pointer - drag.grab
             if isinstance(drag.item, Slot):
                 phrase = find(state.playmat, drag.phrase)
-                text = slot_texts(self.lexicon.lexemes[phrase.lexeme].inflection(phrase.inflection))[drag.item]
+                text = slot_texts(self.inflections[phrase.lexeme][phrase.inflection])[drag.item]
                 boxes.append(LaidBox((round(origin.x), round(origin.y), *self.chip_size(text)),
                                      'chip-dragged', text))
             else:
-                if not self.lexicon.lexemes[drag.item.lexeme].is_noun_phrase:
+                if not is_phrase(self.inflections[drag.item.lexeme][drag.item.inflection]):
                     origin.y -= m.phrase_padding  # `word()` insets single chips by this much
                 _, ghost, _ = self.word(drag.item, round(origin.x), round(origin.y), None,
                                         interactive=False, suffix='-dragged')

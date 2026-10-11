@@ -97,17 +97,22 @@ operations. Interactive desktop play has not been manually tested.
 The statement-composing GUI that trainer mode will open, runnable without the world:
 
 ```sh
-python dialog.py                      # data/lexicon/english.tsv
+git submodule update --init           # the languages repo, at lib/languages
+python dialog.py
 python dialog.py --demo --seed 7      # start with the mockup's "you give the red ball to the boy"
 python dialog.py --headless --demo --frames 2 --screenshot dialog.png
 ```
 
+The languages repo is found at `lib/languages`, then `../languages`; `--languages PATH`
+or `BB_LANGUAGES` picks another checkout.
+
 | Input | Dialog action |
 | --- | --- |
 | Drag from the inventory | Place a word; its inflection grid opens with the default selected |
-| Drag a placed word | Reorder it; drop it on the inventory to remove it |
-| Drag an adjective onto a noun phrase | Place it among the phrase's article, adposition, and noun |
-| Click a placed word | Open or close its inflection grid |
+| Drag a placed word | Reorder it; drop it on the inventory to remove it. A noun moves its whole phrase |
+| Drag an adjective onto a noun phrase | Place it anywhere among the phrase's words |
+| Drag an article or adposition | Move it within its own phrase |
+| Click a placed word | Open or close its inflection grid (a phrase's, for its article, adposition, or noun) |
 | Click a grid cell | Choose that inflection; the grid stays open |
 | Escape / X | Cancel a drag, else collapse the grid (keeping the choice), else dismiss |
 | Delete / Backspace | Remove the word whose grid is open |
@@ -124,22 +129,41 @@ like `PygameFonts`', are pure functions of their keys. Mouse button and wheel
 messages now carry the pointer `position`.
 
 Each inflection grid's order is shuffled per lexeme and per dialog session
-(`random.Random(f'{seed}/{lexeme}')`). Adjectives store their place relative to
-the noun, so reinflecting "the red ball" to "to the ball" keeps "red" by "ball".
+(`random.Random(f'{seed}/{lexeme}')`). A noun phrase's `arrangement` is its words
+in the player's order: a `Slot` for each token of its inflection and a `Word` for
+each adjective. Choosing another inflection keeps every word where the player put it
+and drops slots the new inflection lacks; a slot it adds goes where the language put
+that token, counting from the front, so "the red ball" becomes "to the red ball".
 `Spoke.playmat` is the statement as arranged; each word's inflection text maps,
 through the lexicon, to every tagpoint it could mean.
 
-`data/lexicon/english.tsv` is generated from
-[the languages repo](https://github.com/davidson16807/languages); the game never
-imports it:
+Inflections come from [the languages repo](https://github.com/davidson16807/languages),
+imported as a library at startup by `adapter/LanguagesLibrary`. Its `tools` and
+`languages` packages read their tables relative to the working directory while they
+are imported, so the adapter imports them from inside `language-learning` and then
+restores the working directory; nothing reads those tables afterwards. Building the
+English `Language` takes about ten seconds; generating the lexicon then takes half
+a second.
 
-```sh
-python tool/build_lexicon.py ../languages/language-learning data/lexicon/english.tsv
-```
+`inflection/english.py` plays the part of the repo's `inflections_for_*.py` scripts
+(which write flashcard decks when imported, so they are not imported). Its
+vocabulary, traversals, and default masks are dictstores made with `TermParsing`
+(`termspace`, `termpath`, `termmask`) and combined with `*`, as in
+`inflections_for_spanish.py`. Each word is rendered on its own, with no clause or
+phrase around it (`test np [adposition] [n noun]`, `test vp [v verb]`,
+`test adj adjective`): the tags of its traversal and its `tag_templates` carry what
+that context would. Rendering goes through the repo's own
+`LanguageSpecificTextDemonstration`, over an `Orthography` of a `ListTreeLanguage`.
 
-The builder renders every inflection with that repo's `Language.map`, swapping its
-`formatting` for one that returns ordered (part, text) tokens. Rows are tagpoints;
-rows with the same lexeme and tokens are one inflection's interpretations.
+`inflection/ListTreeLanguage` has the interface of the repo's `Language` but maps a
+syntax tree to a list tree of inflected words: it runs the substitutions (which add
+articles, adpositions, and auxiliaries), semantics, and grammar of `Language.map`,
+and leaves out `Rule` trees, syntax, and formatting, which order and join words; the
+player orders them. `list_tree_tokens` reads that list tree as (part, text) tokens.
+`inflection/InflectionGeneration` has `DeckGeneration`'s interface,
+`generate(demonstrations, traversal, tag_templates={})`, and yields each tagpoint with
+its tokens, skipping omit codes. `inflection/bundles` groups those by text: each
+`Inflection.tagpoints` holds every complete dictkey that renders to that text.
 
 ## Run
 

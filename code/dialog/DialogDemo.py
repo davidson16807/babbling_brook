@@ -95,7 +95,7 @@ class DialogDemo:
 
     def mockup(self, state):
         """Compose the mockup's "you give the red ball to the boy", then reopen the ball's grid."""
-        state, _ = self.place(state, 'pronoun', 'you')
+        state, _ = self.place(state, 'personal', 'you')
         state, _ = self.place(state, 'give')
         state, ball = self.place(state, 'ball', 'the ball')
         noun = lambda box: box.style == 'token' and box.text == 'ball'

@@ -1,35 +1,42 @@
 """Pure operations on playmat words and noun-phrase arrangements.
 
-A noun phrase's `arrangement` is its words in the player's order: a `Slot` for
-each token of its inflection (article, adposition, noun, ...) and a `Word` for
-each adjective. The player orders all of them; nothing here reorders them.
+`inflections` is lexeme → text → list tree, as `inflection/english.py` computes it;
+a lexeme's first inflection is the one it is placed with. A noun phrase's
+`arrangement` is its words in the player's order: a `Slot` for each word of its
+inflection (article, adposition, noun, ...) and a `Word` for each adjective. The
+player orders all of them; nothing here reorders them.
 """
 from dataclasses import replace
 
+from ..inflection.listtrees import kind, words
 from .DialogState import Slot, Word
 
 
-def slots(inflection) -> tuple[Slot, ...]:
-    """A slot per token of `inflection`, in the order the language produced them."""
+def is_phrase(tree) -> bool:
+    return kind(tree) == 'np'
+
+
+def slots(tree) -> tuple[Slot, ...]:
+    """A slot per word of the list tree, in the order the language produced them."""
     counts, result = {}, []
-    for token in inflection.tokens:
-        result.append(Slot(token.part, counts.get(token.part, 0)))
-        counts[token.part] = counts.get(token.part, 0) + 1
+    for part, _ in words(tree):
+        result.append(Slot(part, counts.get(part, 0)))
+        counts[part] = counts.get(part, 0) + 1
     return tuple(result)
 
 
-def texts(inflection) -> dict[Slot, str]:
-    return dict(zip(slots(inflection), (token.text for token in inflection.tokens)))
+def texts(tree) -> dict[Slot, str]:
+    return dict(zip(slots(tree), (text for _, text in words(tree))))
 
 
-def arrange(arrangement, inflection) -> tuple:
-    """`arrangement` after the phrase takes `inflection`.
+def arrange(arrangement, tree) -> tuple:
+    """`arrangement` after the phrase takes the inflection `tree`.
 
     Slots the inflection keeps, and every adjective, stay where the player put
     them; slots it lacks are dropped. A slot it adds is inserted where the
-    language put that token, counting from the front of the phrase.
+    language put that word, counting from the front of the phrase.
     """
-    wanted = slots(inflection)
+    wanted = slots(tree)
     result = [item for item in arrangement if isinstance(item, Word) or item in wanted]
     for index, slot in enumerate(wanted):
         if slot not in result:
@@ -37,18 +44,16 @@ def arrange(arrangement, inflection) -> tuple:
     return tuple(result)
 
 
-def placed(lexeme, id: int) -> Word:
-    """A newly placed word, with its default inflection."""
-    word = Word(id, lexeme.id, lexeme.default)
-    if lexeme.is_noun_phrase:
-        word = replace(word, arrangement=slots(lexeme.inflection(lexeme.default)))
-    return word
+def placed(lexeme: str, inflections, id: int) -> Word:
+    """A newly placed word, with its lexeme's first inflection."""
+    text, tree = next(iter(inflections[lexeme].items()))
+    return Word(id, lexeme, text, slots(tree) if is_phrase(tree) else ())
 
 
-def phrase_items(word, inflection) -> list[tuple[object, str]]:
+def phrase_items(word, tree) -> list[tuple[object, str]]:
     """(slot or adjective, text) for each word of a noun phrase, in the player's order."""
-    words = texts(inflection)
-    return [(item, words[item] if isinstance(item, Slot) else item.inflection)
+    slot_texts = texts(tree)
+    return [(item, slot_texts[item] if isinstance(item, Slot) else item.inflection)
             for item in word.arrangement]
 
 
@@ -102,39 +107,25 @@ def replaced(playmat, word: Word) -> tuple[Word, ...]:
     return tuple(word if item.id == word.id else item for item in playmat)
 
 
-def reinflect(playmat, id, text: str, lexicon) -> tuple[Word, ...]:
+def reinflect(playmat, id, text: str, inflections) -> tuple[Word, ...]:
     """The playmat with the word of this id given the inflection `text`."""
     def visit(word):
         if word.id == id:
-            lexeme = lexicon.lexemes[word.lexeme]
-            arrangement = (arrange(word.arrangement, lexeme.inflection(text))
-                           if lexeme.is_noun_phrase else word.arrangement)
+            tree = inflections[word.lexeme][text]
+            arrangement = arrange(word.arrangement, tree) if is_phrase(tree) else word.arrangement
             return replace(word, inflection=text, arrangement=arrangement)
         return replace(word, arrangement=tuple(visit(item) if isinstance(item, Word) else item
                                                for item in word.arrangement))
     return tuple(visit(word) for word in playmat)
 
 
-def describe(playmat, lexicon) -> str:
-    """The statement and every word's number of interpretations, for logs and debugging."""
-    def line(word, indent):
-        count = len(lexicon.lexemes[word.lexeme].inflection(word.inflection).tagpoints)
-        return f'{indent}{word.inflection:24} {word.lexeme:10} {count} interpretation{"s" * (count != 1)}'
-    lines = [' '.join(tokens(playmat, lexicon))]
-    for word in playmat:
-        lines.append(line(word, '  '))
-        lines += [line(item, '    ') for item in word.arrangement if isinstance(item, Word)]
-    return '\n'.join(lines)
-
-
-def tokens(playmat, lexicon) -> tuple[str, ...]:
+def tokens(playmat, inflections) -> tuple[str, ...]:
     """The statement's words as the player arranged them."""
     result = []
     for word in playmat:
-        lexeme = lexicon.lexemes[word.lexeme]
-        inflection = lexeme.inflection(word.inflection)
-        if lexeme.is_noun_phrase:
-            result += [text for _, text in phrase_items(word, inflection)]
+        tree = inflections[word.lexeme][word.inflection]
+        if is_phrase(tree):
+            result += [text for _, text in phrase_items(word, tree)]
         else:
-            result += [token.text for token in inflection.tokens]
+            result += [text for _, text in words(tree)]
     return tuple(result)

@@ -20,12 +20,24 @@ from ..messages import QuitMessage
 from ..view.program.UiProgram import UiProgram
 from .DialogDemo import DialogDemo
 from .DialogLayout import DialogLayout, DialogMetrics
-from .DialogState import DialogState, Dismissed, Spoke
+from .DialogState import DialogState, Dismissed, Spoke, Word
 from .DialogUpdater import DialogUpdater
 from .DialogView import DialogView, dialog_styles
-from .playmat import describe, tokens
+from .playmat import tokens
 
 BACKGROUND = (.29, .38, .64)
+
+
+def describe(playmat, language) -> str:
+    """The statement and how many tagpoints each word's text could have come from."""
+    def line(word, indent):
+        count = len(language.tagpoints[word.lexeme][word.inflection])
+        return f'{indent}{word.inflection:24} {word.lexeme:10} {count} interpretation{"s" * (count != 1)}'
+    lines = [' '.join(tokens(playmat, language.inflections))]
+    for word in playmat:
+        lines.append(line(word, '  '))
+        lines += [line(item, '    ') for item in word.arrangement if isinstance(item, Word)]
+    return '\n'.join(lines)
 
 
 def main(argv=None):
@@ -48,8 +60,8 @@ def main(argv=None):
         library = LanguagesLibrary(args.languages)
     except FileNotFoundError as error:
         parser.exit(1, f'{error}\n')
-    print(f'Building the English lexicon with {library.directory}…', flush=True)
-    lexicon = library.import_module('babbling_brook.inflection.english').english_lexicon()
+    print(f'Generating English inflections with {library.directory}…', flush=True)
+    english = library.import_module('babbling_brook.inflection.english')
 
     gl = view = framebuffer = fonts = None
     try:
@@ -64,12 +76,12 @@ def main(argv=None):
             pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
             pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
             pygame.display.set_mode(viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE)
-            pygame.display.set_caption(f'{APPLICATION_TITLE} - Dialog ({lexicon.language})')
+            pygame.display.set_caption(f'{APPLICATION_TITLE} - Dialog (English)')
             gl = moderngl.create_context(require=330)
             gl.screen.use()
             queue = PygameMessageQueue()
         fonts = PygameFonts(args.font)
-        layout = DialogLayout(lexicon, DialogMetrics(fonts, args.font_size))
+        layout = DialogLayout(english.inventory, english.inflections, DialogMetrics(fonts, args.font_size))
         updater = DialogUpdater(layout)
         view = DialogView(layout, PygameUiBoxView(UiProgram(gl), fonts), dialog_styles(args.font_size))
         seed = args.seed if args.seed is not None else time.time_ns()
@@ -87,8 +99,8 @@ def main(argv=None):
                     break
                 state, outcome = updater.update(state, message)
                 if isinstance(outcome, Spoke):
-                    print(describe(outcome.playmat, lexicon), flush=True)
-                    state = replace(state, message=f'You said: "{" ".join(tokens(outcome.playmat, lexicon))}"')
+                    print(describe(outcome.playmat, english), flush=True)
+                    state = replace(state, message=f'You said: "{" ".join(tokens(outcome.playmat, english.inflections))}"')
                 elif isinstance(outcome, Dismissed):
                     state = replace(state, message='Dismissed. Trainer mode would close the dialog here.')
             gl.viewport = (0, 0, *state.viewport)

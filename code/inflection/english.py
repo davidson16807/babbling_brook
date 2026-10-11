@@ -2,10 +2,17 @@
 
 Vocabulary, traversals, and masks are dictstores built with `TermParsing`; syntax
 trees are `ListParsing` strings. Each word is rendered on its own, without the
-clause or phrase around it: the tags of its traversal and of its `tag_templates`
-carry everything that context would. Demonstrations are the repo's
-`LanguageSpecificTextDemonstration`, over an `Orthography` of a `ListTreeLanguage`
-built from the repo's `english_language`.
+clause or phrase around it: the tags of its traversal carry everything that context
+would, so each tagpoint stored is exactly what was rendered. Demonstrations are the
+repo's `LanguageSpecificTextDemonstration`, over an `Orthography` of a
+`ListTreeLanguage` built from the repo's `english_language`.
+
+For the dialog, this module computes, as the repo's scripts compute their decks:
+    inventory    lexeme → the text the inventory shows, in inventory order
+    inflections  lexeme → text → the list tree it was rendered as; the first is the default
+    tagpoints    lexeme → text → DictList of every tagpoint rendered as that text
+Lexemes are the terms that distinguish them: a noun, verb, or adjective, or
+'personal' for the personal pronouns.
 
 This module imports library modules: import it through
 `adapter.LanguagesLibrary.import_module`.
@@ -18,10 +25,9 @@ from tools.orthography import Orthography
 from tools.parsing import TermParsing
 from languages.english import english_language
 
-from ..model.Lexicon import Lexicon
 from .InflectionGeneration import InflectionGeneration
-from .ListTreeLanguage import ListTreeLanguage, list_tree_tokens
-from .bundles import lexeme
+from .ListTreeLanguage import ListTreeLanguage
+from .bundles import bundle
 
 english_termaxis_to_terms = {
     **termaxis_to_terms,
@@ -55,7 +61,7 @@ english_demonstration = LanguageSpecificTextDemonstration(
         english_language.substitutions,
     )),
     lambda tags, tree: tree,  # no context, such as the mood templates of flashcards
-    list_tree_tokens,
+    lambda tree: tree,        # a list tree, not a card
 )
 
 noun_phrase_demonstration = english_demonstration.generator(
@@ -125,11 +131,11 @@ degree_space = parse.termspace(
     'degree',
     'degree: positive comparative superlative')
 
-noun_templates = {'test': parse.termaxis_to_term('common')}
-pronoun_templates = {'test': parse.termaxis_to_term('personal')}
-verb_templates = {}
 # Agreement needs a case, which semantics derives from where the noun phrase sits.
-adjective_templates = {'test': parse.termaxis_to_term('direct-object associated patient')}
+adjective_placement_traversal = parse.termpath(
+    'adjective_placement_traversal',
+    'subjectivity motion role',
+    'direct-object associated patient')
 
 # The inflection a newly placed word starts with; the noun's matches the inventory.
 noun_default = parse.termmask('noun_default', 'definiteness number subjectivity', 'adefinite singular subject')
@@ -140,32 +146,33 @@ pronoun_listing = parse.termmask('pronoun_listing', 'number subjectivity', 'sing
 
 inflection_generation = InflectionGeneration()
 
+traversals = {
+    'personal': (noun_phrase_demonstration, pronoun_default,
+                 pronoun_traversal * placement_traversal * constant['personal']),
+    **{noun: (noun_phrase_demonstration, noun_default,
+              definiteness_number_space * placement_traversal * constant['common'] * constant[noun])
+       for noun in nouns},
+    **{verb: (verb_phrase_demonstration, verb_default,
+              tense_progress_space * conjugation_subject_traversal * constant[verb])
+       for verb in verbs},
+    **{adjective: (adjective_demonstration, adjective_default,
+                   degree_space * adjective_placement_traversal * constant[adjective])
+       for adjective in adjectives},
+}
 
-def english_lexicon():
-    generate = inflection_generation.generate
-    lexemes = [
-        lexeme('pronoun', 'pronoun',
-               generate([noun_phrase_demonstration],
-                        defaults.override(pronoun_traversal * placement_traversal),
-                        pronoun_templates),
-               pronoun_default, pronoun_listing),
-        *(lexeme(noun, 'noun',
-                 generate([noun_phrase_demonstration],
-                          defaults.override(definiteness_number_space * placement_traversal * constant[noun]),
-                          noun_templates),
-                 noun_default)
-          for noun in nouns),
-        *(lexeme(verb, 'verb',
-                 generate([verb_phrase_demonstration],
-                          defaults.override(tense_progress_space * conjugation_subject_traversal * constant[verb]),
-                          verb_templates),
-                 verb_default)
-          for verb in verbs),
-        *(lexeme(adjective, 'adjective',
-                 generate([adjective_demonstration],
-                          defaults.override(degree_space * constant[adjective]),
-                          adjective_templates),
-                 adjective_default)
-          for adjective in adjectives),
-    ]
-    return Lexicon('english', {lexeme.id: lexeme for lexeme in lexemes})
+inflections, tagpoints = {}, {}
+for lexeme, (demonstration, default, traversal) in traversals.items():
+    completed = defaults.override(traversal)
+    inflections[lexeme], tagpoints[lexeme] = bundle(
+        inflection_generation.generate([demonstration], completed), completed, default)
+
+def listing(lexeme, mask, count=3):
+    """The first texts with a tagpoint in `mask`, as in "I, you, he…"."""
+    selected = [rendered for rendered, points in tagpoints[lexeme].items()
+                if any(points.indexing.dictkey(point) in mask for point in points)]
+    return ', '.join(selected[:count]) + '…'
+
+# Pronouns first, then alphabetical by what the inventory shows.
+inventory = {'personal': listing('personal', pronoun_listing),
+             **dict(sorted(((lexeme, next(iter(inflections[lexeme]))) for lexeme in inflections
+                            if lexeme != 'personal'), key=lambda item: item[1].casefold()))}

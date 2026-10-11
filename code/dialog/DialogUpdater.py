@@ -19,7 +19,7 @@ from .playmat import find, insert_item, owner, placed, reinflect, replaced, with
 class DialogUpdater:
     def __init__(self, layout, drag_threshold=4.0):
         self.layout = layout
-        self.lexicon = layout.lexicon
+        self.inflections = layout.inflections
         self.drag_threshold = drag_threshold
 
     def update(self, state, message):
@@ -54,7 +54,7 @@ class DialogUpdater:
         if isinstance(target, ButtonTarget):
             return self.talk(state) if target.name == 'talk' else self.close(state)
         if isinstance(target, CellTarget):
-            playmat = reinflect(state.playmat, target.id, target.inflection, self.lexicon)
+            playmat = reinflect(state.playmat, target.id, target.inflection, self.inflections)
             return replace(state, playmat=playmat, message=''), None
         if isinstance(target, (WordTarget, SlotTarget, InventoryTarget)):
             return replace(state, press=Press(target, position)), None
@@ -74,7 +74,7 @@ class DialogUpdater:
         left, top, _, _ = self.layout.layout(state).anchors[target]
         grab = state.press.position - glm.vec2(left, top)
         if isinstance(target, InventoryTarget):
-            word = placed(self.lexicon.lexemes[target.lexeme], state.next_id)
+            word = placed(target.lexeme, self.inflections, state.next_id)
             return Drag(word, None, False, grab, position)
         if isinstance(target, SlotTarget):
             return Drag(target.slot, target.id, True, grab, position)

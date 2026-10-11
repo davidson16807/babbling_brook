@@ -4,8 +4,8 @@ The public interface is `DeckGeneration`'s: `InflectionGeneration(omit_codes)` a
 `generate(demonstrations, traversal, tag_templates={})`, which calls each
 demonstration with `(tags, tag_templates)` for every tagpoint of the traversal and
 skips results containing an omit code. Where `DeckGeneration` joins demonstrations
-into a card string, this concatenates their tokens; and it yields each tagpoint
-with its tokens, since the inflection grid needs to know what every text can mean.
+into a card string, this lists their list trees; and it yields each tagpoint with
+them, since the inflection grid needs to know what every text can mean.
 """
 
 
@@ -20,8 +20,6 @@ class InflectionGeneration:
         ):
         for tuplekey in traversal:
             tags = traversal.indexing.dictkey(tuplekey)
-            tokens = tuple(token
-                for demonstration in demonstrations
-                for token in demonstration(tags, tag_templates))
-            if all(symbol not in token.text for token in tokens for symbol in self.omit_codes):
-                yield tags, tokens
+            tree = [demonstration(tags, tag_templates) for demonstration in demonstrations]
+            if all(symbol not in str(tree) for symbol in self.omit_codes):
+                yield tags, tree

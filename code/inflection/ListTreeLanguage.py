@@ -14,8 +14,6 @@ This module imports library modules: import it through
 """
 from tools.treemaps import ListTreeMap
 
-from ..model.Lexicon import Token
-
 
 class ListTreeLanguage:
     def __init__(self, semantics, grammar, tags, substitutions=[]):
@@ -91,30 +89,3 @@ class ListTreeLanguage:
             tree = step.map(tree, {**self.tags, 'script': script})
         return tree
 
-
-PARTS = frozenset('np vp adposition det adj n v'.split())
-
-
-def list_tree_tokens(tree) -> tuple[Token, ...]:
-    """The words of a `ListTreeLanguage` list tree, in order, each with its part.
-
-    A list that starts with a part ('n', 'det', 'adposition', 'vp', ...) labels the
-    words beneath it; other strings are words, such as the auxiliary "will" that
-    English places directly in a verb phrase. As `RuleFormatting` does, '∅' marks
-    an empty word and a missing inflection (None) shows as '[MISSING]'.
-    """
-    tokens = []
-    def walk(node, part):
-        if isinstance(node, list):
-            if node and isinstance(node[0], str) and node[0] in PARTS:
-                part, node = node[0], node[1:]
-            for child in node:
-                walk(child, part)
-        elif node is None:
-            tokens.append(Token(part, '[MISSING]'))
-        else:
-            text = ' '.join(str(node).replace('∅', '').split())
-            if text:
-                tokens.append(Token(part, text))
-    walk(tree, '')
-    return tuple(tokens)
