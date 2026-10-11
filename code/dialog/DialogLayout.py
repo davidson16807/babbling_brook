@@ -13,8 +13,7 @@ from math import ceil
 from pyglm import glm
 
 from .DialogState import Slot, Word
-from ..inflection.listtrees import kind
-from .playmat import arrange, find, is_phrase, phrase_items, texts as slot_texts, without, without_slot
+from .playmat import arrange, find, is_adjective, is_phrase, phrase_items, texts as slot_texts, without, without_slot
 
 Rect = tuple[int, int, int, int]  # left, top, width, height in viewport pixels
 
@@ -291,7 +290,7 @@ class DialogLayout:
                 # Articles and adpositions stay in their own phrase.
                 drop = next((phrase_drop(item) for item in placed
                              if item.word.id == drag.phrase and contains(item.rect, pointer, m.gap)), None)
-            elif kind(self.inflections[drag.item.lexeme][drag.item.inflection]) == 'adj':
+            elif is_adjective(self.inflections[drag.item.lexeme][drag.item.inflection]):
                 drop = next((phrase_drop(item) for item in placed
                              if is_phrase(self.inflections[item.word.lexeme][item.word.inflection])
                              and contains(item.rect, pointer, m.gap)), None)

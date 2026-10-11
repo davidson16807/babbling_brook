@@ -8,7 +8,9 @@ This module imports library modules: import it through
 """
 from tools.dictstores import DictList
 
-from .listtrees import text
+from .ListTrees import ListTrees
+
+list_trees = ListTrees()
 
 
 def bundle(generated, traversal, default):
@@ -19,7 +21,7 @@ def bundle(generated, traversal, default):
     """
     trees, tagpoints, first = {}, {}, None
     for tags, tree in generated:
-        rendered = text(tree)
+        rendered = list_trees.text(tree)
         if not rendered:
             continue
         trees.setdefault(rendered, tree)

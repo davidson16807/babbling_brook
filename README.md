@@ -135,15 +135,15 @@ each adjective. Choosing another inflection keeps every word where the player pu
 and drops slots the new inflection lacks; a slot it adds goes where the language put
 that token, counting from the front, so "the red ball" becomes "to the red ball".
 `Spoke.playmat` is the statement as arranged; each word's inflection text maps,
-through the lexicon, to every tagpoint it could mean.
+through `tagpoints`, to every tagpoint it could mean.
 
 Inflections come from [the languages repo](https://github.com/davidson16807/languages),
 imported as a library at startup by `adapter/LanguagesLibrary`. Its `tools` and
 `languages` packages read their tables relative to the working directory while they
 are imported, so the adapter imports them from inside `language-learning` and then
 restores the working directory; nothing reads those tables afterwards. Building the
-English `Language` takes about ten seconds; generating the lexicon then takes half
-a second.
+English `Language` takes about ten seconds; generating the inflections then takes
+about a second.
 
 `inflection/english.py` plays the part of the repo's `inflections_for_*.py` scripts
 (which write flashcard decks when imported, so they are not imported). Its
@@ -151,19 +151,27 @@ vocabulary, traversals, and default masks are dictstores made with `TermParsing`
 (`termspace`, `termpath`, `termmask`) and combined with `*`, as in
 `inflections_for_spanish.py`. Each word is rendered on its own, with no clause or
 phrase around it (`test np [adposition] [n noun]`, `test vp [v verb]`,
-`test adj adjective`): the tags of its traversal and its `tag_templates` carry what
-that context would. Rendering goes through the repo's own
-`LanguageSpecificTextDemonstration`, over an `Orthography` of a `ListTreeLanguage`.
+`test adj adjective`): the tags of its traversal carry what that context would, so
+every stored tagpoint is exactly what was rendered. Rendering goes through the repo's
+own `LanguageSpecificTextDemonstration`, over an `Orthography` of a `ListTreeLanguage`.
+Like the scripts, it computes its results at module level:
+
+- `inventory`: lexeme → the text the inventory shows, in inventory order
+- `inflections`: lexeme → text → the list tree it was rendered as; the first is the default
+- `tagpoints`: lexeme → text → `DictList` of every tagpoint rendered as that text
+
+Lexemes are the terms that distinguish them: a noun, verb, or adjective, or
+`personal` for the personal pronouns. The dialog reads everything else from the list
+trees: `inflection/ListTreeQuery` maps a list tree to its words as (part, text), its
+text, and its kind (`np`, `vp`, `adj`), without importing the languages repo.
 
 `inflection/ListTreeLanguage` has the interface of the repo's `Language` but maps a
 syntax tree to a list tree of inflected words: it runs the substitutions (which add
 articles, adpositions, and auxiliaries), semantics, and grammar of `Language.map`,
 and leaves out `Rule` trees, syntax, and formatting, which order and join words; the
-player orders them. `list_tree_tokens` reads that list tree as (part, text) tokens.
-`inflection/InflectionGeneration` has `DeckGeneration`'s interface,
+player orders them. `inflection/InflectionGeneration` has `DeckGeneration`'s interface,
 `generate(demonstrations, traversal, tag_templates={})`, and yields each tagpoint with
-its tokens, skipping omit codes. `inflection/bundles` groups those by text: each
-`Inflection.tagpoints` holds every complete dictkey that renders to that text.
+its list trees, skipping omit codes. `inflection/bundles` groups those by text.
 
 ## Run
 

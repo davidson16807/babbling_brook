@@ -8,25 +8,31 @@ player orders all of them; nothing here reorders them.
 """
 from dataclasses import replace
 
-from ..inflection.listtrees import kind, words
+from ..inflection.ListTrees import ListTrees
 from .DialogState import Slot, Word
+
+list_trees = ListTrees()
 
 
 def is_phrase(tree) -> bool:
-    return kind(tree) == 'np'
+    return list_trees.kind(tree) == 'np'
+
+
+def is_adjective(tree) -> bool:
+    return list_trees.kind(tree) == 'adj'
 
 
 def slots(tree) -> tuple[Slot, ...]:
     """A slot per word of the list tree, in the order the language produced them."""
     counts, result = {}, []
-    for part, _ in words(tree):
+    for part, _ in list_trees.words(tree):
         result.append(Slot(part, counts.get(part, 0)))
         counts[part] = counts.get(part, 0) + 1
     return tuple(result)
 
 
 def texts(tree) -> dict[Slot, str]:
-    return dict(zip(slots(tree), (text for _, text in words(tree))))
+    return dict(zip(slots(tree), (text for _, text in list_trees.words(tree))))
 
 
 def arrange(arrangement, tree) -> tuple:
@@ -127,5 +133,5 @@ def tokens(playmat, inflections) -> tuple[str, ...]:
         if is_phrase(tree):
             result += [text for _, text in phrase_items(word, tree)]
         else:
-            result += [text for _, text in words(tree)]
+            result += [text for _, text in list_trees.words(tree)]
     return tuple(result)
