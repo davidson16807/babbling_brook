@@ -17,9 +17,10 @@ Lexemes are the terms that distinguish them: a noun, verb, or adjective, or
 This module imports library modules: import it through
 `adapter.LanguagesLibrary.import_module`.
 """
+from tools.dictbundles import DictBundles
 from tools.dictstores import DictSpace, UniformDictLookup
 from tools.indexing import DictTupleIndexing
-from tools.inflections import (dict_bundle_to_map, parse_any, tag_defaults, termaxis_to_terms,
+from tools.inflections import (parse_any, tag_defaults, termaxis_to_terms,
                                LanguageSpecificTextDemonstration)
 from tools.orthography import Orthography
 from tools.parsing import TermParsing
@@ -27,7 +28,7 @@ from languages.english import english_language
 
 from .InflectionGeneration import InflectionGeneration
 from .ListTreeLanguage import ListTreeLanguage
-from .bundles import bundle
+from .lexeme_inflections import lexeme_inflections
 
 english_termaxis_to_terms = {
     **termaxis_to_terms,
@@ -38,7 +39,9 @@ english_termaxis_to_terms = {
     '''),
 }
 
-english_term_to_termaxis = dict_bundle_to_map(english_termaxis_to_terms)
+dict_bundles = DictBundles()
+
+english_term_to_termaxis = dict_bundles.bundle_to_map(english_termaxis_to_terms)
 
 parse = TermParsing(english_term_to_termaxis)
 
@@ -163,7 +166,7 @@ traversals = {
 inflections, tagpoints = {}, {}
 for lexeme, (demonstration, default, traversal) in traversals.items():
     completed = defaults.override(traversal)
-    inflections[lexeme], tagpoints[lexeme] = bundle(
+    inflections[lexeme], tagpoints[lexeme] = lexeme_inflections(
         inflection_generation.generate([demonstration], completed), completed, default)
 
 def listing(lexeme, mask, count=3):
