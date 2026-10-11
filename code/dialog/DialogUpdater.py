@@ -13,13 +13,12 @@ from ..messages import (ButtonAction, FocusLostMessage, KeyboardAction, Keyboard
 from .DialogLayout import (ButtonTarget, CellTarget, InventoryTarget, PhraseDrop,
                            PlaymatDrop, RemoveDrop, SlotTarget, WordTarget)
 from .DialogState import Dismissed, Drag, Press, Slot, Spoke
-from .playmat import find, insert_item, owner, placed, reinflect, replaced, without
 
 
 class DialogUpdater:
     def __init__(self, layout, drag_threshold=4.0):
         self.layout = layout
-        self.inflections = layout.inflections
+        self.playmats = layout.playmats
         self.drag_threshold = drag_threshold
 
     def update(self, state, message):
@@ -54,7 +53,7 @@ class DialogUpdater:
         if isinstance(target, ButtonTarget):
             return self.talk(state) if target.name == 'talk' else self.close(state)
         if isinstance(target, CellTarget):
-            playmat = reinflect(state.playmat, target.id, target.inflection, self.inflections)
+            playmat = self.playmats.reinflect(state.playmat, target.id, target.inflection)
             return replace(state, playmat=playmat, message=''), None
         if isinstance(target, (WordTarget, SlotTarget, InventoryTarget)):
             return replace(state, press=Press(target, position)), None
@@ -74,12 +73,12 @@ class DialogUpdater:
         left, top, _, _ = self.layout.layout(state).anchors[target]
         grab = state.press.position - glm.vec2(left, top)
         if isinstance(target, InventoryTarget):
-            word = placed(target.lexeme, self.inflections, state.next_id)
+            word = self.playmats.placed(target.lexeme, state.next_id)
             return Drag(word, None, False, grab, position)
         if isinstance(target, SlotTarget):
             return Drag(target.slot, target.id, True, grab, position)
-        phrase = owner(state.playmat, target.id)
-        return Drag(find(state.playmat, target.id), phrase.id if phrase else None, True, grab, position)
+        phrase = self.playmats.owner(state.playmat, target.id)
+        return Drag(self.playmats.find(state.playmat, target.id), phrase.id if phrase else None, True, grab, position)
 
     def release(self, state, position):
         if state.drag is not None:
@@ -96,16 +95,16 @@ class DialogUpdater:
             return state
         if isinstance(drag.item, Slot):
             # Layout only offers the slot's own phrase.
-            phrase = insert_item(find(state.playmat, drag.phrase), drag.item, drop.index)
-            return replace(state, playmat=replaced(state.playmat, phrase))
+            phrase = self.playmats.insert(self.playmats.find(state.playmat, drag.phrase), drag.item, drop.index)
+            return replace(state, playmat=self.playmats.replaced(state.playmat, phrase))
         word = drag.item
         if isinstance(drop, RemoveDrop):
             return self.remove(state, word.id)
-        playmat = without(state.playmat, word.id)
+        playmat = self.playmats.without(state.playmat, word.id)
         if isinstance(drop, PlaymatDrop):
             playmat = (*playmat[:drop.index], word, *playmat[drop.index:])
         elif isinstance(drop, PhraseDrop):
-            playmat = replaced(playmat, insert_item(find(playmat, drop.id), word, drop.index))
+            playmat = self.playmats.replaced(playmat, self.playmats.insert(self.playmats.find(playmat, drop.id), word, drop.index))
         if not drag.from_playmat:
             # A newly placed word shows its grid, with its default inflection selected.
             return replace(state, playmat=playmat, next_id=state.next_id + 1,
@@ -132,8 +131,8 @@ class DialogUpdater:
         return replace(state, **{f'{panel}_scroll': first})
 
     def remove(self, state, id):
-        playmat = without(state.playmat, id)
-        grid = state.grid if state.grid is not None and find(playmat, state.grid) is not None else None
+        playmat = self.playmats.without(state.playmat, id)
+        grid = state.grid if state.grid is not None and self.playmats.find(playmat, state.grid) is not None else None
         return replace(state, playmat=playmat, grid=grid)
 
     def close(self, state):

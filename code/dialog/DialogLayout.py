@@ -13,7 +13,6 @@ from math import ceil
 from pyglm import glm
 
 from .DialogState import Slot, Word
-from .playmat import arrange, find, is_adjective, is_phrase, phrase_items, texts as slot_texts, without, without_slot
 
 Rect = tuple[int, int, int, int]  # left, top, width, height in viewport pixels
 
@@ -121,9 +120,9 @@ class DialogLayout:
     TALK = 'talk (E)'
     CLOSE = 'X'
 
-    def __init__(self, inventory, inflections, metrics: DialogMetrics):
+    def __init__(self, inventory, playmats, metrics: DialogMetrics):
         self.inventory = inventory      # lexeme → the text the inventory shows, in order
-        self.inflections = inflections  # lexeme → text → list tree; the first is the default
+        self.playmats = playmats        # see Playmats.py
         self.metrics = metrics
 
     def options(self, seed: int, lexeme: str) -> list[str]:
@@ -132,7 +131,7 @@ class DialogLayout:
         Seeding with a string keeps the order identical across processes;
         `hash()` would not.
         """
-        texts = list(self.inflections[lexeme])
+        texts = self.playmats.inflection_texts(lexeme)
         random.Random(f'{seed}/{lexeme}').shuffle(texts)
         return texts
 
@@ -147,23 +146,20 @@ class DialogLayout:
 
     def phrase_texts(self, word: Word, inflection_text: str) -> list[str]:
         """The phrase's words as they would read with `inflection_text`, in the player's order."""
-        tree = self.inflections[word.lexeme][inflection_text]
-        rearranged = Word(word.id, word.lexeme, inflection_text, arrange(word.arrangement, tree))
-        return [text for _, text in phrase_items(rearranged, tree)]
+        return [text for _, text in self.playmats.items(self.playmats.reinflected(word, inflection_text))]
 
     def word(self, word: Word, x: int, y: int, grid, interactive=True, suffix=''):
         """Lay out one placed word with its top-left at (x, y): (rect, boxes, child rects)."""
         m = self.metrics
-        tree = self.inflections[word.lexeme][word.inflection]
         selected = '-selected' if grid == word.id else ''
         target = WordTarget(word.id) if interactive else None
-        if not is_phrase(tree):
+        if not self.playmats.is_phrase(word):
             w, h = self.chip_size(word.inflection)
             rect = (x, y + m.phrase_padding, w, h)
             return rect, [LaidBox(rect, 'chip' + (suffix or selected), word.inflection, target)], []
         boxes, children = [], []
         cx = x + m.phrase_padding
-        for item, text in phrase_items(word, tree):
+        for item, text in self.playmats.items(word):
             w, h = self.chip_size(text)
             rect = (cx, y + m.phrase_padding, w, h)
             if isinstance(item, Word):
@@ -225,8 +221,8 @@ class DialogLayout:
         playmat = state.playmat
         if drag is not None and drag.from_playmat:
             # The dragged item leaves its place, and the rest close up around the gap.
-            playmat = (without_slot(playmat, drag.phrase, drag.item) if isinstance(drag.item, Slot)
-                       else without(playmat, drag.item.id))
+            playmat = (self.playmats.without_slot(playmat, drag.phrase, drag.item) if isinstance(drag.item, Slot)
+                       else self.playmats.without(playmat, drag.item.id))
         placed = []
         x, y = bar[0] + m.padding, bar[1] + m.padding
         for word in playmat:
@@ -248,11 +244,11 @@ class DialogLayout:
         boxes.append(LaidBox(talk, 'talk', self.TALK, ButtonTarget('talk')))
 
         # Inflection grid for the selected word, above the playmat.
-        selected = find(state.playmat, state.grid) if state.grid is not None else None
+        selected = self.playmats.find(state.playmat, state.grid) if state.grid is not None else None
         if selected is not None:
             options = self.options(state.seed, selected.lexeme)
             texts = ([' '.join(self.phrase_texts(selected, option)) for option in options]
-                     if is_phrase(self.inflections[selected.lexeme][selected.inflection]) else options)
+                     if self.playmats.is_phrase(selected) else options)
             cell_w = max(self.chip_size(text)[0] for text in texts)
             inner_w = bar[2] - 2 * m.padding - m.gap - m.scrollbar
             columns = max(1, (inner_w + m.gap) // (cell_w + m.gap))
@@ -290,9 +286,9 @@ class DialogLayout:
                 # Articles and adpositions stay in their own phrase.
                 drop = next((phrase_drop(item) for item in placed
                              if item.word.id == drag.phrase and contains(item.rect, pointer, m.gap)), None)
-            elif is_adjective(self.inflections[drag.item.lexeme][drag.item.inflection]):
+            elif self.playmats.is_adjective(drag.item):
                 drop = next((phrase_drop(item) for item in placed
-                             if is_phrase(self.inflections[item.word.lexeme][item.word.inflection])
+                             if self.playmats.is_phrase(item.word)
                              and contains(item.rect, pointer, m.gap)), None)
             elif contains(bar, pointer):
                 index = sum(1 for item in placed if item.rect[0] + item.rect[2] / 2 < pointer.x)
@@ -309,12 +305,11 @@ class DialogLayout:
                                   'remove', 'remove')]
             origin = pointer - drag.grab
             if isinstance(drag.item, Slot):
-                phrase = find(state.playmat, drag.phrase)
-                text = slot_texts(self.inflections[phrase.lexeme][phrase.inflection])[drag.item]
+                text = self.playmats.slot_text(self.playmats.find(state.playmat, drag.phrase), drag.item)
                 boxes.append(LaidBox((round(origin.x), round(origin.y), *self.chip_size(text)),
                                      'chip-dragged', text))
             else:
-                if not is_phrase(self.inflections[drag.item.lexeme][drag.item.inflection]):
+                if not self.playmats.is_phrase(drag.item):
                     origin.y -= m.phrase_padding  # `word()` insets single chips by this much
                 _, ghost, _ = self.word(drag.item, round(origin.x), round(origin.y), None,
                                         interactive=False, suffix='-dragged')

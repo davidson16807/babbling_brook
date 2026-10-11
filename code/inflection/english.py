@@ -8,17 +8,20 @@ repo's `LanguageSpecificTextDemonstration`, over an `Orthography` of a
 `ListTreeLanguage` built from the repo's `english_language`.
 
 For the dialog, this module computes, as the repo's scripts compute their decks:
-    inventory    lexeme → the text the inventory shows, in inventory order
-    inflections  lexeme → text → the list tree it was rendered as; the first is the default
-    tagpoints    lexeme → text → DictList of every tagpoint rendered as that text
-Lexemes are the terms that distinguish them: a noun, verb, or adjective, or
-'personal' for the personal pronouns.
+    trees                lexeme → DictLookup of each tagpoint → the list tree it rendered as
+    texts                lexeme → DictLookup of each tagpoint → the text its tree reads as
+    fibers               lexeme → text → DictList of every tagpoint that reads as that text
+    inflections          lexeme → text → the list tree of the first tagpoint in its fiber
+    default_inflections  lexeme → the text a newly placed word starts with
+    inventory            lexeme → the text the inventory shows, in inventory order
+Each is composed from the one before with `ListTreeLookups`. Lexemes are the terms
+that distinguish them: a noun, verb, or adjective, or 'personal' for the personal pronouns.
 
 This module imports library modules: import it through
 `adapter.LanguagesLibrary.import_module`.
 """
 from tools.dictbundles import DictBundles
-from tools.dictstores import DictSpace, UniformDictLookup
+from tools.dictstores import DictLookup, DictSpace, UniformDictLookup
 from tools.indexing import DictTupleIndexing
 from tools.inflections import (parse_any, tag_defaults, termaxis_to_terms,
                                LanguageSpecificTextDemonstration)
@@ -28,7 +31,8 @@ from languages.english import english_language
 
 from .InflectionGeneration import InflectionGeneration
 from .ListTreeLanguage import ListTreeLanguage
-from .lexeme_inflections import lexeme_inflections
+from .ListTreeLookups import ListTreeLookups
+from .ListTrees import ListTrees
 
 english_termaxis_to_terms = {
     **termaxis_to_terms,
@@ -40,6 +44,7 @@ english_termaxis_to_terms = {
 }
 
 dict_bundles = DictBundles()
+list_tree_lookups = ListTreeLookups(ListTrees(), dict_bundles)
 
 english_term_to_termaxis = dict_bundles.bundle_to_map(english_termaxis_to_terms)
 
@@ -163,19 +168,36 @@ traversals = {
        for adjective in adjectives},
 }
 
-inflections, tagpoints = {}, {}
-for lexeme, (demonstration, default, traversal) in traversals.items():
+def generated_trees(lexeme, demonstration, traversal):
+    """Each tagpoint of the traversal → the list trees it renders as, one per demonstration."""
     completed = defaults.override(traversal)
-    inflections[lexeme], tagpoints[lexeme] = lexeme_inflections(
-        inflection_generation.generate([demonstration], completed), completed, default)
+    return DictLookup(lexeme, completed.indexing, {
+        completed.indexing.tuplekey(tags): tree
+        for tags, tree in inflection_generation.generate([demonstration], completed)})
+
+def first(lookup, mask):
+    """The value of `lookup` at the first of its tagpoints that `mask` contains."""
+    restricted = list_tree_lookups.restrict(lookup, mask)
+    if not restricted.content:
+        raise ValueError(f'{mask.name} selects nothing in {lookup.name}')
+    return next(iter(restricted.content.values()))
+
+trees = {lexeme: generated_trees(lexeme, demonstration, traversal)
+         for lexeme, (demonstration, _, traversal) in traversals.items()}
+texts = {lexeme: list_tree_lookups.texts(lookup) for lexeme, lookup in trees.items()}
+fibers = {lexeme: list_tree_lookups.fibers(lookup) for lexeme, lookup in texts.items()}
+inflections = {lexeme: {text: trees[lexeme][tuplekey]
+                        for text, tuplekey in list_tree_lookups.section(fibers[lexeme]).items()}
+               for lexeme in trees}
+default_inflections = {lexeme: first(texts[lexeme], default)
+                       for lexeme, (_, default, _) in traversals.items()}
 
 def listing(lexeme, mask, count=3):
     """The first texts with a tagpoint in `mask`, as in "I, you, he…"."""
-    selected = [rendered for rendered, points in tagpoints[lexeme].items()
-                if any(points.indexing.dictkey(point) in mask for point in points)]
+    selected = list(dict.fromkeys(list_tree_lookups.restrict(texts[lexeme], mask).content.values()))
     return ', '.join(selected[:count]) + '…'
 
 # Pronouns first, then alphabetical by what the inventory shows.
 inventory = {'personal': listing('personal', pronoun_listing),
-             **dict(sorted(((lexeme, next(iter(inflections[lexeme]))) for lexeme in inflections
+             **dict(sorted(((lexeme, text) for lexeme, text in default_inflections.items()
                             if lexeme != 'personal'), key=lambda item: item[1].casefold()))}
