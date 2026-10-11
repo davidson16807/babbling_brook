@@ -1,21 +1,31 @@
-"""A language that maps a syntax tree to a list tree of inflected words, instead of to text.
+# HUMAN WRITTEN
 
-`ListTreeLanguage` has the interface of the languages repo's `Language`: a `tags`
-attribute and `map(tree, script, semes, substitutions)`, so `Orthography` and the
-repo's demonstrations accept it. Its `map` runs the stages of `Language.map` that
-inflect: the substitutions (which add articles, adpositions, and auxiliaries), then
-semantics and grammar (adpositions, declension, conjugation, agreement), then the
-removal of tag opcodes. It leaves out what follows in `Language.map`: conversion to
-`Rule` trees, syntax, and formatting. Those order words and join them into text,
-and in the dialog the player orders the words.
-
-This module imports library modules: import it through
-`adapter.LanguagesLibrary.import_module`.
-"""
 from tools.treemaps import ListTreeMap
 
-
 class ListTreeLanguage:
+    """
+    A `Language` is a "tree mapping" class, analogous to those under nodemaps.py of the `languages` repo.
+    As a tree mapping class, a `Language` contains a single method `map()`
+    that maps a syntax tree in one representation to another syntax tree in another representation.
+
+    In this case, `ListTreeLanguage` contains a single method `map()`
+    that maps a syntax tree that is represented as nested lists of strings storing language-agnostic codes
+    to another syntax tree of the same representation that stores translated and inflected words
+    of a foreign language that are intended for a player to rearrange to the appropriate word order.
+    `ListTreeLanguage` is specially built for "Babbling Brook" to stop just short of applying the word of a recommended syntax.
+
+    `ListTreeLanguage` uses a subset of the injected dependencies found in `Language`:
+        semantics:  contains maps from nodes represented as nested lists of language agnostic codes to nodes where the result of grammatical decisions such as aspect or case are stored in memory
+        grammar:    contains maps from nodes represented as nested lists of language agnostic codes to nodes represented as nested lists of inflected words as they would appear in a language
+
+    and a subset of settings found in `Language`:
+        tags:          a dict mapping tagaxes to their tags
+        substitutions: a dict mapping opcodes in the listtree to nodemap functions 
+                       of the standard (machine, tree, memory)→tree signature
+
+    This module imports library modules: import it through
+    `adapter.LanguagesLibrary.import_module`.
+    """
     def __init__(self, semantics, grammar, tags, substitutions=[]):
         """Arguments mean what they mean to `Language`, e.g. `english_language.semantics`."""
         self.semantics = semantics
