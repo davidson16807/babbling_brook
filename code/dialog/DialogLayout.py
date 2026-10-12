@@ -123,7 +123,7 @@ class DialogLayout:
         self.metrics = metrics
         # `inventory` is lexeme → the `Rule` trees its entry shows, in order; several are
         # a sample of the lexeme's inflections, as in "I, you, he…".
-        text = playmats.arrangements.text
+        text = playmats.noun_phrases.text
         self.inventory = {lexeme: ', '.join(text(rule) for rule in rules) + '…' * (len(rules) > 1)
                           for lexeme, rules in inventory.items()}
 
@@ -151,8 +151,8 @@ class DialogLayout:
             return rect, [LaidBox(rect, 'chip' + (suffix or selected), text, target)], []
         boxes, children = [], []
         cx = x + m.phrase_padding
-        _, added = self.playmats.arrangements.labels(word)
-        for label, text in self.playmats.arrangements.items(word):
+        _, added = self.playmats.noun_phrases.labels(word)
+        for label, text in self.playmats.noun_phrases.items(word):
             w, h = self.chip_size(text)
             rect = (cx, y + m.phrase_padding, w, h)
             if label in added:
@@ -216,7 +216,7 @@ class DialogLayout:
         if child:
             # The dragged item leaves its place, and the rest close up around the gap.
             source = self.playmats.find(playmat, drag.phrase)
-            playmat = self.playmats.replaced(playmat, self.playmats.arrangements.hidden(source, drag.item))
+            playmat = self.playmats.replaced(playmat, self.playmats.noun_phrases.hidden(source, drag.item))
         elif drag is not None and drag.from_playmat:
             playmat = self.playmats.without(playmat, drag.item.id)
         placed = []
@@ -247,8 +247,8 @@ class DialogLayout:
                 texts = [self.playmats.text(self.playmats.reinflected(selected, option)) for option in options]
                 inflection = selected.inflection
             else:
-                texts = [self.playmats.arrangements.text(option) for option in options]
-                _, inflection = self.playmats.arrangements.addition(selected, state.grid.label)
+                texts = [self.playmats.noun_phrases.text(option) for option in options]
+                _, inflection = self.playmats.noun_phrases.addition(selected, state.grid.label)
             cell_w = max(self.chip_size(text)[0] for text in texts)
             inner_w = bar[2] - 2 * m.padding - m.gap - m.scrollbar
             columns = max(1, (inner_w + m.gap) // (cell_w + m.gap))
@@ -283,7 +283,7 @@ class DialogLayout:
                 index = sum(1 for r in item.children if r[0] + r[2] / 2 < pointer.x)
                 boxes.append(self.caret(item.children, index, item.rect, m.gap // 2))
                 return PhraseDrop(item.word.id, index)
-            added = child and self.playmats.arrangements.is_added(source, drag.item)
+            added = child and self.playmats.noun_phrases.is_added(source, drag.item)
             if child and not added:
                 # Children the language generated, such as articles and adpositions, stay in their phrase.
                 drop = next((phrase_drop(item) for item in placed
@@ -308,7 +308,7 @@ class DialogLayout:
                                   'remove', 'remove')]
             origin = pointer - drag.grab
             if child:
-                text = self.playmats.arrangements.texts(source)[drag.item]
+                text = self.playmats.noun_phrases.texts(source)[drag.item]
                 boxes.append(LaidBox((round(origin.x), round(origin.y), *self.chip_size(text)),
                                      'chip-dragged', text))
             else:

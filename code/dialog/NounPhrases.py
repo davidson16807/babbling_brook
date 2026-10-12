@@ -18,9 +18,9 @@ to the dialog: what leaves it is a `Rule` tree, from `ordered`.
 from dataclasses import replace
 
 
-class Arrangements:
+class NounPhrases:
     """
-    `Arrangements` is a category whose objects are noun phrases and whose arrows
+    `NounPhrases` is a category whose objects are noun phrases and whose arrows
     reinflect a phrase, add a child to it, withdraw one, move one, and read the
     phrase as text or as a `Rule` tree in the player's order.
     """

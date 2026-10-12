@@ -73,7 +73,7 @@ class DialogDemo:
 
     def choose(self, state, inflection, limit=50):
         """Scroll the open grid until the inflection that reads as `inflection` shows, then click it."""
-        text = self.updater.arrangements.text
+        text = self.updater.noun_phrases.text
         target = CellTarget(next(index for index, option in enumerate(state.grid.options)
                                  if text(option) == inflection))
         for wheel in (1, -1):  # up to the top, then down to the bottom

@@ -2,7 +2,7 @@
 
 Positions and sizes are never stored: `DialogLayout` derives them from this state
 whenever they are needed, for drawing and for hit-testing alike. Inflections are
-the languages repo's `Rule` trees (see dialog/Arrangements.py), generated when a word
+the languages repo's `Rule` trees (see dialog/NounPhrases.py), generated when a word
 is placed or its grid opens, and kept here; drawing never generates them.
 """
 from __future__ import annotations
@@ -23,7 +23,7 @@ class Word:
     (adposition, article, noun, ...) followed by those the player added (adjectives,
     and determiners such as "this"). Labels address them: each part of speech is
     counted over the generated children first, then the added ones. Labels are
-    internal to the dialog; see dialog/Arrangements.py.
+    internal to the dialog; see dialog/NounPhrases.py.
     """
     id: int                                  # stable for the dialog session
     lexeme: str
