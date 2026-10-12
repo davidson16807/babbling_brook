@@ -2,8 +2,8 @@
 
 Positions and sizes are never stored: `DialogLayout` derives them from this state
 whenever they are needed, for drawing and for hit-testing alike. Inflections are
-the languages repo's `Rule` trees (see dialog/Constituents.py), generated when a word
-is placed or its grid opens, and kept here; drawing never generates them.
+the languages repo's `Rule` trees, generated when a word is placed or its grid
+opens, and kept here; drawing never generates them.
 """
 from __future__ import annotations
 
@@ -18,7 +18,8 @@ Label = tuple[str, int]  # a constituent's child: the `index`th child of its par
 @dataclass(frozen=True)
 class Constituent:
     """A `Rule` as the language generated it, the constituents the player added to it,
-    and the arrangement of all its children; see dialog/Constituents.py.
+    and the arrangement of all its children. See dialog/ConstituentAddresses.py for its
+    children and their labels, and dialog/ConstituentAddressOperations.py for operations on it.
 
     The statement is a constituent, with an empty 'clause' `Rule` and only added
     children: the phrases the player placed. So are those phrases, and the adjectives

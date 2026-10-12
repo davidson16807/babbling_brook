@@ -37,12 +37,11 @@ class DialogDragOperations:
     """
     `DialogDragOperations` is a category whose objects are statements and whose arrows
     map a drag's source and target to the statements it can produce. It is built from
-    `ConstituentAddresses`, `ConstituentAddressOperations`, and `Constituents`.
+    `ConstituentAddresses` and `ConstituentAddressOperations`.
     """
-    def __init__(self, addresses, address_operations, constituents):
+    def __init__(self, addresses, address_operations):
         self.addresses = addresses
         self.address_operations = address_operations
-        self.constituents = constituents
 
     def _is_new(self, source):
         return isinstance(source, Constituent)

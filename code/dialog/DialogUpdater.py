@@ -19,13 +19,12 @@ from .DialogState import Constituent, Dismissed, Drag, Grid, Press, Spoke
 
 
 class DialogUpdater:
-    def __init__(self, layout, *, constituents, addresses, address_operations, drag_operations,
+    def __init__(self, layout, *, addresses, address_operations, drag_operations,
                  lexeme, inflections, default_inflection, drag_threshold=4.0):
         """`lexeme(rule)` is the lexeme a `Rule` tree inflects, `inflections(lexeme)` generates
         every `Rule` tree of a lexeme, and `default_inflection(lexeme)` the one a newly placed
         word starts with."""
         self.layout = layout
-        self.constituents = constituents
         self.addresses = addresses
         self.address_operations = address_operations
         self.drag_operations = drag_operations
@@ -42,7 +41,7 @@ class DialogUpdater:
         # Inflections that read the same, word for word, such as homonyms, share a cell.
         readings = {}
         for rule in self.inflections(lexeme):
-            readings.setdefault(self.constituents.words(rule), rule)
+            readings.setdefault(self.address_operations.words(rule), rule)
         options = list(readings.values())
         random.Random(f'{seed}/{lexeme}').shuffle(options)
         return tuple(options)
@@ -112,7 +111,7 @@ class DialogUpdater:
         left, top, _, _ = self.layout.layout(state).anchors[target]
         grab = state.press.position - glm.vec2(left, top)
         if isinstance(target, InventoryTarget):
-            new = self.constituents.arranged(self.default_inflection(target.lexeme))
+            new = self.address_operations.arranged(self.default_inflection(target.lexeme))
             return Drag(None, new, grab, position)
         return Drag(target.address, None, grab, position)
 
@@ -178,4 +177,4 @@ class DialogUpdater:
             return state, None
         if not state.statement.arrangement:
             return replace(state, message='Drag words onto the bar below, then talk.'), None
-        return replace(state, grid=None, press=None), Spoke(self.constituents.ordered(state.statement))
+        return replace(state, grid=None, press=None), Spoke(self.address_operations.ordered(state.statement))

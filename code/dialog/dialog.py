@@ -20,7 +20,6 @@ from ..messages import QuitMessage
 from ..view.program.UiProgram import UiProgram
 from .ConstituentAddressOperations import ConstituentAddressOperations
 from .ConstituentAddresses import ConstituentAddresses
-from .Constituents import Constituents
 from .DialogDemo import DialogDemo
 from .DialogDragOperations import DialogDragOperations
 from .DialogLayout import DialogLayout, DialogMetrics
@@ -72,17 +71,16 @@ def main(argv=None):
             gl.screen.use()
             queue = PygameMessageQueue()
         fonts = PygameFonts(args.font)
-        constituents = Constituents()
-        addresses = ConstituentAddresses(constituents)
-        address_operations = ConstituentAddressOperations(addresses, constituents)
-        dependencies = dict(constituents=constituents, addresses=addresses, address_operations=address_operations,
-                            drag_operations=DialogDragOperations(addresses, address_operations, constituents))
+        addresses = ConstituentAddresses()
+        address_operations = ConstituentAddressOperations(addresses)
+        dependencies = dict(addresses=addresses, address_operations=address_operations,
+                            drag_operations=DialogDragOperations(addresses, address_operations))
         layout = DialogLayout(english.inventory(), DialogMetrics(fonts, args.font_size), **dependencies)
         updater = DialogUpdater(layout, **dependencies, lexeme=english.lexeme, inflections=english.inflections,
                                 default_inflection=english.default_inflection)
         view = DialogView(layout, PygameUiBoxView(UiProgram(gl), fonts), dialog_styles(args.font_size))
         seed = args.seed if args.seed is not None else time.time_ns()
-        state = DialogState(constituents.arranged(english.clause()), viewport=viewport, seed=seed)
+        state = DialogState(address_operations.arranged(english.clause()), viewport=viewport, seed=seed)
         if args.demo:
             state = DialogDemo(updater).mockup(state)
         clock = pygame.time.Clock()
@@ -96,7 +94,7 @@ def main(argv=None):
                     break
                 state, outcome = updater.update(state, message)
                 if isinstance(outcome, Spoke):
-                    said = constituents.text(outcome.statement)
+                    said = address_operations.text(outcome.statement)
                     print(said, flush=True)
                     state = replace(state, message=f'You said: "{said}"')
                 elif isinstance(outcome, Dismissed):

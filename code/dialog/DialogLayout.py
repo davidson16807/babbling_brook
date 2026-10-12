@@ -104,16 +104,14 @@ class DialogLayout:
     TALK = 'talk (E)'
     CLOSE = 'X'
 
-    def __init__(self, inventory, metrics: DialogMetrics, *, constituents, addresses, address_operations,
-                 drag_operations):
+    def __init__(self, inventory, metrics: DialogMetrics, *, addresses, address_operations, drag_operations):
         self.metrics = metrics
-        self.constituents = constituents                # see Constituents.py
         self.addresses = addresses                      # see ConstituentAddresses.py
         self.address_operations = address_operations    # see ConstituentAddressOperations.py
         self.drag_operations = drag_operations          # see DialogDragOperations.py
         # `inventory` is lexeme → the `Rule` trees its entry shows, in order; several are
         # a sample of the lexeme's inflections, as in "I, you, he…".
-        text = constituents.text
+        text = address_operations.text
         self.inventory = {lexeme: ', '.join(text(rule) for rule in rules) + '…' * (len(rules) > 1)
                           for lexeme, rules in inventory.items()}
 
@@ -126,28 +124,30 @@ class DialogLayout:
     def chip_height(self) -> int:
         return self.chip_size('')[1]
 
-    def word(self, constituent, address, x: int, y: int, grid, interactive=True, suffix=''):
-        """Lay out one placed constituent with its top-left at (x, y): (rect, boxes, child rects).
+    def word(self, root, address, x: int, y: int, grid, interactive=True, suffix=''):
+        """Lay out the constituent at this address of `root` with its top-left at (x, y):
+        (rect, boxes, child rects).
 
         `grid` is the open `Grid`, if any, whose constituent is drawn selected.
         """
         m = self.metrics
+        constituent = self.addresses.resolve(root, address)
         selected = '-selected' if grid is not None and grid.address == address else ''
         target = ConstituentTarget(address) if interactive else None
         if constituent.inflection.tag != 'np':
-            text = self.constituents.text(constituent)
+            text = self.address_operations.text(root, address)
             w, h = self.chip_size(text)
             rect = (x, y + m.phrase_padding, w, h)
             return rect, [LaidBox(rect, 'chip' + (suffix or selected), text, target)], []
         boxes, children = [], []
         cx = x + m.phrase_padding
-        nodes = self.constituents.children(constituent)
         for label in constituent.arrangement:
-            child, child_address = nodes[label], self.addresses.child(address, label) if interactive else None
-            text = self.constituents.text(child)
+            # Children are read from the constituent itself; `child_address` is where they are in `root`.
+            child_address = self.addresses.child(address, label)
+            text = self.address_operations.text(constituent, (label,))
             w, h = self.chip_size(text)
             rect = (cx, y + m.phrase_padding, w, h)
-            if isinstance(child, Constituent):
+            if isinstance(self.addresses.resolve(constituent, (label,)), Constituent):
                 chosen = grid is not None and grid.address == child_address and not suffix
                 style, child_target = 'chip-selected' if chosen else 'chip', ConstituentTarget(child_address)
             else:
@@ -208,16 +208,15 @@ class DialogLayout:
             statement = self.address_operations.hide(statement, drag.address)
         placed = []
         x, y = bar[0] + m.padding, bar[1] + m.padding
-        nodes = self.constituents.children(statement)
         for label in statement.arrangement:
             address = self.addresses.child(self.addresses.ROOT, label)
-            rect, word_boxes, children = self.word(nodes[label], address, x, y, state.grid)
+            rect, word_boxes, children = self.word(statement, address, x, y, state.grid)
             boxes += word_boxes
             anchors[ConstituentTarget(address)] = rect
             for box in word_boxes:
                 if isinstance(box.target, ConstituentTarget) and box.target.address != address:
                     anchors[box.target] = box.rect
-            placed.append(_Placed(address, nodes[label], rect, children))
+            placed.append(_Placed(address, self.addresses.resolve(statement, address), rect, children))
             x += rect[2] + m.gap
         talk_w, button_h = self.chip_size(self.TALK)
         close_w, _ = self.chip_size(self.CLOSE)
@@ -229,9 +228,11 @@ class DialogLayout:
 
         # Inflection grid for the selected constituent, above the playmat.
         if state.grid is not None:
-            selected, options = self.addresses.resolve(state.statement, state.grid.address), state.grid.options
+            address, options = state.grid.address, state.grid.options
             # Each cell reads as the constituent would with that inflection, added children and all.
-            texts = [self.constituents.text(self.constituents.reinflected(selected, option)) for option in options]
+            selected = self.addresses.resolve(state.statement, address)
+            reinflect, text, root = self.address_operations.reinflect, self.address_operations.text, self.addresses.ROOT
+            texts = [text(reinflect(selected, root, option)) for option in options]
             cell_w = max(self.chip_size(text)[0] for text in texts)
             inner_w = bar[2] - 2 * m.padding - m.gap - m.scrollbar
             columns = max(1, (inner_w + m.gap) // (cell_w + m.gap))
@@ -239,7 +240,8 @@ class DialogLayout:
             visible_rows = min(rows, m.grid_rows)
             limits['grid'] = rows - visible_rows
             # A grid that was just opened scrolls to show the selected inflection.
-            chosen = self.constituents.index(options, selected.inflection)
+            words = self.address_operations.words
+            chosen = [words(option) for option in options].index(words(selected.inflection))
             wanted = (chosen // columns - (visible_rows - 1) // 2
                       if state.grid_scroll is None else state.grid_scroll)
             first_row = scroll['grid'] = max(0, min(wanted, limits['grid']))
@@ -284,13 +286,15 @@ class DialogLayout:
                                   'remove', 'remove')]
             origin = pointer - drag.grab
             if not isinstance(dragged, Constituent):
-                text = self.constituents.text(dragged)
+                text = self.address_operations.text(state.statement, drag.address)
                 boxes.append(LaidBox((round(origin.x), round(origin.y), *self.chip_size(text)),
                                      'chip-dragged', text))
             else:
                 if dragged.inflection.tag != 'np':
                     origin.y -= m.phrase_padding  # `word()` insets single chips by this much
-                _, ghost, _ = self.word(dragged, None, round(origin.x), round(origin.y), None,
+                root, address = ((drag.new, self.addresses.ROOT) if drag.address is None
+                                 else (state.statement, drag.address))
+                _, ghost, _ = self.word(root, address, round(origin.x), round(origin.y), None,
                                         interactive=False, suffix='-dragged')
                 boxes += ghost
         return Layout(tuple(boxes), anchors, drop, limits, scroll)
