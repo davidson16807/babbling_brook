@@ -18,13 +18,15 @@ from ..adapter.PygameUiBoxView import PygameUiBoxView
 from ..adapter.LanguagesLibrary import LanguagesLibrary
 from ..messages import QuitMessage
 from ..view.program.UiProgram import UiProgram
-from .NounPhrases import NounPhrases
+from .ConstituentAddressOperations import ConstituentAddressOperations
+from .ConstituentAddresses import ConstituentAddresses
+from .Constituents import Constituents
 from .DialogDemo import DialogDemo
+from .DialogDragOperations import DialogDragOperations
 from .DialogLayout import DialogLayout, DialogMetrics
 from .DialogState import DialogState, Dismissed, Spoke
 from .DialogUpdater import DialogUpdater
 from .DialogView import DialogView, dialog_styles
-from .Playmats import Playmats
 
 BACKGROUND = (.29, .38, .64)
 
@@ -70,12 +72,17 @@ def main(argv=None):
             gl.screen.use()
             queue = PygameMessageQueue()
         fonts = PygameFonts(args.font)
-        playmats = Playmats(NounPhrases())
-        layout = DialogLayout(english.inventory(), playmats, DialogMetrics(fonts, args.font_size))
-        updater = DialogUpdater(layout, english.inflections, english.default_inflection)
+        constituents = Constituents()
+        addresses = ConstituentAddresses(constituents)
+        address_operations = ConstituentAddressOperations(addresses, constituents)
+        dependencies = dict(constituents=constituents, addresses=addresses, address_operations=address_operations,
+                            drag_operations=DialogDragOperations(addresses, address_operations, constituents))
+        layout = DialogLayout(english.inventory(), DialogMetrics(fonts, args.font_size), **dependencies)
+        updater = DialogUpdater(layout, **dependencies, lexeme=english.lexeme, inflections=english.inflections,
+                                default_inflection=english.default_inflection)
         view = DialogView(layout, PygameUiBoxView(UiProgram(gl), fonts), dialog_styles(args.font_size))
         seed = args.seed if args.seed is not None else time.time_ns()
-        state = DialogState(viewport=viewport, seed=seed)
+        state = DialogState(constituents.arranged(english.clause()), viewport=viewport, seed=seed)
         if args.demo:
             state = DialogDemo(updater).mockup(state)
         clock = pygame.time.Clock()
@@ -89,7 +96,7 @@ def main(argv=None):
                     break
                 state, outcome = updater.update(state, message)
                 if isinstance(outcome, Spoke):
-                    said = ' '.join(playmats.noun_phrases.text(rule) for rule in outcome.statement)
+                    said = constituents.text(outcome.statement)
                     print(said, flush=True)
                     state = replace(state, message=f'You said: "{said}"')
                 elif isinstance(outcome, Dismissed):

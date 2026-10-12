@@ -11,6 +11,8 @@ Nothing is generated when this module is imported. The dialog calls:
     inflections(lexeme)         the `Rule` tree of each tagpoint of the lexeme's traversal
     default_inflection(lexeme)  the `Rule` tree a newly placed word starts with
     inventory()                 lexeme → the `Rule` trees its inventory entry shows, in inventory order
+    lexeme(rule)                the lexeme a `Rule` tree of `inflections` inflects
+    clause()                    an empty 'clause' `Rule`, to which the player adds the statement's phrases
 Lexemes are the terms that distinguish them: a noun, verb, or adjective, or
 'personal' for the personal pronouns.
 
@@ -22,6 +24,7 @@ from tools.dictstores import DictSpace, UniformDictLookup
 from tools.indexing import DictTupleIndexing
 from tools.inflections import (parse_any, tag_defaults, termaxis_to_terms,
                                LanguageSpecificTextDemonstration)
+from tools.nodes import Rule
 from tools.orthography import Orthography
 from tools.parsing import TermParsing
 from languages.english import english_language
@@ -184,3 +187,13 @@ def inventory():
     three singular subjects ("I, you, he"), then every other lexeme by its default inflection."""
     return {'personal': tuple(inflections('personal', pronoun_listing)[:3]),
             **{lexeme: (default_inflection(lexeme),) for lexeme in sorted(traversals) if lexeme != 'personal'}}
+
+def lexeme(rule):
+    """The lexeme a `Rule` tree of `inflections` inflects, from the tags it was inflected with."""
+    if rule.tag == 'np':
+        return 'personal' if rule.tags['noun-form'] == 'personal' else rule.tags['noun']
+    return rule.tags['verb'] if rule.tag == 'vp' else rule.tags['adjective']
+
+def clause():
+    """An empty 'clause' `Rule`: a statement before the player adds its phrases."""
+    return Rule('clause', {}, [])

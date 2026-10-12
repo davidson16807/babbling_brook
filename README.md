@@ -92,6 +92,121 @@ mode changes, channel assignment, copy/paste, undo/redo, saving, and reload.
 The history port also matches the supplied JavaScript across 300 model-only
 operations. Interactive desktop play has not been manually tested.
 
+## Dialog harness
+
+The statement-composing GUI that trainer mode will open, runnable without the world:
+
+```sh
+git submodule update --init           # the languages repo, at lib/languages
+python dialog.py
+python dialog.py --demo --seed 7      # start with the mockup's "you give the red ball to the boy"
+python dialog.py --headless --demo --frames 2 --screenshot dialog.png
+```
+
+The languages repo is found at `lib/languages`, then `../languages`; `--languages PATH`
+or `BB_LANGUAGES` picks another checkout.
+
+| Input | Dialog action |
+| --- | --- |
+| Drag from the inventory | Place a word; its inflection grid opens with the default selected |
+| Drag a placed word | Reorder it; drop it on the inventory to remove it. A noun moves its whole phrase |
+| Drag an adjective onto a noun phrase | Place it anywhere among the phrase's words; drag it on to another phrase, or to the inventory to remove it |
+| Drag an article or adposition | Move it within its own phrase |
+| Click a placed word | Open or close its inflection grid (a phrase's, for its article, adposition, or noun; an adjective's own) |
+| Click a grid cell | Choose that inflection; the grid stays open |
+| Escape / X | Cancel a drag, else collapse the grid (keeping the choice), else dismiss |
+| Delete / Backspace | Remove the word or adjective whose grid is open |
+| E / talk (E) | Speak: hand out the statement as arranged; the harness prints it |
+| Wheel | Scroll the inventory or the grid under the pointer |
+
+`DialogState`, `DialogUpdater`, and `DialogView` form a separate MVU application,
+meant to be nested in trainer mode. `DialogLayout` is a pure function of the state
+that both the view (to draw) and the updater (to hit-test) call, so no positions
+are remembered between frames. Boxes from the layout carry style names;
+`PygameUiBoxView` rasterizes each distinct text box once into an atlas and draws
+everything in one `UiProgram` call, so dragging changes only rects. Its caches,
+like `PygameFonts`', are pure functions of their keys. Mouse button and wheel
+messages now carry the pointer `position`.
+
+Each inflection grid's order is shuffled per lexeme and per dialog session
+(`random.Random(f'{seed}/{lexeme}')`). The dialog keeps two representations: the
+languages repo's `Rule` trees, for what the words are, and arrangements, for where
+they go. A `Constituent` is a `Rule` as the language generated it, the constituents
+the player added to it, and its arrangement. The statement is one, with an empty
+`clause` `Rule` whose children are all added: the phrases placed on the playmat. A
+noun phrase's children are those of its `Rule` that read as something (adposition,
+article, noun, ...), followed by those the player adds (adjectives, and later
+determiners such as "this"). A label such as `('det', 0)` addresses each child as
+the nth child of its part of speech, counting generated children first and added
+ones in their order of addition; an arrangement is a tuple of labels, and a
+constituent's arrangement is every child's label in the player's order. A
+constituent is reached by its address, the labels from the statement down to it.
+Choosing another inflection keeps every child where the player put it and drops
+those the new inflection lacks; one it adds goes where the language put it, counting
+from the front, so "the red ball" becomes "to the red ball". When generated children
+come and go, or an added one is withdrawn, the labels of added children are
+renumbered, so an added "this" stays itself beside a generated "the", and an open
+grid follows its constituent. Nothing depends on which parts of speech a language
+has: a Latin "ad puerōs" simply has no article. `DialogUpdater` generates a
+lexeme's inflections when a constituent of it is placed or its grid opens, asking
+the language for the lexeme a `Rule` inflects, and keeps them in the state's
+`Grid`, so the layout never generates. Labels, arrangements, and addresses stay
+inside the dialog: `Spoke.statement` is the `clause` `Rule`, every child in the
+player's order.
+
+Code that works with addresses is split as xcraft splits code that works with paths:
+
+- `dialog/ConstituentAddresses` is the address language alone: `child`, `parent`,
+  `label`, `resolve`, `replace`, `all`, and `is_ancestor`, like `ExpressionPaths`.
+- `dialog/Constituents` holds the arrows on constituents that take no address
+  (reinflect, adopt, withdraw, move, and reading `Rule`s through their `tag` and
+  `content` alone), like `Relations`.
+- `dialog/ConstituentAddressOperations` translates an operation at an address into
+  those arrows and back into the statement, and readdresses an address after labels
+  are renumbered, like `RelationPathOperations`.
+- `dialog/DialogDragOperations.choices(statement, source, target)` is the single entry
+  point for what a drop does, returning the `DragChoice`s it can make (none when it
+  is not allowed), like `RelationDragOperations`. Its `targets` and `removable` say
+  which drops are allowed, and `ACCEPTS` which parts of speech each part of speech
+  may have added to it; `DialogLayout` only maps the pointer to an allowed drop, and
+  `DialogUpdater` commits the choice.
+
+Inflections come from [the languages repo](https://github.com/davidson16807/languages),
+imported as a library at startup by `adapter/LanguagesLibrary`. Its `tools` and
+`languages` packages read their tables relative to the working directory while they
+are imported, so the adapter imports them from inside `language-learning` and then
+restores the working directory; nothing reads those tables afterwards. Building the
+English `Language` takes about ten seconds. Inflections are generated when they are
+needed: one lexeme takes from a few milliseconds ("red") to about 140 ms ("give").
+
+`inflection/english.py` plays the part of the repo's `inflections_for_*.py` scripts
+(which write flashcard decks when imported, so they are not imported). Its
+vocabulary, traversals, and default masks are dictstores made with `TermParsing`
+(`termspace`, `termpath`, `termmask`) and combined with `*`, as in
+`inflections_for_spanish.py`. Each word is rendered on its own, with no clause or
+phrase around it (`test np [adposition] [n noun]`, `test vp [v verb]`,
+`test adj adjective`): the tags of its traversal carry what that context would.
+Rendering goes through the repo's own `LanguageSpecificTextDemonstration`, over an
+`Orthography` of a `RuleLanguage`. Unlike the scripts, it generates nothing when
+imported; the dialog calls:
+
+- `inflections(lexeme)`: the `Rule` tree of each tagpoint of the lexeme's traversal
+- `default_inflection(lexeme)`: the `Rule` tree a newly placed word starts with, selected by a mask
+- `inventory()`: lexeme → the `Rule` trees its inventory entry shows, in inventory order
+
+Lexemes are the terms that distinguish them: a noun, verb, or adjective, or
+`personal` for the personal pronouns.
+
+`inflection/RuleLanguage` has the interface of the repo's `Language` and runs
+`Language.map` up to and including its conversion to `Rule` trees: the substitutions
+(which add articles, adpositions, and auxiliaries), semantics, and grammar, then the
+removal of tag opcodes together with that conversion. It leaves out syntax and
+formatting, which order and join words; the player orders them. Each `Rule` keeps
+its part of speech as `tag` and the tags it was inflected with as `tags`.
+`inflection/InflectionGeneration` has `DeckGeneration`'s interface,
+`generate(demonstrations, traversal, tag_templates={})`, and yields each tagpoint with
+its trees, skipping omit codes.
+
 ## Run
 
 Requires Python 3.10+, an OpenGL 3.3-capable desktop, and the dependencies below.

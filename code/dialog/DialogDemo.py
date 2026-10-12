@@ -7,7 +7,7 @@ from pyglm import glm
 
 from ..messages import (ButtonAction, MouseButton, MouseButtonMessage,
                         MouseMotionMessage, ScrollMessage)
-from .DialogLayout import CellTarget, InventoryTarget, PanelTarget, WordTarget
+from .DialogLayout import CellTarget, ConstituentTarget, InventoryTarget, PanelTarget
 
 
 class DialogDemo:
@@ -63,7 +63,7 @@ class DialogDemo:
         """A point just right of the last placed word."""
         layout = self.layout.layout(state)
         bar = self.box(state, lambda box: box.target == PanelTarget('playmat')).rect
-        words = [layout.anchors[WordTarget(word.id)] for word in state.playmat]
+        words = [layout.anchors[ConstituentTarget((label,))] for label in state.statement.arrangement]
         x = words[-1][0] + words[-1][2] + 4 if words else bar[0] + 24
         return glm.vec2(x, bar[1] + bar[3] / 2)
 
@@ -73,7 +73,7 @@ class DialogDemo:
 
     def choose(self, state, inflection, limit=50):
         """Scroll the open grid until the inflection that reads as `inflection` shows, then click it."""
-        text = self.updater.noun_phrases.text
+        text = self.updater.constituents.text
         target = CellTarget(next(index for index, option in enumerate(state.grid.options)
                                  if text(option) == inflection))
         for wheel in (1, -1):  # up to the top, then down to the bottom
@@ -88,15 +88,15 @@ class DialogDemo:
         raise LookupError(f'{inflection!r} never appeared in the grid')
 
     def place(self, state, lexeme, inflection=None, destination=None):
-        """Drag a lexeme from the inventory and pick an inflection: (state, id of the word placed).
+        """Drag a lexeme from the inventory and pick an inflection: (state, address of what was placed).
 
-        An adjective dropped into a noun phrase becomes that phrase's child, not a word of its own.
+        Placing opens the new constituent's grid, so its address is the grid's.
         """
-        id = state.next_id
         state, _ = self.drag(state, InventoryTarget(lexeme), destination or self.playmat_end(state))
+        address = state.grid.address
         if inflection is not None:
             state, _ = self.choose(state, inflection)
-        return state, id
+        return state, address
 
     def mockup(self, state):
         """Compose the mockup's "you give the red ball to the boy", then reopen the ball's grid."""
@@ -106,5 +106,5 @@ class DialogDemo:
         noun = lambda box: box.style == 'token' and box.text == 'ball'
         state, _ = self.place(state, 'red', destination=self.left_of(state, noun))
         state, _ = self.place(state, 'boy', 'to the boy')
-        state, _ = self.click(state, WordTarget(ball))
+        state, _ = self.click(state, ConstituentTarget(ball))
         return state

@@ -3,7 +3,8 @@
 Every pointer message is resolved against `DialogLayout`, the same layout the
 view draws, so a press always lands on what the player sees under the pointer.
 Inflections are generated here, when a word is placed or its grid opens, and kept
-in the state, so the layout never generates them.
+in the state, so the layout never generates them. What a drop does is
+`DialogDragOperations`' to say; this commits the choice it makes.
 """
 import random
 from dataclasses import replace
@@ -13,18 +14,22 @@ from pyglm import glm
 from ..messages import (ButtonAction, FocusLostMessage, KeyboardAction, KeyboardMessage,
                         MouseButton, MouseButtonMessage, MouseMotionMessage, ScrollMessage,
                         WindowResizeMessage)
-from .DialogLayout import (ButtonTarget, CellTarget, ChildTarget, InventoryTarget, PhraseDrop,
-                           PlaymatDrop, RemoveDrop, WordTarget)
-from .DialogState import Dismissed, Drag, Grid, Press, Spoke
+from .DialogLayout import ButtonTarget, CellTarget, ConstituentTarget, InventoryTarget
+from .DialogState import Constituent, Dismissed, Drag, Grid, Press, Spoke
 
 
 class DialogUpdater:
-    def __init__(self, layout, inflections, default_inflection, drag_threshold=4.0):
-        """`inflections(lexeme)` generates every `Rule` tree of a lexeme, and
-        `default_inflection(lexeme)` the one a newly placed word starts with."""
+    def __init__(self, layout, *, constituents, addresses, address_operations, drag_operations,
+                 lexeme, inflections, default_inflection, drag_threshold=4.0):
+        """`lexeme(rule)` is the lexeme a `Rule` tree inflects, `inflections(lexeme)` generates
+        every `Rule` tree of a lexeme, and `default_inflection(lexeme)` the one a newly placed
+        word starts with."""
         self.layout = layout
-        self.playmats = layout.playmats
-        self.noun_phrases = layout.playmats.noun_phrases
+        self.constituents = constituents
+        self.addresses = addresses
+        self.address_operations = address_operations
+        self.drag_operations = drag_operations
+        self.lexeme = lexeme
         self.inflections = inflections
         self.default_inflection = default_inflection
         self.drag_threshold = drag_threshold
@@ -37,23 +42,21 @@ class DialogUpdater:
         # Inflections that read the same, word for word, such as homonyms, share a cell.
         readings = {}
         for rule in self.inflections(lexeme):
-            readings.setdefault(self.noun_phrases.words(rule), rule)
+            readings.setdefault(self.constituents.words(rule), rule)
         options = list(readings.values())
         random.Random(f'{seed}/{lexeme}').shuffle(options)
         return tuple(options)
 
-    def open(self, state, id, label=None):
-        """Open the grid of the word with this id, or of its added child with this label,
-        scrolled to show its inflection."""
-        word = self.playmats.find(state.playmat, id)
-        lexeme = word.lexeme if label is None else self.noun_phrases.addition(word, label)[0]
-        return replace(state, grid=Grid(id, label, self.options(state.seed, lexeme)), grid_scroll=None)
+    def open(self, state, address):
+        """Open the grid of the constituent at this address, scrolled to show its inflection."""
+        lexeme = self.lexeme(self.addresses.resolve(state.statement, address).inflection)
+        return replace(state, grid=Grid(address, self.options(state.seed, lexeme)), grid_scroll=None)
 
-    def toggle(self, state, id, label=None):
-        """Close the grid if it is the one for this word or child, else open that one."""
-        if state.grid is not None and (state.grid.id, state.grid.label) == (id, label):
+    def toggle(self, state, address):
+        """Close the grid if it is the one at this address, else open that one."""
+        if state.grid is not None and state.grid.address == address:
             return replace(state, grid=None)
-        return self.open(state, id, label)
+        return self.open(state, address)
 
     def update(self, state, message):
         """Return (state, outcome), where outcome is None, `Spoke`, or `Dismissed`."""
@@ -77,11 +80,8 @@ class DialogUpdater:
             if message.key == 'e':
                 return self.talk(state)
             if message.key in ('delete', 'backspace') and state.grid is not None and state.drag is None:
-                if state.grid.label is None:
-                    return self.remove(state, state.grid.id), None
-                phrase, _ = self.noun_phrases.withdrawn(self.playmats.find(state.playmat, state.grid.id),
-                                                        state.grid.label)
-                return replace(state, playmat=self.playmats.replaced(state.playmat, phrase), grid=None), None
+                statement, _, _ = self.address_operations.withdraw(state.statement, state.grid.address)
+                return replace(state, statement=statement, grid=None), None
         return state, None
 
     def press(self, state, position):
@@ -91,12 +91,10 @@ class DialogUpdater:
         if isinstance(target, ButtonTarget):
             return self.talk(state) if target.name == 'talk' else self.close(state)
         if isinstance(target, CellTarget):
-            grid, inflection = state.grid, state.grid.options[target.index]
-            word = self.playmats.find(state.playmat, grid.id)
-            word = (self.playmats.reinflected(word, inflection) if grid.label is None
-                    else self.noun_phrases.reinflected_child(word, grid.label, inflection))
-            return replace(state, playmat=self.playmats.replaced(state.playmat, word), message=''), None
-        if isinstance(target, (WordTarget, ChildTarget, InventoryTarget)):
+            statement = self.address_operations.reinflect(state.statement, state.grid.address,
+                                                          state.grid.options[target.index])
+            return replace(state, statement=statement, message=''), None
+        if isinstance(target, (ConstituentTarget, InventoryTarget)):
             return replace(state, press=Press(target, position)), None
         return state, None
 
@@ -114,11 +112,9 @@ class DialogUpdater:
         left, top, _, _ = self.layout.layout(state).anchors[target]
         grab = state.press.position - glm.vec2(left, top)
         if isinstance(target, InventoryTarget):
-            word = self.playmats.placed(target.lexeme, self.default_inflection(target.lexeme), state.next_id)
-            return Drag(word, None, False, grab, position)
-        if isinstance(target, ChildTarget):
-            return Drag(target.label, target.id, True, grab, position)
-        return Drag(self.playmats.find(state.playmat, target.id), None, True, grab, position)
+            new = self.constituents.arranged(self.default_inflection(target.lexeme))
+            return Drag(None, new, grab, position)
+        return Drag(target.address, None, grab, position)
 
     def release(self, state, position):
         if state.drag is not None:
@@ -131,49 +127,31 @@ class DialogUpdater:
     def drop(self, state, drop):
         drag = state.drag
         state = replace(state, drag=None)
-        if drop is None:
+        source = drag.new if drag.address is None else drag.address
+        choices = () if drop is None else self.drag_operations.choices(state.statement, source, drop)
+        if len(choices) != 1:
             return state
-        if drag.phrase is not None:
-            return self.drop_child(state, drag, drop)
-        word = drag.item
-        if isinstance(drop, RemoveDrop):
-            return self.remove(state, word.id)
-        if isinstance(drop, PhraseDrop):
-            # An adjective from the inventory becomes a child of the phrase, with its grid open.
-            phrase, label = self.noun_phrases.adopted(self.playmats.find(state.playmat, drop.id),
-                                                      word.lexeme, word.inflection, drop.index)
-            return self.open(replace(state, playmat=self.playmats.replaced(state.playmat, phrase)), phrase.id, label)
-        state = replace(state, playmat=self.playmats.inserted(state.playmat, word, drop.index))
-        if not drag.from_playmat:
-            # A newly placed word shows its grid, with its default inflection selected.
-            return self.open(replace(state, next_id=state.next_id + 1), word.id)
+        [choice] = choices
+        grid = state.grid
+        if grid is not None and choice.withdrawn is not None:
+            # An open grid follows its constituent through renumbering, and closes if it was withdrawn.
+            address = self.address_operations.readdress(grid.address, choice.withdrawn, choice.renamed)
+            grid = None if address is None else replace(grid, address=address)
+        state = replace(state, statement=choice.statement, grid=grid)
+        if drag.address is None:
+            # A newly placed constituent shows its grid, with its default inflection selected.
+            return self.open(state, choice.address)
         return state
-
-    def drop_child(self, state, drag, drop):
-        """Drop a child dragged out of a noun phrase: move it within the phrase, into another, or away."""
-        source = self.playmats.find(state.playmat, drag.phrase)
-        if isinstance(drop, PhraseDrop) and drop.id == source.id:
-            phrase = self.noun_phrases.moved(source, drag.item, drop.index)
-            return replace(state, playmat=self.playmats.replaced(state.playmat, phrase))
-        # Withdrawing an added child renumbers the others, so a grid open on one closes.
-        source, (lexeme, inflection) = self.noun_phrases.withdrawn(source, drag.item)
-        playmat = self.playmats.replaced(state.playmat, source)
-        grid = None if state.grid is not None and state.grid.id == source.id and state.grid.label else state.grid
-        if isinstance(drop, PhraseDrop):
-            phrase, _ = self.noun_phrases.adopted(self.playmats.find(playmat, drop.id), lexeme, inflection, drop.index)
-            playmat = self.playmats.replaced(playmat, phrase)
-        return replace(state, playmat=playmat, grid=grid)
 
     def click(self, state, target):
         if isinstance(target, InventoryTarget):
             return replace(state, message='Drag a word onto the bar below to use it.')
-        if isinstance(target, WordTarget):
-            return self.toggle(replace(state, message=''), target.id)
-        if isinstance(target, ChildTarget):
-            # An added child has a grid of its own; a child the phrase came with opens the phrase's.
-            phrase = self.playmats.find(state.playmat, target.id)
-            label = target.label if self.noun_phrases.is_added(phrase, target.label) else None
-            return self.toggle(replace(state, message=''), target.id, label)
+        if isinstance(target, ConstituentTarget):
+            # A child a phrase was generated with, such as its article, opens the phrase's grid.
+            address = target.address
+            if not isinstance(self.addresses.resolve(state.statement, address), Constituent):
+                address = self.addresses.parent(address)
+            return self.toggle(replace(state, message=''), address)
         return state
 
     def scroll(self, state, message):
@@ -185,11 +163,6 @@ class DialogUpdater:
             return state
         first = max(0, min(layout.scroll[panel] + step, layout.limits[panel]))
         return replace(state, **{f'{panel}_scroll': first})
-
-    def remove(self, state, id):
-        playmat = self.playmats.without(state.playmat, id)
-        grid = state.grid if state.grid is not None and self.playmats.find(playmat, state.grid.id) is not None else None
-        return replace(state, playmat=playmat, grid=grid)
 
     def close(self, state):
         """Close the innermost open thing: a drag, then the grid, then the dialog."""
@@ -203,6 +176,6 @@ class DialogUpdater:
     def talk(self, state):
         if state.drag is not None:
             return state, None
-        if not state.playmat:
+        if not state.statement.arrangement:
             return replace(state, message='Drag words onto the bar below, then talk.'), None
-        return replace(state, grid=None, press=None), Spoke(self.playmats.statement(state.playmat))
+        return replace(state, grid=None, press=None), Spoke(self.constituents.ordered(state.statement))
