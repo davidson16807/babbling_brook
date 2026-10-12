@@ -1,8 +1,6 @@
-# HUMAN WRITTEN
-
 from tools.treemaps import ListTreeMap
 
-class ListTreeLanguage:
+class RuleLanguage:
     """
     A `Language` is a "tree mapping" class, analogous to those under nodemaps.py of the `languages` repo.
     As a tree mapping class, a `Language` contains a single method `map()`
@@ -22,15 +20,16 @@ class ListTreeLanguage:
         tags:          a dict mapping tagaxes to their tags
         substitutions: a dict mapping opcodes in the listtree to nodemap functions 
                        of the standard (machine, tree, memory)→tree signature
-
-    This module imports library modules: import it through
-    `adapter.LanguagesLibrary.import_module`.
     """
-    def __init__(self, semantics, grammar, tags, substitutions=[]):
+
+    RULES = 'clause det adj np vp n v adposition'  # as in `Language.map`
+
+    def __init__(self, semantics, grammar, tags, list_tools, substitutions=[]):
         """Arguments mean what they mean to `Language`, e.g. `english_language.semantics`."""
         self.semantics = semantics
         self.grammar = grammar
         self.tags = tags
+        self.list_tools = list_tools
         self.substitutions = substitutions
 
     def map(self, tree, script, semes={}, substitutions=[], debug=False):
@@ -93,7 +92,10 @@ class ListTreeLanguage:
                 'det':        self.grammar.agree,
                 'adj':        self.grammar.agree,
             }),
-            ListTreeMap(tag_removal),
+            ListTreeMap({
+                **tag_removal,
+                **{tag: self.list_tools.rule() for tag in self.RULES.split()},
+            }),
         ]
         for step in pipeline:
             tree = step.map(tree, {**self.tags, 'script': script})
