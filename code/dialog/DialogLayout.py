@@ -120,9 +120,13 @@ class DialogLayout:
     CLOSE = 'X'
 
     def __init__(self, inventory, playmats, metrics: DialogMetrics):
-        self.inventory = inventory      # lexeme → the text the inventory shows, in order
         self.playmats = playmats        # see Playmats.py
         self.metrics = metrics
+        # `inventory` is lexeme → the `Rule` trees its entry shows, in order; several are
+        # a sample of the lexeme's inflections, as in "I, you, he…".
+        text = playmats.arrangements.text
+        self.inventory = {lexeme: ', '.join(text(rule) for rule in rules) + '…' * (len(rules) > 1)
+                          for lexeme, rules in inventory.items()}
 
     def chip_size(self, text: str) -> tuple[int, int]:
         m = self.metrics
@@ -138,7 +142,7 @@ class DialogLayout:
         m = self.metrics
         selected = '-selected' if grid == word.id else ''
         target = WordTarget(word.id) if interactive else None
-        if not self.playmats.is_phrase(word):
+        if word.inflection.tag != 'np':
             text = self.playmats.text(word)
             w, h = self.chip_size(text)
             rect = (x, y + m.phrase_padding, w, h)
@@ -243,7 +247,8 @@ class DialogLayout:
             visible_rows = min(rows, m.grid_rows)
             limits['grid'] = rows - visible_rows
             # A grid that was just opened scrolls to show the selected inflection.
-            wanted = (options.index(selected.inflection) // columns - (visible_rows - 1) // 2
+            chosen = self.playmats.index(options, selected.inflection)
+            wanted = (chosen // columns - (visible_rows - 1) // 2
                       if state.grid_scroll is None else state.grid_scroll)
             first_row = scroll['grid'] = max(0, min(wanted, limits['grid']))
             grid_h = 2 * m.padding + visible_rows * row_h - m.gap
@@ -253,7 +258,7 @@ class DialogLayout:
                 row, column = divmod(index - first_row * columns, columns)
                 rect = (grid[0] + m.padding + column * (cell_w + m.gap),
                         grid[1] + m.padding + row * row_h, cell_w, chip_h)
-                style = 'cell-selected' if options[index] == selected.inflection else 'cell'
+                style = 'cell-selected' if index == chosen else 'cell'
                 boxes.append(LaidBox(rect, style, texts[index], CellTarget(selected.id, index)))
             boxes += self.scrollbar(grid, first_row, visible_rows, rows)
 
@@ -273,9 +278,9 @@ class DialogLayout:
                 # Articles and adpositions stay in their own phrase.
                 drop = next((phrase_drop(item) for item in placed
                              if item.word.id == drag.phrase and contains(item.rect, pointer, m.gap)), None)
-            elif self.playmats.is_adjective(drag.item):
+            elif drag.item.inflection.tag == 'adj':
                 drop = next((phrase_drop(item) for item in placed
-                             if self.playmats.is_phrase(item.word)
+                             if item.word.inflection.tag == 'np'
                              and contains(item.rect, pointer, m.gap)), None)
             elif contains(bar, pointer):
                 index = sum(1 for item in placed if item.rect[0] + item.rect[2] / 2 < pointer.x)
@@ -296,7 +301,7 @@ class DialogLayout:
                 boxes.append(LaidBox((round(origin.x), round(origin.y), *self.chip_size(text)),
                                      'chip-dragged', text))
             else:
-                if not self.playmats.is_phrase(drag.item):
+                if drag.item.inflection.tag != 'np':
                     origin.y -= m.phrase_padding  # `word()` insets single chips by this much
                 _, ghost, _ = self.word(drag.item, round(origin.x), round(origin.y), None,
                                         interactive=False, suffix='-dragged')

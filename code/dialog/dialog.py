@@ -16,7 +16,6 @@ from ..adapter.PygameFonts import PygameFonts
 from ..adapter.PygameMessageQueue import PygameMessageQueue
 from ..adapter.PygameUiBoxView import PygameUiBoxView
 from ..adapter.LanguagesLibrary import LanguagesLibrary
-from ..inflection.ListTrees import ListTrees
 from ..messages import QuitMessage
 from ..view.program.UiProgram import UiProgram
 from .Arrangements import Arrangements
@@ -71,8 +70,7 @@ def main(argv=None):
             gl.screen.use()
             queue = PygameMessageQueue()
         fonts = PygameFonts(args.font)
-        list_trees = ListTrees()
-        playmats = Playmats(Arrangements(list_trees), list_trees)
+        playmats = Playmats(Arrangements())
         layout = DialogLayout(english.inventory(), playmats, DialogMetrics(fonts, args.font_size))
         updater = DialogUpdater(layout, english.inflections, english.default_inflection)
         view = DialogView(layout, PygameUiBoxView(UiProgram(gl), fonts), dialog_styles(args.font_size))
@@ -91,7 +89,7 @@ def main(argv=None):
                     break
                 state, outcome = updater.update(state, message)
                 if isinstance(outcome, Spoke):
-                    said = ' '.join(playmats.tokens(outcome.playmat))
+                    said = ' '.join(playmats.arrangements.text(rule) for rule in outcome.statement)
                     print(said, flush=True)
                     state = replace(state, message=f'You said: "{said}"')
                 elif isinstance(outcome, Dismissed):

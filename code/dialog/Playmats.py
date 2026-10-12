@@ -1,7 +1,8 @@
 """Arrows on the playmat: the statement the player composes, and the words placed on it.
 
 A playmat is a tuple of `Word`s. A word is a lexeme with one of its inflections, as
-a list tree; a noun phrase also has an arrangement, whose adjectives are words too.
+a `Rule` tree; a noun phrase also has an arrangement, whose adjectives are words too.
+What leaves the dialog is `statement`, a `Rule` tree per word in the player's order.
 """
 from dataclasses import replace
 
@@ -12,30 +13,22 @@ class Playmats:
     """
     `Playmats` is a category whose objects are playmats and the words on them, and
     whose arrows place, find, move, reinflect, and remove words, and read a playmat
-    as the words of its statement. It is built from `Arrangements`, for the order
-    within each noun phrase, and `ListTrees`, which reads the list tree of each
-    word's inflection.
+    as the words or the `Rule` trees of its statement. It is built from
+    `Arrangements`, for the order within each noun phrase and the reading of `Rule`s.
     """
-    def __init__(self, arrangements, list_trees):
+    def __init__(self, arrangements):
         self.arrangements = arrangements
-        self.list_trees = list_trees
-
-    def is_phrase(self, word) -> bool:
-        return self.arrangements.is_phrase(word.inflection)
-
-    def is_adjective(self, word) -> bool:
-        return self.arrangements.is_adjective(word.inflection)
 
     def placed(self, lexeme: str, inflection, id: int) -> Word:
-        """A newly placed word of `lexeme`, with the list tree `inflection`."""
+        """A newly placed word of `lexeme`, with the `Rule` tree `inflection`."""
         word = Word(id, lexeme, inflection)
-        return replace(word, arrangement=self.arrangements.slots(inflection)) if self.is_phrase(word) else word
+        return replace(word, arrangement=self.arrangements.slots(inflection)) if inflection.tag == 'np' else word
 
     def reinflected(self, word, inflection) -> Word:
-        """`word` with the list tree `inflection`; a phrase keeps the player's order where it can."""
+        """`word` with the `Rule` tree `inflection`; a phrase keeps the player's order where it can."""
         word = replace(word, inflection=inflection)
         return replace(word, arrangement=self.arrangements.arrange(word.arrangement, inflection)) \
-            if self.is_phrase(word) else word
+            if word.inflection.tag == 'np' else word
 
     def items(self, word) -> list[tuple[object, str]]:
         """(slot or adjective, text) for each item of a noun phrase, in the player's order."""
@@ -47,6 +40,10 @@ class Playmats:
     def text(self, word) -> str:
         """What `word` reads as, with a phrase's words in the player's order."""
         return ' '.join(self.tokens((word,)))
+
+    def index(self, options, inflection) -> int:
+        """The index of the option among `options` that reads as `inflection`, word for word."""
+        return [self.arrangements.words(option) for option in options].index(self.arrangements.words(inflection))
 
     def insert(self, phrase: Word, item, index: int) -> Word:
         """`phrase` with `item` at `index` of its arrangement, counted without `item`."""
@@ -86,7 +83,7 @@ class Playmats:
         return tuple(word if item.id == word.id else item for item in playmat)
 
     def reinflect(self, playmat, id, inflection) -> tuple[Word, ...]:
-        """The playmat with the word of this id given the list tree `inflection`."""
+        """The playmat with the word of this id given the `Rule` tree `inflection`."""
         def visit(word):
             if word.id == id:
                 return self.reinflected(word, inflection)
@@ -98,8 +95,14 @@ class Playmats:
         """The statement's words as the player arranged them."""
         result = []
         for word in playmat:
-            if self.is_phrase(word):
+            if word.inflection.tag == 'np':
                 result += [text for _, text in self.items(word)]
             else:
-                result += [text for _, text in self.list_trees.words(word.inflection)]
+                result += [text for _, text in self.arrangements.words(word.inflection)]
         return tuple(result)
+
+    def statement(self, playmat) -> tuple:
+        """The statement as the player arranged it: a `Rule` tree for each word on the playmat."""
+        return tuple(self.arrangements.ordered(word.arrangement, word.inflection) if word.inflection.tag == 'np'
+                     else word.inflection
+                     for word in playmat)

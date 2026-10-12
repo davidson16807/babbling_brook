@@ -3,14 +3,14 @@
 Vocabulary, traversals, and masks are dictstores built with `TermParsing`; syntax
 trees are `ListParsing` strings. Each word is rendered on its own, without the
 clause or phrase around it: the tags of its traversal carry everything that context
-would. Demonstrations are the
-repo's `LanguageSpecificTextDemonstration`, over an `Orthography` of a
-`ListTreeLanguage` built from the repo's `english_language`.
+would. Demonstrations are the repo's `LanguageSpecificTextDemonstration`, over an
+`Orthography` of a `RuleLanguage` built from the repo's `english_language`, so each
+inflection is a `Rule` tree.
 
 Nothing is generated when this module is imported. The dialog calls:
-    inflections(lexeme)         the list tree of each tagpoint of the lexeme's traversal
-    default_inflection(lexeme)  the list tree a newly placed word starts with
-    inventory()                 lexeme → the text the inventory shows, in inventory order
+    inflections(lexeme)         the `Rule` tree of each tagpoint of the lexeme's traversal
+    default_inflection(lexeme)  the `Rule` tree a newly placed word starts with
+    inventory()                 lexeme → the `Rule` trees its inventory entry shows, in inventory order
 Lexemes are the terms that distinguish them: a noun, verb, or adjective, or
 'personal' for the personal pronouns.
 
@@ -27,8 +27,7 @@ from tools.parsing import TermParsing
 from languages.english import english_language
 
 from .InflectionGeneration import InflectionGeneration
-from .ListTreeLanguage import ListTreeLanguage
-from .ListTrees import ListTrees
+from .RuleLanguage import RuleLanguage
 
 english_termaxis_to_terms = {
     **termaxis_to_terms,
@@ -40,7 +39,6 @@ english_termaxis_to_terms = {
 }
 
 dict_bundles = DictBundles()
-list_trees = ListTrees()
 
 english_term_to_termaxis = dict_bundles.bundle_to_map(english_termaxis_to_terms)
 
@@ -58,14 +56,15 @@ verbs = parse.terms('give talk walk')
 adjectives = parse.terms('big red')
 
 english_demonstration = LanguageSpecificTextDemonstration(
-    Orthography('latin', ListTreeLanguage(
+    Orthography('latin', RuleLanguage(
         english_language.semantics,
         english_language.grammar,
         english_language.tags,
+        english_language.list_tools,
         english_language.substitutions,
     )),
     lambda tags, tree: tree,  # no context, such as the mood templates of flashcards
-    lambda tree: tree,        # a list tree, not a card
+    lambda tree: tree,        # a `Rule` tree, not a card
 )
 
 noun_phrase_demonstration = english_demonstration.generator(
@@ -165,7 +164,7 @@ traversals = {
 }
 
 def inflections(lexeme, mask=None):
-    """The list tree of each tagpoint of `lexeme`'s traversal, or of those that `mask` contains.
+    """The `Rule` tree of each tagpoint of `lexeme`'s traversal, or of those that `mask` contains.
 
     They are generated on each call. A mask that contains no tagpoint raises `ValueError`.
     """
@@ -176,14 +175,12 @@ def inflections(lexeme, mask=None):
     return [tree for _, [tree] in inflection_generation.generate([demonstration], completed)]
 
 def default_inflection(lexeme):
-    """The list tree a newly placed word of `lexeme` starts with, selected by its default mask."""
+    """The `Rule` tree a newly placed word of `lexeme` starts with, selected by its default mask."""
     _, default, _ = traversals[lexeme]
     return inflections(lexeme, default)[0]
 
 def inventory():
-    """lexeme → the text the inventory shows: the pronouns, as in "I, you, he…", then the rest
-    alphabetically by their default inflection."""
-    pronouns = list(dict.fromkeys(list_trees.text(tree) for tree in inflections('personal', pronoun_listing)))
-    others = {lexeme: list_trees.text(default_inflection(lexeme)) for lexeme in traversals if lexeme != 'personal'}
-    return {'personal': ', '.join(pronouns[:3]) + '…',
-            **dict(sorted(others.items(), key=lambda item: item[1].casefold()))}
+    """lexeme → the `Rule` trees its inventory entry shows: the pronouns first, by their first
+    three singular subjects ("I, you, he"), then every other lexeme by its default inflection."""
+    return {'personal': tuple(inflections('personal', pronoun_listing)[:3]),
+            **{lexeme: (default_inflection(lexeme),) for lexeme in sorted(traversals) if lexeme != 'personal'}}

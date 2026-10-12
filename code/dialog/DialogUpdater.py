@@ -20,7 +20,7 @@ from .DialogState import Dismissed, Drag, Grid, Press, Slot, Spoke
 
 class DialogUpdater:
     def __init__(self, layout, inflections, default_inflection, drag_threshold=4.0):
-        """`inflections(lexeme)` generates every list tree of a lexeme, and
+        """`inflections(lexeme)` generates every `Rule` tree of a lexeme, and
         `default_inflection(lexeme)` the one a newly placed word starts with."""
         self.layout = layout
         self.playmats = layout.playmats
@@ -29,14 +29,15 @@ class DialogUpdater:
         self.drag_threshold = drag_threshold
 
     def options(self, seed, lexeme) -> tuple:
-        """Every inflection of `lexeme`, without repeats, in an order fixed per lexeme and dialog session.
+        """An inflection of `lexeme` per way it reads, in an order fixed per lexeme and dialog session.
 
         Seeding with a string keeps the order identical across processes; `hash()` would not.
         """
-        options = []
-        for tree in self.inflections(lexeme):
-            if tree not in options:
-                options.append(tree)
+        # Inflections that read the same, word for word, such as homonyms, share a cell.
+        readings = {}
+        for rule in self.inflections(lexeme):
+            readings.setdefault(self.playmats.arrangements.words(rule), rule)
+        options = list(readings.values())
         random.Random(f'{seed}/{lexeme}').shuffle(options)
         return tuple(options)
 
@@ -173,4 +174,4 @@ class DialogUpdater:
             return state, None
         if not state.playmat:
             return replace(state, message='Drag words onto the bar below, then talk.'), None
-        return replace(state, grid=None, press=None), Spoke(state.playmat)
+        return replace(state, grid=None, press=None), Spoke(self.playmats.statement(state.playmat))
