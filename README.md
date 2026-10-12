@@ -92,6 +92,58 @@ mode changes, channel assignment, copy/paste, undo/redo, saving, and reload.
 The history port also matches the supplied JavaScript across 300 model-only
 operations. Interactive desktop play has not been manually tested.
 
+## Dialog harness
+
+The dialog composes statements in a foreign language, English for now, without the world:
+
+```sh
+git submodule update --init      # the languages repo, at lib/languages
+python dialog.py                 # --demo composes the mockup's statement; --seed fixes grid order
+python dialog.py --headless --demo --seed 7 --screenshot dialog.png
+```
+
+| Input | Dialog action |
+| --- | --- |
+| Drag from the inventory | Place a word in its default inflection; its inflection grid opens |
+| Drag a phrase or adjective | Rearrange it, move an adjective to another noun phrase, or drop it on the inventory to remove it |
+| Drag an article or adposition | Rearrange it within its phrase |
+| Click a placed word | Open or close its grid; an article or adposition opens its phrase's grid |
+| Click a grid cell | Inflect the word; the grid stays open |
+| Wheel | Scroll the inventory or the grid under the pointer |
+| Delete / Backspace | Remove the word whose grid is open |
+| Escape / X | Cancel a drag, else close the grid, else dismiss the dialog |
+| E / talk | Say the statement |
+
+Inflections are the languages repo's `Rule` trees, generated on demand by
+`code/inflection/english.py` through `RuleLanguage`. The dialog keeps two other
+representations. A **label** such as `('adj', 0)` names a child of a constituent by its part
+of speech and its count among children of that part, generated ones first; an
+**arrangement** is a constituent's labels in the player's order; an **address** is the
+labels from the statement down. Labels never leave the dialog: talking produces a
+`'clause'` `Rule` whose children are in the player's order (`ConstituentShape.rule`).
+Nothing depends on a language having articles; a noun phrase is whatever its `Rule` holds.
+
+The drag code follows xcraft's layering, file for file:
+
+| Dialog | xcraft | Role |
+| --- | --- | --- |
+| `ConstituentAddresses` | `ExpressionPaths` | resolve, replace, and relate addresses |
+| `ConstituentShape` | `ExpressionShape` | `encode` for comparison; `rule` for output |
+| `ConstituentAddressOperations` | `RelationPathOperations` | edits by address: reinflect, adopt, withdraw, move |
+| `ConstituentDragChoice` | `RelationDragChoice` | a statement a drop can produce |
+| `ConstituentDragOperations` | `RelationDragOperations` | `choices(statement, source, target)`, `targets`, `removable` |
+| `DragState`, `ConstituentDrags` | `DragState`, `RelationDrags` | drag types with `initialize`, `move`, `choices` |
+| `DialogDragOperations` | `AppDragOperations` | `start`, `move`, `drop`, `cancel` |
+| `DialogUpdater` | `AppUpdater` | the facade the view calls |
+| `DialogLayout` | the DOM | boxes with keys, drop regions, and hit tests |
+| `DialogView` | `AppView` | `draw`, and `dispatch` in place of `wire` |
+
+`DialogGrids` handles the inflection grid, which xcraft has no counterpart for. A drop
+commits only with exactly one choice, as in xcraft; no dialog drop has more than one, so
+there is no choosing UI, and there is no provisional preview or undo. What the player did
+is left in `DialogState.outcome` (`Spoke` or `Dismissed`) for the caller to act on.
+Dialog tests are in `test/test_dialog.py` and are skipped without the languages repo.
+
 ## Run
 
 Requires Python 3.10+, an OpenGL 3.3-capable desktop, and the dependencies below.
