@@ -1,3 +1,5 @@
+# HUMAN VETTED
+
 """Pygame fonts by size, and the text metrics that layouts measure with.
 
 Layout and rasterization must agree on text extents, so both use one instance.
