@@ -16,7 +16,7 @@ if not hasattr(sys.modules.get('babbling_brook'), '__path__'):
     sys.modules['babbling_brook'] = package
     spec.loader.exec_module(package)
 
-from babbling_brook.game.game import main
+from babbling_brook.explorer.explorer import main
 
 
 if __name__ == '__main__':
