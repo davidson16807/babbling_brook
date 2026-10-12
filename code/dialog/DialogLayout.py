@@ -11,7 +11,7 @@ from math import ceil
 
 from pyglm import glm
 
-from .DialogState import Slot, Word
+from .DialogState import Word
 
 Rect = tuple[int, int, int, int]  # left, top, width, height in viewport pixels
 
@@ -26,14 +26,13 @@ class WordTarget:
     id: int          # a placed word; pressing a phrase's noun refers to the phrase
 
 @dataclass(frozen=True)
-class SlotTarget:
+class ChildTarget:
     id: int          # the noun phrase
-    slot: Slot       # its article, adposition, or other word that came with its inflection
+    label: tuple     # its child: an article or adposition it came with, or an adjective added to it
 
 @dataclass(frozen=True)
 class CellTarget:
-    id: int          # the word whose grid this is
-    index: int       # of the inflection, among the grid's options
+    index: int       # of the inflection, among the open grid's options
 
 @dataclass(frozen=True)
 class ButtonTarget:
@@ -138,9 +137,12 @@ class DialogLayout:
         return self.chip_size('')[1]
 
     def word(self, word: Word, x: int, y: int, grid, interactive=True, suffix=''):
-        """Lay out one placed word with its top-left at (x, y): (rect, boxes, child rects)."""
+        """Lay out one placed word with its top-left at (x, y): (rect, boxes, child rects).
+
+        `grid` is the open `Grid`, if any, whose word or child is drawn selected.
+        """
         m = self.metrics
-        selected = '-selected' if grid == word.id else ''
+        selected = '-selected' if grid is not None and (grid.id, grid.label) == (word.id, None) else ''
         target = WordTarget(word.id) if interactive else None
         if word.inflection.tag != 'np':
             text = self.playmats.text(word)
@@ -149,16 +151,17 @@ class DialogLayout:
             return rect, [LaidBox(rect, 'chip' + (suffix or selected), text, target)], []
         boxes, children = [], []
         cx = x + m.phrase_padding
-        for item, text in self.playmats.items(word):
+        _, added = self.playmats.arrangements.labels(word)
+        for label, text in self.playmats.arrangements.items(word):
             w, h = self.chip_size(text)
             rect = (cx, y + m.phrase_padding, w, h)
-            if isinstance(item, Word):
-                style = 'chip-selected' if grid == item.id and not suffix else 'chip'
-                item_target = WordTarget(item.id)
+            if label in added:
+                chosen = grid is not None and (grid.id, grid.label) == (word.id, label) and not suffix
+                style, item_target = 'chip-selected' if chosen else 'chip', ChildTarget(word.id, label)
             else:
                 # The noun stands for its phrase: pressing it moves or opens the phrase.
                 style = 'token'
-                item_target = target if item.part == 'n' else SlotTarget(word.id, item)
+                item_target = target if label[0] == 'n' else ChildTarget(word.id, label)
             boxes.append(LaidBox(rect, style, text, item_target if interactive else None))
             children.append(rect)
             cx += w + m.gap // 2
@@ -209,20 +212,21 @@ class DialogLayout:
         boxes.append(LaidBox(bar, 'panel', target=PanelTarget('playmat')))
         drag = state.drag
         playmat = state.playmat
-        if drag is not None and drag.from_playmat:
+        child = drag is not None and drag.phrase is not None   # a noun phrase's child is dragged
+        if child:
             # The dragged item leaves its place, and the rest close up around the gap.
-            playmat = (self.playmats.without_slot(playmat, drag.phrase, drag.item) if isinstance(drag.item, Slot)
-                       else self.playmats.without(playmat, drag.item.id))
+            source = self.playmats.find(playmat, drag.phrase)
+            playmat = self.playmats.replaced(playmat, self.playmats.arrangements.hidden(source, drag.item))
+        elif drag is not None and drag.from_playmat:
+            playmat = self.playmats.without(playmat, drag.item.id)
         placed = []
         x, y = bar[0] + m.padding, bar[1] + m.padding
-        open_id = state.grid.id if state.grid is not None else None
         for word in playmat:
-            rect, word_boxes, children = self.word(word, x, y, open_id)
+            rect, word_boxes, children = self.word(word, x, y, state.grid)
             boxes += word_boxes
             anchors[WordTarget(word.id)] = rect
             for box in word_boxes:
-                if (isinstance(box.target, SlotTarget)
-                        or isinstance(box.target, WordTarget) and box.target.id != word.id):
+                if isinstance(box.target, ChildTarget):
                     anchors[box.target] = box.rect
             placed.append(_Placed(word, rect, children))
             x += rect[2] + m.gap
@@ -234,12 +238,17 @@ class DialogLayout:
         boxes.append(LaidBox(close, 'close', self.CLOSE, ButtonTarget('close')))
         boxes.append(LaidBox(talk, 'talk', self.TALK, ButtonTarget('talk')))
 
-        # Inflection grid for the selected word, above the playmat.
-        selected = self.playmats.find(state.playmat, open_id) if open_id is not None else None
+        # Inflection grid for the selected word or child, above the playmat.
+        selected = self.playmats.find(state.playmat, state.grid.id) if state.grid is not None else None
         if selected is not None:
             options = state.grid.options
-            # Each cell reads as the word would with that inflection, adjectives and all.
-            texts = [self.playmats.text(self.playmats.reinflected(selected, option)) for option in options]
+            if state.grid.label is None:
+                # Each cell reads as the word would with that inflection, added children and all.
+                texts = [self.playmats.text(self.playmats.reinflected(selected, option)) for option in options]
+                inflection = selected.inflection
+            else:
+                texts = [self.playmats.arrangements.text(option) for option in options]
+                _, inflection = self.playmats.arrangements.addition(selected, state.grid.label)
             cell_w = max(self.chip_size(text)[0] for text in texts)
             inner_w = bar[2] - 2 * m.padding - m.gap - m.scrollbar
             columns = max(1, (inner_w + m.gap) // (cell_w + m.gap))
@@ -247,7 +256,7 @@ class DialogLayout:
             visible_rows = min(rows, m.grid_rows)
             limits['grid'] = rows - visible_rows
             # A grid that was just opened scrolls to show the selected inflection.
-            chosen = self.playmats.index(options, selected.inflection)
+            chosen = self.playmats.index(options, inflection)
             wanted = (chosen // columns - (visible_rows - 1) // 2
                       if state.grid_scroll is None else state.grid_scroll)
             first_row = scroll['grid'] = max(0, min(wanted, limits['grid']))
@@ -259,7 +268,7 @@ class DialogLayout:
                 rect = (grid[0] + m.padding + column * (cell_w + m.gap),
                         grid[1] + m.padding + row * row_h, cell_w, chip_h)
                 style = 'cell-selected' if index == chosen else 'cell'
-                boxes.append(LaidBox(rect, style, texts[index], CellTarget(selected.id, index)))
+                boxes.append(LaidBox(rect, style, texts[index], CellTarget(index)))
             boxes += self.scrollbar(grid, first_row, visible_rows, rows)
 
         if state.message:
@@ -274,11 +283,13 @@ class DialogLayout:
                 index = sum(1 for r in item.children if r[0] + r[2] / 2 < pointer.x)
                 boxes.append(self.caret(item.children, index, item.rect, m.gap // 2))
                 return PhraseDrop(item.word.id, index)
-            if isinstance(drag.item, Slot):
-                # Articles and adpositions stay in their own phrase.
+            added = child and self.playmats.arrangements.is_added(source, drag.item)
+            if child and not added:
+                # Children the language generated, such as articles and adpositions, stay in their phrase.
                 drop = next((phrase_drop(item) for item in placed
                              if item.word.id == drag.phrase and contains(item.rect, pointer, m.gap)), None)
-            elif drag.item.inflection.tag == 'adj':
+            elif added or drag.item.inflection.tag == 'adj':
+                # Added children, such as adjectives, go into any noun phrase.
                 drop = next((phrase_drop(item) for item in placed
                              if item.word.inflection.tag == 'np'
                              and contains(item.rect, pointer, m.gap)), None)
@@ -287,7 +298,7 @@ class DialogLayout:
                 drop = PlaymatDrop(index)
                 rects = [item.rect for item in placed]
                 boxes.append(self.caret(rects, index, (bar[0] + m.padding, y, 0, phrase_h), m.gap))
-            if (drop is None and drag.from_playmat and not isinstance(drag.item, Slot)
+            if (drop is None and drag.from_playmat and (added or not child)
                     and contains(inventory, pointer)):
                 drop = RemoveDrop()
                 label_w, label_h = self.chip_size('remove')
@@ -296,8 +307,8 @@ class DialogLayout:
                                    inventory[1] + inventory[3] - m.padding - label_h, label_w, label_h),
                                   'remove', 'remove')]
             origin = pointer - drag.grab
-            if isinstance(drag.item, Slot):
-                text = self.playmats.slot_text(self.playmats.find(state.playmat, drag.phrase), drag.item)
+            if child:
+                text = self.playmats.arrangements.texts(source)[drag.item]
                 boxes.append(LaidBox((round(origin.x), round(origin.y), *self.chip_size(text)),
                                      'chip-dragged', text))
             else:

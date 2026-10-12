@@ -71,11 +71,11 @@ class DialogDemo:
         x, y, w, h = self.box(state, predicate).rect
         return glm.vec2(x + 1, y + h / 2)
 
-    def choose(self, state, id, inflection, limit=50):
+    def choose(self, state, inflection, limit=50):
         """Scroll the open grid until the inflection that reads as `inflection` shows, then click it."""
-        text = self.updater.playmats.arrangements.text
-        target = CellTarget(id, next(index for index, option in enumerate(state.grid.options)
-                                     if text(option) == inflection))
+        text = self.updater.arrangements.text
+        target = CellTarget(next(index for index, option in enumerate(state.grid.options)
+                                 if text(option) == inflection))
         for wheel in (1, -1):  # up to the top, then down to the bottom
             for _ in range(limit):
                 layout = self.layout.layout(state)
@@ -88,11 +88,14 @@ class DialogDemo:
         raise LookupError(f'{inflection!r} never appeared in the grid')
 
     def place(self, state, lexeme, inflection=None, destination=None):
-        """Drag a lexeme from the inventory and pick an inflection: (state, word id)."""
+        """Drag a lexeme from the inventory and pick an inflection: (state, id of the word placed).
+
+        An adjective dropped into a noun phrase becomes that phrase's child, not a word of its own.
+        """
         id = state.next_id
         state, _ = self.drag(state, InventoryTarget(lexeme), destination or self.playmat_end(state))
         if inflection is not None:
-            state, _ = self.choose(state, id, inflection)
+            state, _ = self.choose(state, inflection)
         return state, id
 
     def mockup(self, state):

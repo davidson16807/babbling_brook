@@ -12,33 +12,32 @@ from dataclasses import dataclass
 from pyglm import glm
 
 
-@dataclass(frozen=True)
-class Slot:
-    """A word that comes with a noun phrase's inflection, such as its article or adposition.
-
-    It is the `index`th child of part of speech `part` in whichever inflection the
-    phrase has. Slots are internal to the dialog.
-    """
-    part: str
-    index: int = 0
+Label = tuple[str, int]  # a noun phrase's child: the `index`th child of its part, e.g. ('det', 0)
 
 
 @dataclass(frozen=True)
 class Word:
-    """A lexeme placed on the playmat, as one chip or one noun phrase."""
+    """A lexeme placed on the playmat, as one chip or one noun phrase.
+
+    A noun phrase's children are those of its inflection that read as something
+    (adposition, article, noun, ...) followed by those the player added (adjectives,
+    and determiners such as "this"). Labels address them: each part of speech is
+    counted over the generated children first, then the added ones. Labels are
+    internal to the dialog; see dialog/Arrangements.py.
+    """
     id: int                                  # stable for the dialog session
     lexeme: str
     inflection: object                       # `Rule` tree of the chosen inflection
-    # Noun phrases only: their words in the player's order, as the slots of the
-    # inflection's children and the adjectives placed among them.
-    arrangement: tuple[Slot | Word, ...] = ()
+    added: tuple[tuple[str, object], ...] = ()   # noun phrases: (lexeme, `Rule`) of each added child
+    arrangement: tuple[Label, ...] = ()          # noun phrases: every child's label, in the player's order
 
 
 @dataclass(frozen=True)
 class Grid:
-    """An open inflection grid: the word it inflects, and every inflection of its lexeme."""
-    id: int
-    options: tuple  # `Rule` trees that read differently, in grid order
+    """An open inflection grid: what it inflects, and every inflection of that lexeme."""
+    id: int                 # the word on the playmat
+    label: Label | None     # the added child of that noun phrase it inflects, or None for the word itself
+    options: tuple          # `Rule` trees that read differently, in grid order
 
 
 @dataclass(frozen=True)
@@ -50,8 +49,8 @@ class Press:
 
 @dataclass(frozen=True)
 class Drag:
-    item: Word | Slot     # a new Word when it comes from the inventory
-    phrase: int | None    # id of the noun phrase the item is dragged out of, if any
+    item: Word | Label    # a word (new when it comes from the inventory), or a noun phrase's child
+    phrase: int | None    # id of the noun phrase a child is dragged out of
     from_playmat: bool
     grab: glm.vec2        # pointer offset from the dragged chip's top-left corner
     pointer: glm.vec2
