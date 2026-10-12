@@ -1,0 +1,137 @@
+*	*	*	*	case	preposition	postposition					
+#	subjectivity	motion	role								
+	subject			nominative	∅	∅					
+	addressee			oblique	∅	∅					
+	direct-object			oblique	∅	∅					
+	indirect-object			oblique	∅	∅					
+	adnominal		possessor	oblique	of	∅					
+	adverbial	departed	agent	oblique	by	∅					
+	adverbial	associated	agent	oblique	by	∅					
+	adverbial	acquired	agent	oblique	by	∅					
+	adverbial	approached	agent	oblique	by	∅					
+	adverbial	surpassed	agent	oblique	by	∅					
+	adverbial	leveraged	agent	oblique	by	∅					
+	adverbial	departed	force	oblique	by	∅					
+	adverbial	associated	force	oblique	by	∅					
+	adverbial	acquired	force	oblique	by	∅					
+	adverbial	approached	force	oblique	by	∅					
+	adverbial	surpassed	force	oblique	by	∅					
+	adverbial	leveraged	force	oblique	by	∅					
+	adverbial	departed	possessor	oblique	from [the possession of]	∅					
+	adverbial	associated	possessor	oblique	of	∅					
+	adverbial	acquired	possessor	oblique	to [the possession of]	∅					
+	adverbial	approached	possessor	oblique	towards [the possession of]	∅					
+	adverbial	surpassed	possessor	oblique	beyond [the possession of]	∅					
+	adverbial	leveraged	possessor	oblique	[due to the possession of]	∅					
+	adverbial	departed	location	oblique	away from	∅					
+	adverbial	associated	location	oblique	by	∅					
+	adverbial	acquired	location	oblique	to	∅					
+	adverbial	approached	location	oblique	towards	∅					
+	adverbial	surpassed	location	oblique	past	∅					
+	adverbial	leveraged	location	oblique	along	∅					
+	adverbial	departed	extent	oblique	starting from	∅					
+	adverbial	associated	extent	oblique	beside	∅					
+	adverbial	acquired	extent	oblique	up to	∅					
+	adverbial	approached	extent	oblique	towards [the edge of]	∅					
+	adverbial	surpassed	extent	oblique	past [the edge of]	∅					
+	adverbial	leveraged	extent	oblique	along [the edges of]	∅					
+	adverbial	departed	vicinity	oblique	from around	∅					
+	adverbial	associated	vicinity	oblique	by	∅					
+	adverbial	acquired	vicinity	oblique	to around	∅					
+	adverbial	approached	vicinity	oblique	towards [the vicinity of]	∅					
+	adverbial	surpassed	vicinity	oblique	past [the vicinity of]	∅					
+	adverbial	leveraged	vicinity	oblique	via	∅					
+	adverbial	departed	interior	oblique	out of	∅					
+	adverbial	associated	interior	oblique	in	∅					
+	adverbial	acquired	interior	oblique	into	∅					
+	adverbial	approached	interior	oblique	in towards	∅					
+	adverbial	surpassed	interior	oblique	past [the inside of]	∅					
+	adverbial	leveraged	interior	oblique	through	∅					
+	adverbial	departed	medium	oblique	out of [the mass of]	∅					
+	adverbial	associated	medium	oblique	in [the mass of]	∅					
+	adverbial	acquired	medium	oblique	into [the mass of]	∅					
+	adverbial	approached	medium	oblique	in towards [the mass of]	∅					
+	adverbial	surpassed	medium	oblique	past [the mass of]	∅					
+	adverbial	leveraged	medium	oblique	through [the mass of]	∅					
+	adverbial	departed	side	oblique	from against	∅					
+	adverbial	associated	side	oblique	against	∅					
+	adverbial	acquired	side	oblique	up against	∅					
+	adverbial	approached	side	oblique	towards [the side of]	∅					
+	adverbial	surpassed	side	oblique	past [the side of]	∅					
+	adverbial	leveraged	side	oblique	along [the side of]	∅					
+	adverbial	departed	surface	oblique	off of	∅					
+	adverbial	associated	surface	oblique	on	∅					
+	adverbial	acquired	surface	oblique	onto	∅					
+	adverbial	approached	surface	oblique	towards [the surface of]	∅					
+	adverbial	surpassed	surface	oblique	past [the surface of]	∅					
+	adverbial	leveraged	surface	oblique	over	∅					
+	adverbial	departed	subsurface	oblique	out from under	∅					
+	adverbial	associated	subsurface	oblique	under	∅					
+	adverbial	acquired	subsurface	oblique	in under	∅					
+	adverbial	approached	subsurface	oblique	heading under	∅					
+	adverbial	surpassed	subsurface	oblique	past under	∅					
+	adverbial	leveraged	subsurface	oblique	through under	∅					
+	adverbial	departed	presence	oblique	[due to the presence of]	∅					
+	adverbial	associated	presence	oblique	[in the presence of]	∅					
+	adverbial	acquired	presence	oblique	[to draw in]	∅					
+	adverbial	approached	presence	oblique	towards [the presence of]	∅					
+	adverbial	surpassed	presence	oblique	beyond [the presence of]	∅					
+	adverbial	leveraged	presence	oblique	by using [the presence of]	∅					
+	adverbial	departed	lack	oblique	[for want of]	∅					
+	adverbial	associated	lack	oblique	[in the absence of]	∅					
+	adverbial	acquired	lack	oblique	[to avoid]	∅					
+	adverbial	approached	lack	oblique	towards [a lack of]	∅					
+	adverbial	surpassed	lack	oblique	beyond [a lack of]	∅					
+	adverbial	leveraged	lack	oblique	[by taking advantage of the lack of]	∅					
+	adverbial	departed	aid	oblique	[thanks to the aid of]	∅					
+	adverbial	associated	aid	oblique	[with the aid of]	∅					
+	adverbial	acquired	aid	oblique	[to aid]	∅					
+	adverbial	approached	aid	oblique	towards [the aid of]	∅					
+	adverbial	surpassed	aid	oblique	beyond [the aid of]	∅					
+	adverbial	leveraged	aid	oblique	by using [the aid of]	∅					
+	adverbial	departed	interest	oblique	[out of the interest of]	∅					
+	adverbial	associated	interest	oblique	[for the sake of]	∅					
+	adverbial	acquired	interest	oblique	to [the interest of]	∅					
+	adverbial	approached	interest	oblique	towards [the interest of]	∅					
+	adverbial	surpassed	interest	oblique	beyond [the interest of]	∅					
+	adverbial	leveraged	interest	oblique	[by appealing to the interest of]	∅					
+	adverbial	departed	purpose	oblique	[following from the purpose of]	∅					
+	adverbial	associated	purpose	oblique	[assuming the purpose of]	∅					
+	adverbial	acquired	purpose	oblique	[for the purpose of]	∅					
+	adverbial	approached	purpose	oblique	towards [the purpose of]	∅					
+	adverbial	surpassed	purpose	oblique	beyond [the purpose of]	∅					
+	adverbial	leveraged	purpose	oblique	[by leveraging the purpose of]	∅					
+	adverbial	departed	time	oblique	after	∅					
+	adverbial	associated	time	oblique	during	∅					
+	adverbial	acquired	time	oblique	until	∅					
+	adverbial	approached	time	oblique	nearing	∅					
+	adverbial	surpassed	time	oblique	past	∅					
+	adverbial	leveraged	time	oblique	by [making use of]	∅					
+	adverbial	departed	state-of-being	oblique	from having been	∅					
+	adverbial	associated	state-of-being	oblique	as a	∅					
+	adverbial	acquired	state-of-being	oblique	in order to be	∅					
+	adverbial	approached	state-of-being	oblique	towards being	∅					
+	adverbial	surpassed	state-of-being	oblique	beyond being	∅					
+	adverbial	leveraged	state-of-being	oblique	due to being	∅					
+	adverbial	departed	topic	oblique	[off the topic of]	∅					
+	adverbial	associated	topic	oblique	[regarding]	∅					
+	adverbial	acquired	topic	oblique	[pursuant to]	∅					
+	adverbial	approached	topic	oblique	towards [the topic of]	∅					
+	adverbial	surpassed	topic	oblique	beyond [the topic of]	∅					
+	adverbial	leveraged	topic	oblique	by using [the topic of]	∅					
+	adverbial	associated	resemblance	oblique	like	∅					
+	adverbial	departed	company	oblique	leaving [the company of]	∅	#				
+	adverbial	associated	company	oblique	with	∅	#				
+	adverbial	acquired	company	oblique	joining [the company of]	∅	#				
+											
+#	subjectivity	motion	role								
+#	subject	departed	[see above]								
+#	direct-object	associated									
+#	indirect-object	acquired									
+#	adverbial	approached									
+#		surpassed									
+#		leveraged									
+#											
+#											
+#											
+#											

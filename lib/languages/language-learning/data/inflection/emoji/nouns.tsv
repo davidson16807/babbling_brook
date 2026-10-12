@@ -1,0 +1,167 @@
+*	*	emoji	#		this file represents nouns that can be considered in isolation
+Apollo		\group{\nx{👨\cx}\rhi{☀️}}	#	attic-greek	
+Ares		\group{\nx{👨}\rhi{♂}}	#	attic-greek	
+Clio		\nx{🧑‍🏫}	#	attic-greek	
+Demeter		\nx{👸\cx}	#	attic-greek	
+English		\group{lhi{🇬🇧}\nx{🧑\gx\cx}}	#	old-english	
+Greek		\group{\lhi{🇬🇷}\nx{🧍\cx\gx}}	#	attic-greek	
+Oedipus		\nx{🤴\cx}	#	attic-greek	
+Pericles		\nx{🤴\cx}	#	attic-greek	
+Socrates		\group{\nx{🧔‍♂️}\rlo{📔}}	#	attic-greek	
+Thales		\group{\nx{🧔‍♂️}\rhi{◴}}	#	attic-greek	
+Titan		\large{\nx{🏋️\cx\gx}}🧍	#	attic-greek	
+Zeus		\group{\nx{🧔‍♂️}\rhi{⚡}}	#	attic-greek	
+air        		\nx{💨}	#	latin	
+animal     		\nx{🐃}	#	needed for templates	
+arrow		\nx{🏹}	#	attic-greek	
+atom       		\nx{<span style='filter: invert() brightness(10) opacity(0.5);'>⚛️</span>}	#	latin	
+axe		\nx{🪓}	#	attic-greek	
+bathhouse		\nx{🛀}	#	russian	
+bird		\nx{🐦}	#		
+boat		\nx{⛵}	#	conjugation templates	
+bolt		\group{\hi{\nx{🔩}}}	#	latin	
+bone		\nx{🦴}	#	attic-greek	
+book		\nx{📕}	#	conjugation templates	
+boy        		\nx{🧒\gx\cx}	#	common	
+brother		\nx{🧒\gx\cx}	#	common	
+bug		\nx{🐞}	#	needed for templates	
+building		\nx{🏢}	#	russian	
+bystander		\nx{🧍\cx}	#	old-english	
+car		\nx{🚗}	#	conjugation templates	
+chaff		\nx{→🌾}	#	attic-greek	
+child		\nx{🧒\gx\cx}	#	common	
+circumnavigation		\group{\lmid{\nx{↺}}🌍}	#	attic-greek	
+city		\nx{🏙️}	#	attic-greek	
+clothing		\nx{👕}	#	conjugation templates	
+cloud		\nx{☁️}	#	proto-indo-european	
+comet      		\group{\hi{\nx{☄️}}}	#	latin	
+comment		\nx{🗨️}	#		
+cow		\nx{🐃}	#	needed for templates	
+crow		\nx{<span style='filter: grayscale(100%) brightness(70%)'>🐦</span>}	#	attic-greek	
+daughter		\nx{🧒\gx\cx}	#	needed for templates	
+day		\nx{🏙️}	#	latin	
+deer		\nx{🦌}	#		
+dog		\nx{🐕}	#	old-english, attic-greek	
+drum		\nx{🪘}	#	conjugation templates	
+ear		\nx{👂}	#	attic-greek	
+echo       		\mirror{🔊}	#	latin	
+egg		\nx{🍳}	#	proto-indo-european	
+enemy		\nx{🦹}	#	conjugation templates	
+eruption		\nx{🌋}	#	latin	
+eye		\nx{👁️}	#	old-english	
+father		\nx{👨‍🍼}	#	common	
+fight		\nx{🤼}	#	proto-indo-european	
+fire		\nx{🔥}	#	attic-greek	
+fish		\nx{🐟}	#	attic-greek	
+food		\nx{🍲}	#	conjugation templates	
+foundation 		<span style='clip-path: inset(60% 0% 0% 0% ); display:inline-flex; transform: translate(0,-0.5em);'>🏛️</span>	#	latin, attic-greek	
+friend		\nx{🙋\3}	#	old-english	
+ghost		\nx{👻}	#	conjugation templates	
+giant		\large{\nx{🧍\cx\gx}}🧍	#	attic-greek	
+gift		\nx{🎁}	#	old-english, attic-greek	
+gift		\nx{🎁}	#		
+girl		\nx{🧒\gx\cx}	#	common	
+goose		\nx{🪿}	#	old-english	
+guard		\nx{💂\cx\gx}	#	conjugation templates	
+guide		←\nx{🚶\cx\gx}🚶	#	attic-greek	
+hand       	singular	\nx{🖐️}	#	latin, old-english, attic-greek	
+hand       	dual	👐	#	latin, old-english, attic-greek	
+hand       	plural	\nx{🖐️}	#	latin, old-english, attic-greek	
+hero		\nx{🦸\cx\gx}	#	attic-greek	
+horn       		\nx{📯}	#	latin	
+horse		\nx{🐎}	#	conjugation templates	
+house		\nx{🏠}	#	old-english	
+ichor		\group{🧔‍♂️\rhi{⚡}\rlo{\nx{🩸}}}	#	attic-greek	
+idea		\nx{💭}	#	conjugation templates	
+job		\nx{💼}	#		
+knee		\nx{↗🦵}	#	attic-greek	
+lake		\nx{🏞️}	#		
+lamb		\nx{🐑}	#	old-english	
+light		\nx{🕯️}	#	old-english	
+light-ray	singular	←🕯️	#	attic-greek	
+light-ray	dual	⥢🕯️	#	attic-greek	
+light-ray	plural	⬱🕯️	#	attic-greek	
+line		\nx{📉}	#	russian	
+liver		\nx{🥩}	#	attic-greek	
+livestock	singular	\nx{🐄}	#	needed for templates	
+livestock	dual	\nx{🐄}	#	needed for templates	
+livestock	plural	🐄🐖🐓	#	needed for templates	
+love		\nx{❤️}	#		
+man		\nx{🧍\cx\gx}	#	needed for templates	
+mare		\nx{🐎}	#	proto-indo-european	
+master		\nx{🫅\gx\cx}	#	attic-greek	
+meadow		\nx{🏞️}	#	old-english	
+money		\nx{🪙}	#		
+monster		\nx{🐉}	#	conjugation templates	
+mouse		\nx{🐁}	#		
+moon		\nx{🌙}	#	old-english	
+mother		\nx{👩‍🍼}	#	common	
+movie		\nx{🎞️}	#	russian	
+myth       		\nx{\group{🐉\rlo{🧙\cx\m}}}	#	latin	
+name       		\nx{📛}	#	needed for templates	
+neighbor		🏠\nx{🧍\cx\gx}🧍🏠	#	attic-greek	
+night		\nx{🌃}	#	latin	
+nut		\nx{🌰}	#	old-english	
+nymph      		\nx{🧜\cx\f}	#	latin	
+oak		\nx{🌳}	#	attic-greek	
+oath		\nx{💬}	#	conjugation templates	
+old-man		\nx{👴}	#	attic-greek	
+old-woman		\nx{👵}	#	attic-greek	
+orator		\group{\nx{🧍\cx\gx}\hi{💬}}	#	attic-greek	
+person		\nx{🧍\cx}	#	old-english, attic-greek	
+picture		\nx{🖼️}	#	conjugation templates	
+pig		\nx{🐖}	#	proto-indo-european	
+piglet		\nx{🐷}	#	old-english	
+place		\nx{🏝️}	#	russian	
+polity		\nx{🗾}	#	attic-greek	
+property		\nx{🏡}	#	attic-greek	
+raid		\nx{\group{\hi{🤼}\lo{🤼}}}	#	old-english	
+rock		\nx{🪨}	#	conjugation templates	
+rope		\nx{🪢}	#	conjugation templates	
+rug		\nx{🇹🇲}	#	attic-greek	
+sailor     		\group{\inlhi{⛵}\nx{🧍\cx\gx}}	#	latin	
+sea		\nx{🌊}	#	proto-indo-european	
+seed		\nx{🌰}	#	proto-indo-european	
+shadow		\nx{🌃}	#	old-english	
+shame		\nx{🫠}	#	attic-greek	
+shepherd		\group{\nx{🧍\cx\gx}\lo{🐑}}	#	attic-greek	
+ship		\nx{⛵}	#	attic-greek	
+shirt		\nx{👕}	#	conjugation templates	
+shoe		\nx{🥾}	#	old-english	
+sister		\nx{🧒\gx\cx}	#	common	
+size		📏	#		
+sky		\nx{🌅}	#		
+snake		\nx{🐍}	#	needed for pronouns	
+soldier		\group{\llo{\flip{🗡️}}\nx{👨\cx}}	#	attic-greek	
+son        		\nx{🧒\gx\cx}	#	needed for templates	
+sound		\mirror{🔊}	#		
+star       		\group{\hi{\nx{⭐}}}	#	latin	
+stone		\nx{🪨}	#	proto-indo-european	
+stranger		\nx{👳}	#	proto-indo-european	
+street		\nx{🛣️}	#	attic-greek	
+sun		\nx{☀️}	#	old-english	
+time		\nx{⌛}	#	old-english	
+tipstaff		\nx{🦯}	#	attic-greek	
+tree		\nx{🌳}	#		
+tooth		\nx{🦷}	#	attic-greek	
+tower      		\nx{🏰}	#	latin	
+town		\nx{🏘️}	#	attic-greek	
+victory		\nx{✌️}	#		
+village		\nx{🛖}	#	attic-greek	
+vine       		\nx{\group{🌿\rmid{🍇}}}	#	latin	
+vulture		\nx{🦅}	#	attic-greek	
+war        		\nx{\group{\hi{🤼}\mid{🤼}\lo{🤼}}}	#	latin	
+warmth		\nx{♨️}	#	needed for templates	
+water		\nx{🌊}	#	proto-indo-european	
+water		\nx{🌊}	#	attic-greek	
+way		\nx{🛣️}	#		
+wind		\nx{💨}	#	conjugation templates	
+window		\nx{🪟}	#	conjugation templates	
+winter		\nx{☃️}	#	attic-greek	
+writer		📝\nx{🧑‍💼}	#		
+wolf		\nx{🐺}	#	proto-indo-european	
+woman		\nx{🧍\cx\gx}	#	needed for templates	
+wood		\nx{🪵}	#	attic-greek	
+work		\nx{💼}	#	conjugation templates	
+young-man		\nx{👨\cx}	#	attic-greek	
+∅		∅	#		

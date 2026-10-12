@@ -1,0 +1,58 @@
+*	*	*	*	personal-possessive
+*	*	*	*	
+1-possessor	singular-possessor		masculine-possessor	my♂
+1-possessor	singular-possessor		feminine-possessor	my♀
+1-possessor	singular-possessor		neuter-possessor	my
+2-possessor	singular-possessor	familiar-possessor	masculine-possessor	your♂
+2-possessor	singular-possessor	familiar-possessor	feminine-possessor	your♀
+2-possessor	singular-possessor	familiar-possessor	neuter-possessor	your
+2-possessor	singular-possessor	polite-possessor	masculine-possessor	[politely] your♂
+2-possessor	singular-possessor	polite-possessor	feminine-possessor	[politely] your♀
+2-possessor	singular-possessor	polite-possessor	neuter-possessor	[politely] your
+2-possessor	singular-possessor	elevated-possessor	masculine-possessor	[elevated] your♂
+2-possessor	singular-possessor	elevated-possessor	feminine-possessor	[elevated] your♀
+2-possessor	singular-possessor	elevated-possessor	neuter-possessor	[elevated] your
+2-possessor	singular-possessor	formal-possessor	masculine-possessor	[sir] your♂
+2-possessor	singular-possessor	formal-possessor	feminine-possessor	[ma'am] your♀
+2-possessor	singular-possessor	formal-possessor	neuter-possessor	[respectfully] your
+2-possessor	singular-possessor	tuteo-possessor		your♀
+2-possessor	singular-possessor	voseo-possessor		your [voseo]
+3-possessor	singular-possessor		masculine-possessor	his
+3-possessor	singular-possessor		feminine-possessor	her
+3-possessor	singular-possessor		neuter-possessor	its
+1-possessor	dual-possessor		masculine-possessor	both of our♂
+1-possessor	dual-possessor		feminine-possessor	both of our♀
+1-possessor	dual-possessor		neuter-possessor	both of our
+2-possessor	dual-possessor	familiar-possessor	masculine-possessor	both of your♂
+2-possessor	dual-possessor	familiar-possessor	feminine-possessor	both of your♀
+2-possessor	dual-possessor	familiar-possessor	neuter-possessor	both of your
+2-possessor	dual-possessor	polite-possessor	masculine-possessor	[politely] both of your♂
+2-possessor	dual-possessor	polite-possessor	feminine-possessor	[politely] both of your♀
+2-possessor	dual-possessor	polite-possessor	neuter-possessor	[politely] both of your
+2-possessor	dual-possessor	elevated-possessor	masculine-possessor	[elevated] both of your♂
+2-possessor	dual-possessor	elevated-possessor	feminine-possessor	[elevated] both of your♀
+2-possessor	dual-possessor	elevated-possessor	neuter-possessor	[elevated] both of your
+2-possessor	dual-possessor	formal-possessor	masculine-possessor	both of your [gentlemen]
+2-possessor	dual-possessor	formal-possessor	feminine-possessor	both of your [ladies]
+2-possessor	dual-possessor	formal-possessor	neuter-possessor	both of your [respectfully]
+3-possessor	dual-possessor		masculine-possessor	both of their
+3-possessor	dual-possessor		feminine-possessor	both of their
+3-possessor	dual-possessor		neuter-possessor	both of their
+1-possessor	plural-possessor		masculine-possessor	all of our♂
+1-possessor	plural-possessor		feminine-possessor	all of our♀
+1-possessor	plural-possessor		neuter-possessor	all of our
+2-possessor	plural-possessor	familiar-possessor	masculine-possessor	all of your♂
+2-possessor	plural-possessor	familiar-possessor	feminine-possessor	all of your♀
+2-possessor	plural-possessor	familiar-possessor	neuter-possessor	all of your
+2-possessor	plural-possessor	polite-possessor	masculine-possessor	[politely] all of your♂
+2-possessor	plural-possessor	polite-possessor	feminine-possessor	[politely] all of your♀
+2-possessor	plural-possessor	polite-possessor	neuter-possessor	[politely] all of your
+2-possessor	plural-possessor	elevated-possessor	masculine-possessor	[elevated] all of your♂
+2-possessor	plural-possessor	elevated-possessor	feminine-possessor	[elevated] all of your♀
+2-possessor	plural-possessor	elevated-possessor	neuter-possessor	[elevated] all of your
+2-possessor	plural-possessor	formal-possessor	masculine-possessor	all of your [gentlemen]
+2-possessor	plural-possessor	formal-possessor	feminine-possessor	all of your [ladies]
+2-possessor	plural-possessor	formal-possessor	neuter-possessor	all of your [respectfully]
+3-possessor	plural-possessor		masculine-possessor	their♂
+3-possessor	plural-possessor		feminine-possessor	their♀
+3-possessor	plural-possessor		neuter-possessor	their

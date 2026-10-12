@@ -1,0 +1,275 @@
+#	subjectivity	verb	voice	valency	dummy-motion	dummy-role	dummy-subjectivity	dummy-definiteness	dummy-noun	#		noun	usages	classification
+	subject	act	active	transitive	associated-dummy	predicate-dummy	direct-object-dummy	adefinite-dummy	strong-dummy	#		attention	something that can be directed at arbitrary things	
+	subject	advise	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#	son	big	something you are inherently	
+	subject	advise	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#		bird	something that can fly	
+	subject	advise	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#		boat	floats and sinks, steered	
+	subject	arrive	active	transitive	acquired-dummy	location-dummy	adverbial-dummy	definite-dummy	house-dummy	#		book	read and written	
+	subject	ask	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#		bug	something that can fly and treat most objects as surfaces in relatively good taste	
+	subject	ask	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#	shirt	clothing	cleaned, changed, worn, chosen, preferred	
+	subject	ask	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#		dog	something that can be loved generically and in good taste	
+	subject	bake	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	food-dummy	#		drum	beaten in good taste and makes noise	
+#	subject	be-able	active						to work-dummy	#		enemy	captures men and is captured	
+#	subject	be-red	active	intransitive						#		fire	warms most objects	
+	subject	be[inherently]	active	transitive	associated-dummy	predicate-dummy	direct-object-dummy	adefinite-dummy	big-dummy	#		food	eaten by any animal, cooked	
+	subject	be[momentarily]	active	transitive	associated-dummy	predicate-dummy	direct-object-dummy	adefinite-dummy	strong-dummy	#		gift	given and taken	
+	subject	beat	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	drum-dummy	#		guard	captures and releases men	
+	subject	beat	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#		horse	something directed or tamed	
+	subject	beat	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#	place	house	location, interior, property	
+	subject	become	active	transitive	associated-dummy	predicate-dummy	direct-object-dummy	adefinite-dummy	strong-dummy	#		love	something that motivates and alters men in good taste	
+#	subject	become cold	active	intransitive						#		idea	thought and taught	
+	subject	burn	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	food-dummy	#		man	capable of virtually everything that requires agency and sapience	
+	subject	burn	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	fire-dummy	#		money	something that is exchanged and has value	
+	subject	burn	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	fire-dummy	#		monster	eats men in relatively (fanciful) good taste 	
+	subject	call	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#		name	spoken	
+	subject	call	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#		rock	carried by men, hit or thrown in good taste	
+	subject	call	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#		rope	can be deformed	
+	subject	capture	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	enemy-dummy	#		strong	something you can be momentarily	
+	subject	capture	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#		warmth	passes through most objects, without or without interiors	
+	subject	capture	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#		water	drunk, swum in, cools most objects	
+	subject	carry	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	rock-dummy	#	well	way	shown	
+	subject	carry	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	wind-dummy	#		wind	carries men, flown in	
+	subject	carry	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	wind-dummy	#		work	something that can be done	
+	subject	catch	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	enemy-dummy	#	door	window	closed, opened, and broken in good taste	
+	subject	catch	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	catch	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	choose 	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	clothing-dummy	#				
+	subject	choose 	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	choose 	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	climb	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	rock-dummy	#				
+	subject	close	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	window-dummy	#				
+	subject	convey	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	idea-dummy	#				
+	subject	convey	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	wind-dummy	#				
+	subject	convey	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	wind-dummy	#				
+	subject	cool	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	fire-dummy	#				
+	subject	cool	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	water-dummy	#				
+	subject	cool	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	water-dummy	#				
+	subject	dance	active	intransitive	associated-dummy	company-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	do	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	work-dummy	#				
+	subject	do	middle	intransitive	associated-dummy	company-dummy	adverbial-dummy	definite-dummy	work-dummy	#				
+	subject	do	passive	intransitive	associated-dummy	company-dummy	adverbial-dummy	definite-dummy	work-dummy	#				
+	subject	draw	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	draw	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	draw	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	drink	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	water-dummy	#				
+	subject	drive	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	boat-dummy	#				
+	subject	drive	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	love-dummy	#				
+	subject	drive	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	love-dummy	#				
+	subject	fear	active	transitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	monster-dummy	#				
+	subject	fear	middle	intransitive	associated-dummy	experiencer-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	fear	passive	intransitive	associated-dummy	experiencer-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	feed	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	dog-dummy	#				
+	subject	feed	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	feed	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	find	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	book-dummy	#				
+	subject	find	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	find	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	forgive	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	forgive	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	forgive	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	give	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	gift-dummy	#				
+	subject	give	middle	intransitive	acquired-dummy	location-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	give	passive	intransitive	acquired-dummy	location-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	have [in possession]	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	money-dummy	#				
+	subject	go	active	intransitive	acquired-dummy	location-dummy	adverbial-dummy	definite-dummy	house-dummy	#				
+	subject	go	middle	intransitive	departed-dummy	location-dummy	adverbial-dummy	definite-dummy	house-dummy	#				
+	subject	go	passive	intransitive	departed-dummy	location-dummy	adverbial-dummy	definite-dummy	house-dummy	#				
+	subject	hear	active	transitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	drum-dummy	#				
+#	subject	hear	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+#	subject	hear	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	hit	active	transitive	associated-dummy	patient-dummy	adverbial-dummy	definite-dummy	drum-dummy	#				
+	subject	hit	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	rock-dummy	#				
+	subject	hit	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	rock-dummy	#				
+	subject	hold	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	rock-dummy	#				
+	subject	hold	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	hold	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	know	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	know	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	know	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	lead	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	horse-dummy	#				
+	subject	lead	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	lead	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	leave	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	house-dummy	#				
+	subject	leave	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	leave	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	live	active	transitive	associated-dummy	location-dummy	direct-object-dummy	definite-dummy	house-dummy	#				
+	subject	lose   	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	money-dummy	#				
+	subject	lose   	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	lose   	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	love	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	dog-dummy	#				
+	subject	love	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	dog-dummy	#				
+	subject	love	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	dog-dummy	#				
+#	subject	may	active			theme-dummy			ride bike to school-dummy	#				
+	subject	move	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	rock-dummy	#				
+	subject	move	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	move	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	part	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	water-dummy	#				
+	subject	pass for	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	guard-dummy	#				
+	subject	pay	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	money-dummy	#				
+	subject	pay	middle	intransitive	associated-dummy	theme-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	pay	passive	intransitive	associated-dummy	theme-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	point-out	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	way-dummy	#				
+	subject	point-out	middle	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	guard-dummy	#				
+	subject	point-out	passive	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	guard-dummy	#				
+	subject	pour	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	water-dummy	#				
+	subject	protect	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	protect	middle	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	guard-dummy	#				
+	subject	protect	passive	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	guard-dummy	#				
+	subject	push	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	rock-dummy	#				
+	subject	push	middle	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	guard-dummy	#				
+	subject	push	passive	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	guard-dummy	#				
+	subject	read	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	book-dummy	#				
+	subject	read	middle	intransitive	associated-dummy	resemblance-dummy	direct-object-dummy	definite-dummy	book-dummy	#				
+	subject	read	passive	intransitive	associated-dummy	resemblance-dummy	direct-object-dummy	definite-dummy	book-dummy	#				
+	subject	receive	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	gift-dummy	#				
+#	subject	release	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+#	subject	release	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	release	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	dog-dummy	#				
+	subject	renew	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	love-dummy	#				
+	subject	renew	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	love-dummy	#				
+	subject	renew	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	love-dummy	#				
+	subject	return	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	book-dummy	#				
+	subject	return	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	return	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	row	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	boat-dummy	#				
+	subject	say	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	name-dummy	#				
+#	subject	set-down	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	wind-dummy	#				
+#	subject	set-down	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	wind-dummy	#				
+	subject	set-down	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	rock-dummy	#				
+	subject	sew	active	transitive	associated-dummy	patient-dummy	adverbial-dummy	definite-dummy	clothing-dummy	#				
+#	subject	sew	middle	intransitive	associated-dummy	patient-dummy	adverbial-dummy	definite-dummy	clothing-dummy	#				
+#	subject	sew	passive	intransitive	associated-dummy	patient-dummy	adverbial-dummy	definite-dummy	clothing-dummy	#				
+	subject	share	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	food-dummy	#				
+	subject	sink	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	boat-dummy	#				
+	subject	sink	middle	intransitive	associated-dummy	resemblance-dummy	adverbial-dummy	definite-dummy	boat-dummy	#				
+	subject	sink	passive	intransitive	associated-dummy	resemblance-dummy	adverbial-dummy	definite-dummy	boat-dummy	#				
+	subject	sit	active	intransitive	associated-dummy	location-dummy	adverbial-dummy	definite-dummy	window-dummy	#				
+	subject	sit	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	sit	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	speak  	active	transitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	name-dummy	#				
+	subject	spit	active	intransitive	associated-dummy	vicinity-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	startle	active	intransitive	associated-dummy	experiencer-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	startle	middle	intransitive	associated-dummy	stimulus-dummy	adverbial-dummy	definite-dummy	monster-dummy	#				
+	subject	startle	passive	intransitive	associated-dummy	stimulus-dummy	adverbial-dummy	definite-dummy	monster-dummy	#				
+	subject	steal	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	money-dummy	#				
+	subject	steal	middle	intransitive	acquired-dummy	location-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	steal	passive	intransitive	acquired-dummy	location-dummy	adverbial-dummy	definite-dummy	enemy-dummy	#				
+	subject	stretch	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	rope-dummy	#				
+	subject	stretch	middle	intransitive	associated-dummy	stimulus-dummy	adverbial-dummy	definite-dummy	rope-dummy	#				
+	subject	stretch	passive	intransitive	associated-dummy	stimulus-dummy	adverbial-dummy	definite-dummy	rope-dummy	#				
+	subject	strike	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	rock-dummy	#				
+	subject	strike	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	rock-dummy	#				
+	subject	strike	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	rock-dummy	#				
+	subject	sweep	middle	intransitive	associated-dummy	patient-dummy	adverbial-dummy	definite-dummy	house-dummy	#				
+	subject	sweep	passive	intransitive	associated-dummy	patient-dummy	adverbial-dummy	definite-dummy	house-dummy	#				
+	subject	tame	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	horse-dummy	#				
+	subject	tame	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	love-dummy	#				
+	subject	tame	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	love-dummy	#				
+	subject	teach	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	teach	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	teach	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	think	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	idea-dummy	#				
+	subject	want	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	money-dummy	#				
+	subject	want	middle	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	want	passive	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	want-to-see	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	house-dummy	#				
+	subject	want-to-see	middle	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	want-to-see	passive	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	wash	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	clothing-dummy	#				
+	subject	wash	middle	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	water-dummy	#				
+	subject	wash	passive	intransitive	associated-dummy	force-dummy	adverbial-dummy	definite-dummy	water-dummy	#				
+	subject	wind	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	rope-dummy	#				
+	subject	wind	middle	intransitive	associated-dummy	resemblance-dummy	adverbial-dummy	definite-dummy	rope-dummy	#				
+	subject	wind	passive	intransitive	associated-dummy	resemblance-dummy	adverbial-dummy	definite-dummy	rope-dummy	#				
+	subject	work	active	transitive	associated-dummy	company-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	write	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	book-dummy	#				
+	adverbial	swim	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	fly	active	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	bird-dummy	#				
+	adverbial	flow	active	intransitive	associated-dummy	force-dummy	subject-dummy	definite-dummy	warmth-dummy	#				
+	adverbial	rest	active	intransitive	associated-dummy	theme-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	walk	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	crawl	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	bug-dummy	#				
+	adverbial	direct	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	resemble	active	intransitive	associated-dummy	theme-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	work	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	eat	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	endure	active	intransitive	associated-dummy	patient-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	warm	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	cool	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	fall	active	intransitive	associated-dummy	theme-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	change	active	intransitive	associated-dummy	patient-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	occupy	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	show	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	see	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	watch	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	startle	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	displease	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	appear	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adverbial	be	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	adnominal	see	active	intransitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	size-dummy	#				
+	adnominal	hear	active	intransitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	sound-dummy	#				
+	adnominal	consider	active	intransitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	thought-dummy	#				
+	direct-object	swim	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	fly	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	bird-dummy	#				
+	direct-object	flow	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	rest	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	walk	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	crawl	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	bug-dummy	#				
+	direct-object	rest	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	direct	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	work	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	resemble	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	eat	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	endure	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	warm	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	fire-dummy	#				
+	direct-object	cool	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	water-dummy	#				
+	direct-object	fall	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	change	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	occupy	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	show	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	see	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	watch	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	startle	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	displease	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	appear	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	direct-object	be	active	transitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				
+	subject	swim	active	transitive	associated-dummy	medium-dummy	adverbial-dummy	definite-dummy	water-dummy	#				
+	subject	fly	active	transitive	associated-dummy	company-dummy	adverbial-dummy	definite-dummy	bird-dummy	#				
+	subject	fly	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	bird-dummy	#				
+	subject	fly	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	bird-dummy	#				
+	subject	flow	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	rest	active	intransitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+#	subject	rest	middle	intransitive			adverbial-dummy	definite-dummy		#				
+#	subject	rest	passive	intransitive			adverbial-dummy	definite-dummy		#				
+	subject	walk	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	crawl	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	direct	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	attention-dummy	#				
+	subject	direct	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	direct	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	resemble	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	eat	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	food-dummy	#				
+	subject	eat	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	monster-dummy	#				
+	subject	eat	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	monster-dummy	#				
+	subject	endure	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	warm	active	transitive	associated-dummy	patient-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	warm	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	fire-dummy	#				
+	subject	warm	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	fire-dummy	#				
+	subject	fall	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	change	active	transitive	associated-dummy	agent-dummy	direct-object-dummy	definite-dummy	clothing-dummy	#				
+	subject	change	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	adefinite-dummy	love-dummy	#				
+	subject	change	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	adefinite-dummy	love-dummy	#				
+	subject	occupy	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	occupy	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	work-dummy	#				
+	subject	occupy	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	work-dummy	#				
+	subject	show	active	transitive	associated-dummy	theme-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	see	active	transitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	see	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	see	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	watch	active	transitive	associated-dummy	stimulus-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	watch	middle	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	watch	passive	intransitive	associated-dummy	agent-dummy	adverbial-dummy	definite-dummy	guard-dummy	#				
+	subject	displease	active	transitive	associated-dummy	experiencer-dummy	direct-object-dummy	definite-dummy	man-dummy	#				
+	subject	displease	middle	intransitive	associated-dummy	stimulus-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	displease	passive	intransitive	associated-dummy	stimulus-dummy	adverbial-dummy	definite-dummy	man-dummy	#				
+	subject	appear	active	intransitive	acquired-dummy	experiencer-dummy	adverbial-dummy	definite-dummy	∅-dummy	#				
+	subject	be	active	transitive	associated-dummy	predicate-dummy	direct-object-dummy	adefinite-dummy	strong-dummy	#				
+	addressee	∅	active	intransitive	associated-dummy	agent-dummy	subject-dummy	definite-dummy	man-dummy	#				

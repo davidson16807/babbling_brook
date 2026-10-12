@@ -1,0 +1,14 @@
+#	template	verb	emoji		this file represents verbs that can be considered in isolation
+	sapient	eat	\subject🥘		
+	carnivore	eat	\subject🍖		
+	herbivore	eat	\subject🌾		
+	granivore	eat	\subject🌰		
+	fruitivore	eat	\subject🍇		
+	nectarivore	eat	\subject🌺		
+	pescavore	eat	\subject🐟		
+	insectivore	eat	\subject🦗		
+		warm	\subject🔥		
+		cool	\subject🧊		
+		displease	\subject <sup>💢</sup>		
+		appear	⚞\subject⚟		
+		be	\subject = 		

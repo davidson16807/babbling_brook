@@ -1,0 +1,28 @@
+*	*	*	*	*	*	*	*	*	aspect	preverb	postverb	#
+#	duration	progress	consistency	ordinality	persistance	recency	trajectory	distribution				#
+		atomic							simple	∅	∅	#
+		atelic							simple	∅	∅	#
+		started							imperfective	∅	∅	#
+		unfinished							imperfective	∅	∅	#
+		attempted							imperfective	∅	∅	#
+		transitioning							imperfective	∅	∅	#
+		paused							imperfective	∅	∅	#
+		arrested							imperfective	∅	∅	#
+		resumed							imperfective	∅	∅	#
+		continued							imperfective	∅	∅	#
+		finished							perfective	∅	∅	#
+#												#
+#	D	P	C	S	P	R	MD1	MD2				#
+#	duration	progress	consistency	ordinality	persistance	recency	trajectory	distribution				#
+#												#
+#	brief	atomic	momentary	nonordinal	static	recent	rectilinear	centralized				#
+#	protracted	atelic	experiential	ordinal	impermanent	nonrecent	reversing	decentralized				#
+#	indefinite	started	habitual		persistant	arecent	returning	undistributed				#
+#		unfinished	customary				undirected					#
+#		attempted	frequent				unmoving					#
+#		transitioning	incessant				adirected					#
+#		paused										#
+#		arrested										#
+#		resumed										#
+#		continued										#
+#		finished										#

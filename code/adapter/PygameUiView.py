@@ -91,6 +91,32 @@ class PygameUiView:
         if self.batch is not None:
             self.program.draw(viewport, *self.batch)
 
+    def draw_boxes(self, viewport, boxes):
+        """Draw caller-positioned UiBoxes without knowing dialog state."""
+        key = (tuple(viewport), tuple(boxes))
+        if key != self.cache_key:
+            surface = pygame.Surface(viewport, pygame.SRCALPHA)
+            surface.fill((0, 0, 0, 0))
+            for box in boxes:
+                rect = pygame.Rect(box.rect)
+                style = box.style
+                pygame.draw.rect(surface, style.background, rect)
+                if style.border_width:
+                    pygame.draw.rect(surface, style.border, rect, style.border_width)
+                if box.text:
+                    font = self._font(style.font_size)
+                    # Fit labels without letting them overlap adjacent controls.
+                    while font.size(box.text)[0] > rect.width-12 and font.get_height() > 13:
+                        font = self._font(max(12, font.get_height()-1))
+                    text = font.render(box.text, True, style.text_color)
+                    surface.set_clip(rect.inflate(-8, 0))
+                    surface.blit(text, text.get_rect(center=rect.center))
+                    surface.set_clip(None)
+            self.batch = ('boxes', viewport, pygame.image.tobytes(surface, 'RGBA', True),
+                          (glm.vec4(0, 0, *viewport),), (glm.vec4(0, 0, 1, 1),))
+            self.cache_key = key
+        self.program.draw(viewport, *self.batch)
+
     def release(self):
         self.fonts.clear()
         self.program.release()

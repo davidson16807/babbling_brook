@@ -1,0 +1,68 @@
+*	*	*	organization	sapient	carnivore	herbivore	fruitivore	granivore	pescavore	seacreature	plant	bodypart	bodyfluid	viscera	food	item	fixture	liquid	gas	event	location	side	surface	interior	heat-source	visible	audible	vice	virtue	size	quality	quantity	manner	reason	concept	#						
+# example:			army	man	monster/dog	horse	monkey	squirrel	bear	fish	tree	hand	blood	heart	food	rope	table	water	air	day	house	house	house	house	fire	fire	drum	war	peace	big	blue	3	how	why	idea	#						
+# frequency:			1	47						1	2	5		2	6	14		2	2	10	4		3	10		12	4	2							6	#					woman	
+stimulus	addressee	intransitive	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	∅	#						
+possessor	adnominal	intransitive	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	hear	consider	consider	consider	consider	consider	consider	consider	consider	#						
+location	adverbial	intransitive		walk	walk	walk	walk	walk	walk	swim	walk	walk	walk	walk	walk	walk	walk	swim		walk	walk	walk	walk	walk												#					animal	
+extent	adverbial	intransitive		walk	walk	walk	walk	walk	walk	swim	walk	walk	walk	walk	walk	walk	walk	swim		walk	walk	walk	walk	walk												#						
+vicinity	adverbial	intransitive		walk	walk	walk	walk	walk	walk	swim	walk	walk	walk	walk	walk	walk	walk	swim		walk	walk	walk	walk	walk												#					arrow	
+side	adverbial	intransitive		rest	rest	rest	rest	rest	rest	rest	rest	rest	rest	rest	rest	rest	rest			rest	rest	rest	rest	rest	warm											#	man	swim	∅		fire	
+interior	adverbial	intransitive		flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	rest	rest	rest	rest	walk	warm											#	bird	fly	∅		ice	
+medium	adverbial	intransitive		flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	swim	fly						warm											#	treasure	rest	∅		food	
+subsurface	adverbial	intransitive		flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	flow	rest	fly	rest	rest	rest	rest	rest												#	man	walk	∅		"bird	"	
+surface	adverbial	intransitive		crawl	crawl	crawl	crawl	crawl	crawl	crawl	crawl	crawl	crawl	crawl	crawl	crawl	crawl	float	fly		walk	walk	walk	walk												#	man	rest	∅		bird	
+presence	adverbial	intransitive		work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	#	arrow	"rest	"	∅		place	
+aid	adverbial	intransitive		work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	#	man	direct	attention			
+lack	adverbial	intransitive		work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	#	man	work	∅		son	
+interest	adverbial	intransitive		work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	#	man	resemble	∅		daughter	
+purpose	adverbial	intransitive		work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	#	man	eat	food		livestock	
+time	adverbial	intransitive																		work																#	man	endure	fire		name	
+state-of-being	adverbial	intransitive		work	work	work	work	work	work	work																										#	fire	warm	man		amount	
+company	adverbial	intransitive		work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work	work										#	ice	cool	man		size	
+topic	adverbial	intransitive																																		#	man	fall	∅		noise	
+possession	adverbial	intransitive		come																																#	man	change	∅			
+resemblance	adverbial	intransitive		resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	resemble	#	man	occupy	place		good	
+location	adverbial	transitive																	direct						direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	#	man	show	∅		bad	
+extent	adverbial	transitive																	direct						direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	#	man	see	∅		big	
+vicinity	adverbial	transitive																	direct						direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	#	man	watch	∅		long	
+side	adverbial	transitive																																		#	man	startle	∅		well	
+interior	adverbial	transitive																																		#	man	displease	∅			
+medium	adverbial	transitive																																		#	man	appear	∅		his	
+subsurface	adverbial	transitive																							direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	#		be	good		attention	
+surface	adverbial	transitive																							direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	#		be	bad		thought	
+presence	adverbial	transitive																																		#		be	big			
+aid	adverbial	transitive																																		#		be	long		angry	
+lack	adverbial	transitive																																		#		be	loud		falling	
+interest	adverbial	transitive																																		#						
+purpose	adverbial	transitive																																		#					hello	
+time	adverbial	transitive																																		#						
+state-of-being	adverbial	transitive																																		#					the	
+company	adverbial	transitive																																		#						
+topic	adverbial	transitive		direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	direct	#					sound	
+possession	adverbial	transitive																																		#					size	
+resemblance	adverbial	transitive																																		#						
+agent	subject	transitive		eat	eat	eat	eat	eat	eat	eat																										#						
+agent	subject	intransitive		eat	eat	eat	eat	eat	eat	eat																										#						
+agent	direct-object	transitive		endure	endure	endure	endure	endure	endure	endure																										#						
+force	subject	transitive		warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	#						
+#force	subject	transitive		cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	#						
+force	subject	intransitive		fall	fall	fall	fall	fall	fall	fall	fall	fall	fall	fall	fall	fall	fall	fall	fall	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	inform	#						
+force	direct-object	transitive		endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure																	#						
+patient	subject	transitive	endure	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm											#						
+#patient	subject	transitive		cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool												#						
+patient	subject	intransitive			warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	change	change	change	change	change	change	change	change	change	change	change	change	change	change	change	#						
+#patient	subject	intransitive			cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	change	change	change	change	change	change	change	change	change	change	change	change	change	change	change	#						
+patient	direct-object	transitive		warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	warm	eat	warm	warm	warm	warm	warm	warm	warm	warm	warm											#						
+#patient	direct-object	transitive		cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool	cool												#						
+theme	subject	transitive	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy	occupy									#						
+theme	subject	intransitive		walk	walk	walk	walk	walk	walk	walk	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	endure	#						
+theme	direct-object	transitive		show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	show	#						
+stimulus	subject	transitive	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	displease	please	displease	displease	displease	displease	displease	displease	#						
+stimulus	subject	intransitive		appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	appear	#						
+stimulus	direct-object	transitive		see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	see	hear	feel	feel	consider	consider	consider	consider	consider	#						
+predicand	subject	transitive	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	#						
+predicand	subject	intransitive		be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	#						
+predicand	direct-object	transitive		be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	#						
+predicate	subject	transitive	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	#						
+predicate	subject	intransitive	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	#						
+predicate	direct-object	transitive		be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	be	#						

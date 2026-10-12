@@ -1,0 +1,86 @@
+*	*	*	*	*	*	mood	prephrase	postphrase	#	auxillary	example moods in other languages					
+#			evidentiality	confidence	polarity				#							
+			presumed			indicative	[presumably]	∅	#							
+			promised			indicative	[I vow]	∅	#		comissive					
+#			sensed			indicated	[I noticed that]	∅	#							
+			visual			indicative	[I saw that]	∅	#							
+#			auditory			indicative	[I heard it when]	∅	#							
+			nonvisual			indicative	[I sensed that]	∅	#							
+			secondhand			subjunctive	[I heard that]	∅	#		inferential					
+			thirdhand			subjunctive	[it is said that]	∅	#		inferential					
+#			established			indicative	[it is well known that]	∅	#							
+			circumstantial			indicative	[I suppose]	∅	#		presumptive					
+#			means			indicative	∅	∅	#	be able	presumptive					
+			motive			indicative	∅	∅	#	want	desiderative					
+			necessity			indicative	∅	∅	#	need						
+			conceded		affirmative	indicative	[I will grant that]	∅	#							
+			conceded		negative	indicative	[I will grant it's not the case that]	∅	#							
+			supposed		affirmative	subjunctive	[suppose that]	∅	#		subjunctive					
+			supposed		negative	subjunctive	[suppose it's not the case that]	∅	#		subjunctive					
+			proposed	confident	affirmative	indicative	∅	∅	#		indicative					
+			proposed	probable	affirmative	indicative	∅	∅	#	likely	potential					
+			proposed	possible	affirmative	indicative	[maybe]	∅	#		dubitative					
+			proposed	possible	negative	indicative	∅	∅	#	might						
+			proposed	probable	negative	indicative	[it's unlikely that]	∅	#		dubitative					
+			proposed	confident	negative	subjunctive	[it doesn't seem to be that]	∅	#		hypothetical					
+			antecedent	confident	affirmative	subjunctive	[since]	...	#							
+			antecedent	probable	affirmative	subjunctive	[in the likely event that]	[then]...	#							
+			antecedent	possible	affirmative	subjunctive	[if]	[then]...	#							
+			antecedent	possible	negative	subjunctive	[if]	[then]...	#							
+			antecedent	probable	negative	subjunctive	[even if]	[then]...	#							
+			antecedent	confident	negative	subjunctive	[if it's not the case that]	[then]...	#							
+			consequent	confident	affirmative	indicative	[if so, then]	∅	#		eventitive					
+			consequent	probable	affirmative	indicative	[if so, then it's likely]	∅	#	likely	eventitive					
+			consequent	possible	affirmative	indicative	[if so, then maybe]	∅	#		conditional					
+			consequent	possible	negative	indicative	[if so, then it may not be that]	∅	#							
+			consequent	probable	negative	indicative	[if so, then it's unlikely]	∅	#	might	conditional					
+			consequent	confident	negative	subjunctive	[if so, then it's not the case that]	∅	#							
+			deferred	confident	affirmative	indicative	[I intend]	∅	#		injunctive					
+			deferred	probable	affirmative	indicative	[I'm fine that]	∅	#		injunctive					
+			deferred	possible	affirmative	indicative	[I'm fine that]	∅	#		permissive					
+			deferred	possible	negative	indicative	[I'm fine if]	∅	#							
+			deferred	probable	negative	indicative	[I'm fine if]	∅	#		permissive					
+			deferred	confident	negative	subjunctive	[I don't intend]	∅	#		permissive					
+			deliberated		affirmative	subjunctive	[should it be that]	?	#							
+			deliberated		negative	subjunctive	[should it not be that]	?	#							
+			pending		affirmative	subjunctive	[shall it be that]	?	#							
+			pending		negative	subjunctive	[shall it not be that]	?	#							
+			wished		affirmative	subjunctive	[if only]	∅	#		optative/necessitative					
+			wished		negative	subjunctive	[heaven forbid]	∅	#							
+			requested		affirmative	subjunctive	[please, can it be that]	?	#		precative					
+			requested		negative	subjunctive	[please, does it have to be that]	?	#							
+			encouraged		affirmative	indicative	[c'mon, let's make it so]	!	#		hortative					
+			encouraged		negative	indicative	[c'mon, don't make it so]	!	#		hortative					
+			implored		affirmative	subjunctive	∅	!	#	should	jussive					
+			implored		negative	subjunctive	∅	!	#	should not						
+			commanded		affirmative	imperative	[I command that]	!	#		imperative					
+			commanded		negative	imperative	[I forbid that]	!	#							
+			prayed		affirmative	subjunctive	[may it be that]	∅	#		optative/benedictive					
+			prayed		negative	subjunctive	[may it not be that]	∅	#							
+			interrogated		affirmative	indicative	∅	?	#							
+			interrogated		negative	indicative	[is it not true that]	?	#							
+#																
+#			E	P												
+#	source	control	evidentiality	confidence												
+#																
+#	1	1	promised	confident												
+#	1	2	useless	probable												
+#	1	3	presumed	possible												
+#	1	3	visual	improbable												
+#	1	3	nonvisual													
+#	1	3	secondhand													
+#	1	3	thirdhand													
+#	1	3	circumstantial													
+#	1	3	means													
+#	1	3	motive													
+#	1	3	proposed													
+#	1	3	supposed													
+#	1	3	conditional													
+#	2	3	interrogated													
+#	2	2	requested													
+#	2	2	encouraged													
+#	2	2	implored													
+#	2	2	commanded													
+#	2	2	prayed													
+#	3	3	wished													
+#	3	3	deferred													

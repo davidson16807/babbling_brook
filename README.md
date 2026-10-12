@@ -1,5 +1,27 @@
 # Babbling Brook
 
+## Dialog prototype
+
+```sh
+python -m pip install -e ".[render]"
+python dialog.py
+```
+
+This standalone mode opens only the sentence-building dialog. Drag words from
+the alphabetical inventory onto the sentence tray; click a word to choose a
+shuffled inflection. Drop adjectives inside noun phrases, then arrange their
+words. Speak (or Enter) checks the sentence and records a structured command.
+The prototype displays feedback but does not move characters or change the world.
+
+English forms come from the languages repo through the supplied
+`ListTreeLanguage` and `InflectionGeneration`. A minimal, unmodified English
+runtime snapshot is included so the extracted project works offline. Use
+`--languages /path/to/languages` to use your own checkout.
+
+See [doc/dialog-prototype.md](doc/dialog-prototype.md) for controls, supported
+sentences, and implementation details. `python dialog.py --demo` opens an example.
+
+
 ## Level editor
 
 With the render dependencies installed, run the new standalone entry point:

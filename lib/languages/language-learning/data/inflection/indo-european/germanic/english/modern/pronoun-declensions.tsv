@@ -1,0 +1,137 @@
+*	*	*	*	nominative	oblique	#	"""is X"" genitive"									
+personal	1	singular		I	me	#	mine									
+personal	2	singular		you	you	#	yours									
+personal	3	singular	masculine	he	him	#	his									
+personal	3	singular	feminine	she	her	#	hers									
+personal	3	singular	neuter	it	it	#	it									
+personal	1	dual		we both	us both	#	both of ours									
+personal	2	dual		you two	both of you	#	both of yours									
+personal	3	dual		they both	them both	#	both of theirs									
+personal	1	trial		we three	us three	#	the three of us									
+personal	2	trial		you three	the few of you	#	the few of you									
+personal	3	trial		the three of them	the three of them	#	the few of them									
+personal	1	paucal		we few	us few	#	the few of us									
+personal	2	paucal		you few	the few of you	#	the few of you									
+personal	3	paucal		the few of them	the few of them	#	the few of them									
+personal	1	plural		we	us	#	ours									
+personal	2	plural		all you	all of you	#	all of yours									
+personal	3	plural		they	them	#	theirs									
+personal	1	superplural		the lot of us	the lot of us	#	the lot of us									
+personal	2	superplural		the lot of you	the lot of you	#	the few of you									
+personal	3	superplural		the lot of them	the lot of them	#	the lot of them									
+reflexive	1	singular			myself	#	my own									
+reflexive	2	singular			yourself	#	your own									
+reflexive	3	singular	masculine		himself	#	his own									
+reflexive	3	singular	feminine		herself	#	her own									
+reflexive	3	singular	neuter		itself	#	its own									
+reflexive	1	dual			both ourselves	#	both of our own									
+reflexive	2	dual			both yourselves	#	both of your own									
+reflexive	3	dual			both themselves	#	both of their own									
+reflexive	1	trial			the three of ourselves	#										
+reflexive	2	trial			the three of yourselves	#										
+reflexive	3	trial			the three of themselves	#										
+reflexive	1	paucal			the few of ourselves	#										
+reflexive	2	paucal			the few of yourselves	#										
+reflexive	3	paucal			the few of themselves	#										
+reflexive	1	plural			ourselves	#	our own									
+reflexive	2	plural			all yourselves	#	all of your own									
+reflexive	3	plural			themselves	#	their own									
+reflexive	1	superplural			the lot of ourselves	#										
+reflexive	2	superplural			the lot of ourselves	#										
+reflexive	3	superplural			the lot of ourselves	#										
+interrogative		singular	gendered	who	whom	#										
+interrogative		singular	masculine	what man	what man	#										
+interrogative		singular	feminine	what woman	what woman	#										
+interrogative		singular	neuter	what	what	#										
+interrogative		dual	gendered	which two people	which two people	#										
+interrogative		dual	masculine	which two men	which two men	#										
+interrogative		dual	feminine	which two women	which two women	#										
+interrogative		dual	neuter	which two	which two	#										
+interrogative		trial	gendered	which three people	which three people	#										
+interrogative		trial	masculine	which three men	which three men	#										
+interrogative		trial	feminine	which three women	which three women	#										
+interrogative		trial	neuter	which three	which three	#										
+interrogative		paucal	gendered	which few people	which few people	#										
+interrogative		paucal	masculine	which few men	which few men	#										
+interrogative		paucal	feminine	which few women	which few women	#										
+interrogative		paucal	neuter	which few	which few	#										
+interrogative		plural	gendered	what people	what people	#										
+interrogative		plural	masculine	what men	what men	#										
+interrogative		plural	feminine	what women	what women	#										
+interrogative		plural	neuter	what all	what all	#										
+interrogative		superplural	gendered	what lot of people	what lot of people	#										
+interrogative		superplural	masculine	what lot of men	what lot of men	#										
+interrogative		superplural	feminine	what lot of women	what lot of women	#										
+interrogative		superplural	neuter	what lot	what lot	#										
+demonstrative	proximal	singular	gendered	this person	this person	#										
+demonstrative	proximal	singular	masculine	this man	this man	#										
+demonstrative	proximal	singular	feminine	this woman	this woman	#										
+demonstrative	proximal	singular	neuter	this	this	#										
+demonstrative	proximal	dual	gendered	these two people	these two people	#										
+demonstrative	proximal	dual	masculine	these two men	these two men	#										
+demonstrative	proximal	dual	feminine	these two women	these two women	#										
+demonstrative	proximal	dual	neuter	these two	these two	#										
+demonstrative	proximal	trial	gendered	these three people	these three people	#										
+demonstrative	proximal	trial	masculine	these three men	these three men	#										
+demonstrative	proximal	trial	feminine	these three women	these three women	#										
+demonstrative	proximal	trial	neuter	these three	these three	#										
+demonstrative	proximal	paucal	gendered	these few people	these few people	#										
+demonstrative	proximal	paucal	masculine	these few men	these few men	#										
+demonstrative	proximal	paucal	feminine	these few women	these few women	#										
+demonstrative	proximal	paucal	neuter	these few	these few	#										
+demonstrative	proximal	plural	gendered	these people	these people	#										
+demonstrative	proximal	plural	masculine	these men	these men	#										
+demonstrative	proximal	plural	feminine	these women	these women	#										
+demonstrative	proximal	plural	neuter	these	these	#										
+demonstrative	proximal	superplural	gendered	this lot of people	this lot of people	#										
+demonstrative	proximal	superplural	masculine	this lot of men	this lot of men	#										
+demonstrative	proximal	superplural	feminine	this lot of women	this lot of women	#										
+demonstrative	proximal	superplural	neuter	this lot	this lot	#										
+demonstrative	medial	singular	gendered	that person [by you]	that person [by you]	#										
+demonstrative	medial	singular	masculine	that man [by you]	that man [by you]	#										
+demonstrative	medial	singular	feminine	that woman [by you]	that woman [by you]	#										
+demonstrative	medial	singular	neuter	that [by you]	that [by you]	#										
+demonstrative	medial	dual	gendered	those two people [by you]	those two people [by you]	#										
+demonstrative	medial	dual	masculine	those two men [by you]	those two men [by you]	#										
+demonstrative	medial	dual	feminine	those two women [by you]	those two women [by you]	#										
+demonstrative	medial	dual	neuter	those two [by you]	those two [by you]	#										
+demonstrative	medial	trial	gendered	those three people [by you]	those three people [by you]	#										
+demonstrative	medial	trial	masculine	those three men [by you]	those three men [by you]	#										
+demonstrative	medial	trial	feminine	those three women [by you]	those three women [by you]	#										
+demonstrative	medial	trial	neuter	those three [by you]	those three [by you]	#										
+demonstrative	medial	paucal	gendered	those few people [by you]	those few people [by you]	#										
+demonstrative	medial	paucal	masculine	those few men [by you]	those few men [by you]	#										
+demonstrative	medial	paucal	feminine	those few women [by you]	those few women [by you]	#										
+demonstrative	medial	paucal	neuter	those few [by you]	those few [by you]	#										
+demonstrative	medial	plural	gendered	those people [by you]	those people [by you]	#										
+demonstrative	medial	plural	masculine	those men [by you]	those men [by you]	#										
+demonstrative	medial	plural	feminine	those women [by you]	those women [by you]	#										
+demonstrative	medial	plural	neuter	those [by you]	those [by you]	#										
+demonstrative	medial	superplural	gendered	that lot of people [by you]	that lot of people [by you]	#										
+demonstrative	medial	superplural	masculine	that lot of men [by you]	that lot of men [by you]	#										
+demonstrative	medial	superplural	feminine	that lot of women [by you]	that lot of women [by you]	#										
+demonstrative	medial	superplural	neuter	that lot [by you]	that lot [by you]	#										
+demonstrative	distal	singular	gendered	that person	that person	#										
+demonstrative	distal	singular	masculine	that man	that man	#										
+demonstrative	distal	singular	feminine	that woman	that woman	#										
+demonstrative	distal	singular	neuter	that	that	#										
+demonstrative	distal	dual	gendered	those two people	those two people	#										
+demonstrative	distal	dual	masculine	those two men	those two men	#										
+demonstrative	distal	dual	feminine	those two women	those two women	#										
+demonstrative	distal	dual	neuter	those two	those two	#										
+demonstrative	distal	trial	gendered	those three people	those three people	#										
+demonstrative	distal	trial	masculine	those three men	those three men	#										
+demonstrative	distal	trial	feminine	those three women	those three women	#										
+demonstrative	distal	trial	neuter	those three	those three	#										
+demonstrative	distal	paucal	gendered	those few people	those few people	#										
+demonstrative	distal	paucal	masculine	those few men	those few men	#										
+demonstrative	distal	paucal	feminine	those few women	those few women	#										
+demonstrative	distal	paucal	neuter	those few	those few	#										
+demonstrative	distal	plural	gendered	those people	those people	#										
+demonstrative	distal	plural	masculine	those men	those men	#										
+demonstrative	distal	plural	feminine	those women	those women	#										
+demonstrative	distal	plural	neuter	those	those	#										
+demonstrative	distal	superplural	gendered	that lot of people	that lot of people	#										
+demonstrative	distal	superplural	masculine	that lot of men	that lot of men	#										
+demonstrative	distal	superplural	feminine	that lot of women	that lot of women	#										
+demonstrative	distal	superplural	neuter	that lot	that lot	#										

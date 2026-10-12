@@ -1,0 +1,105 @@
+*	*	emoji	#		this file represents noun-adjective combinations
+old	man	\nx{🧓\gx\cx}	#	latin, proto-indo-european	
+old	woman	\nx{🧓\gx\cx}	#	latin, proto-indo-european	
+old	animal	\nx{🦁}	#	latin, proto-indo-european	
+young	man	\nx{🧒\gx\cx}	#	proto-indo-european	
+young	woman	\nx{🧒\gx\cx}	#	proto-indo-european	
+young	animal	\nx{🐱}	#	proto-indo-european	
+good	man	\nx{🦸\cx\gx}	#	hittite, russian	
+good	woman	\nx{🦸\cx\gx}	#	hittite, russian	
+good	animal	\nx{🐕‍🦺}	#	hittite, russian	
+good	food	\nx{🥗}	#	gaulish	
+bad	man	\nx{🦹\cx\gx}	#	hittite	
+bad	woman	\nx{🦹\cx\gx}	#	hittite	
+bad	animal	\nx{😾}	#	hittite	
+bad	food	\nx{🍩}	#	gaulish	
+big	man	\large{\nx{🧍\cx\gx}}	#	russian	
+big	woman	\large{\nx{🧍\cx\gx}}	#	russian	
+big	animal	\large{\nx{🦣}}	#	russian	
+big	food	\large{\nx{🍲}}	#	gaulish	
+small	man	\small{\nx{🧍\cx\gx}}	#	hittite	
+small	woman	\small{\nx{🧍\cx\gx}}	#	hittite	
+small	animal	\nx{🐁}	#	hittite	
+small	food	\small{\nx{🍲}}	#	gaulish	
+tall	man	\large{\nx{🧍\cx\gx}}	#	latin, old-english, russian	
+tall	woman	\large{\nx{🧍\cx\gx}}	#	latin, old-english, russian	
+tall	animal	\large{\nx{🦒}}	#	latin, old-english, russian	
+tall	house	\large{\nx{🏠}}	#	russian	
+tall	book	\large{\nx{📕}}	#	russian	
+tall	building	\large{\nx{🏢}}	#	russian	
+short	man	\small{\nx{🧍\cx\gx}}	#		
+short	woman	\small{\nx{🧍\cx\gx}}	#		
+short	animal	\nx{🦔}	#		
+cold	man	\group{<span style='filter:  hue-rotate(150deg)'>\nx{🙍\gx\cx}</span>\rhi{❄️}}	#	hittite	
+cold	woman	\group{<span style='filter:  hue-rotate(150deg)'>\nx{🙍\gx\cx}</span>\rhi{❄️}}	#	hittite	
+cold	animal	\group{\nx{🐧}\rhi{❄️}}	#	hittite	
+hot	man	\group{<span style='filter:  hue-rotate(-45deg)'>\nx{🙍\gx\cx}</span>\rhi{🌡️}}	#		
+hot	woman	\group{<span style='filter:  hue-rotate(-45deg)'>\nx{🙍\gx\cx}</span>\rhi{🌡️}}	#		
+hot	animal	\group{\nx{🐪}\rhi{🌡️}}	#		
+fast	man	\nx{🏃\cx\gx}	#	latin	
+fast	woman	\nx{🏃\cx\gx}	#	latin	
+fast	animal	\nx{🐆}	#	latin	
+slow	man	\nx{🧑‍🦯\cx\gx}	#		
+slow	woman	\nx{🧑‍🦯\cx\gx}	#		
+slow	animal	\nx{🐢}	#		
+swift	man	\nx{🏃\cx\gx}	#	latin	
+swift	woman	\nx{🏃\cx\gx}	#	latin	
+swift	animal	\nx{🐆}	#	latin	
+holy	man	\group{\nx{🧘\cx\gx}\rhi{✨}}	#	latin	
+holy	woman	\group{\nx{🧘\cx\gx}\rhi{✨}}	#	latin	
+holy	animal	\group{\nx{🐂}\rhi{✨}}	#	latin	
+nimble	man	\nx{⛹️\cx\gx}	#	latin	
+nimble	woman	\nx{⛹️\cx\gx}	#	latin	
+nimble	animal	🧶\nx{🐈}	#	latin	
+jovial	man	\nx{🤹\cx\gx}	#	latin	
+jovial	woman	\nx{🤹\cx\gx}	#	latin	
+jovial	animal	\nx{😸}	#	latin	
+mean	man	\nx{🦹\cx\gx}	#	latin, proto-indo-european	
+mean	woman	\nx{🦹\cx\gx}	#	latin, proto-indo-european	
+mean	animal	\nx{😾}	#	latin, proto-indo-european	
+poor	man	\nx{🙍\cx\gx}	#	latin, hittite	
+poor	woman	\nx{🙍\cx\gx}	#	latin, hittite	
+poor	animal	\nx{😿}	#	latin, hittite	
+red	man	<span style='filter: hue-rotate(-45deg)'>\nx{🧑\gx\2}</span>	#	old english	
+red	woman	<span style='filter: hue-rotate(-45deg)'>\nx{🧑\gx\2}</span>	#	old english	
+red	animal	\nx{🐞}	#	old english	
+orange	man	<span style='filter: hue-rotate(-15deg)'>\nx{🧑\gx\2}</span>	#		
+orange	woman	<span style='filter: hue-rotate(-15deg)'>\nx{🧑\gx\2}</span>	#		
+orange	animal	\nx{🦧}	#		
+yellow	man	\nx{🧑\gx}	#		
+yellow	woman	\nx{🧑\gx}	#		
+yellow	animal	\nx{🐤}	#		
+green	man	<span style='filter: hue-rotate(45deg)'>\nx{🧑\gx\2}</span>	#	old english	
+green	woman	<span style='filter: hue-rotate(45deg)'>\nx{🧑\gx\2}</span>	#	old english	
+green	animal	\nx{🦎}	#	old english	
+blue	man	<span style='filter:  hue-rotate(150deg)'>\nx{🧑\gx\2}</span>	#	russian	
+blue	woman	<span style='filter:  hue-rotate(150deg)'>\nx{🧑\gx\2}</span>	#	russian	
+blue	animal	\nx{🐟}	#	russian	
+indigo	man	<span style='filter:  hue-rotate(150deg)'>\nx{🧑\gx\2}</span>	#	russian	
+indigo	woman	<span style='filter:  hue-rotate(150deg)'>\nx{🧑\gx\2}</span>	#	russian	
+indigo	animal	\nx{🐟}	#	russian	
+violet	man	<span style='filter: hue-rotate(235deg)'>\nx{🧑\gx\2}</span>	#		
+violet	woman	<span style='filter: hue-rotate(235deg)'>\nx{🧑\gx\2}</span>	#		
+violet	animal	\nx{👾}	#		
+purple	man	<span style='filter: hue-rotate(235deg)'>\nx{🧑\gx\2}</span>	#		
+purple	woman	<span style='filter: hue-rotate(235deg)'>\nx{🧑\gx\2}</span>	#		
+purple	animal	\nx{👾}	#		
+pink	man	<span style='filter: hue-rotate(-45deg)'>\nx{🧑\gx\2}</span>	#		
+pink	woman	<span style='filter: hue-rotate(-45deg)'>\nx{🧑\gx\2}</span>	#		
+pink	animal	\nx{🦩}	#		
+black	man	\nx{🧑\gx\5}	#	old english	
+black	woman	\nx{🧑\gx\5}	#	old english	
+black	animal	\nx{🐈‍⬛}	#	old english	
+black	food	\nx{🍫}	#		
+fancy	man	\nx{🤵\cx\gx}	#		
+fancy	woman	\nx{🤵\cx\gx}	#		
+fancy	animal	\nx{🐩}	#		
+upset	man	\nx{🙍\cx\gx}	#	proto-indo-european	
+upset	woman	\nx{🙍\cx\gx}	#	proto-indo-european	
+upset	animal	\nx{😾}	#	proto-indo-european	
+strong	man	\nx{🏋️\cx\gx}	#	declension templates	
+strong	woman	\nx{🏋️\cx\gx}	#	declension templates	
+strong	animal	\nx{🐂}	#	declension templates	
+doomed	man	\group{\nx{🧑\gx\cx}\hi{🌋}}	#		
+doomed	woman	\group{\nx{🧑\gx\cx}\hi{🌋}}	#		
+doomed	food	\group{\nx{🍲}\hi{🌋}}	#		

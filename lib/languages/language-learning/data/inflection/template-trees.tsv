@@ -1,0 +1,9 @@
+#	*	*	syntax-tree	#
+#	valency	subjectivity	#see opcodes.tsv for an explanation of the opcodes that appear in the lists below	#
+	intransitive	addressee	np test [np common n hello] [np declined]	#
+	transitive	addressee	np test [np common n hello] [np declined]	#
+	intransitive	subject	clause [test [np declined] [vp v verb]]	#
+	transitive	subject	clause [test [np declined] [vp v verb]] [dummy direct-object np declined]	#
+	transitive	direct-object	clause [dummy [np n] [vp v verb]] [test np declined]	#
+	intransitive	adverbial	clause [dummy [np n] [vp v verb]] [test np [adposition] declined]	#
+	intransitive	adnominal	clause [dummy experiencer subject [np n man] [vp v verb]] [dummy np [test np [adposition] declined] n]	#

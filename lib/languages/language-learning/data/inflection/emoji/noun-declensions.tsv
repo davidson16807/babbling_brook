@@ -1,0 +1,96 @@
+*	*	*	*		#	adposition	this file represents situations involving nouns and adpositions								
+	addressee			👋	#										
+	subject			\actor \argument	#										
+	direct-object			\actor \argument	#										
+	adnominal		possessor	💁\c3\m \argument \actor											
+	adverbial	departed	possessor	\group{←\possession \r{\argument}}	#	of									
+	adverbial	associated	possessor	\group{\possession \r{\argument}}	#	of									
+	adverbial	approached	possessor	\group{\mirror{←\possession} \r{\argument}}	#	of									
+	adverbial	acquired	possessor	\group{\mirror{\possession←} \r{\argument}}	#	of									
+	adverbial	surpassed	possessor	\group{\mirror{\possession←} \r{\argument} \mirror{←}}	#	of									
+	adverbial	leveraged	possessor	\group{\mirror{\possession←} \r{\argument} \mirror{←}}	#	of									
+	adverbial	departed	location	←\actor \argument	#	away from									
+	adverbial	associated	location	\group{\actor \r{\argument}}	#	by									
+	adverbial	approached	location	\mirror{←\actor}\argument	#	to									
+	adverbial	acquired	location	\mirror{\actor←}\argument	#	to									
+	adverbial	surpassed	location	\mirror{←}\argument\mirror{←\actor}	#	to									
+	adverbial	leveraged	location	←\group{\actor \r{\argument↙}}	#	via									
+	adverbial	departed	extent	←\actor \argument	#	starting from									
+	adverbial	associated	extent	\group{\actor \r{\argument}}	#	beside									
+	adverbial	approached	extent	\mirror{←\actor}\argument	#	up to									
+	adverbial	acquired	extent	\mirror{\actor←}\argument	#	up to									
+	adverbial	surpassed	extent	\mirror{←}\argument\mirror{←\actor}	#	up to									
+	adverbial	leveraged	extent	←\group{\actor \r{\argument↙}}	#	along									
+	adverbial	departed	vicinity	←\actor \argument	#	from around									
+	adverbial	associated	vicinity	\group{\actor \r{\argument}}	#	by									
+	adverbial	approached	vicinity	\mirror{←\actor}\argument	#	to around									
+	adverbial	acquired	vicinity	\mirror{\actor←}\argument	#	to around									
+	adverbial	surpassed	vicinity	\mirror{←}\argument\mirror{←\actor}	#	to around									
+	adverbial	leveraged	vicinity	←\group{\actor \r{\argument↙}}	#	via									
+	adverbial	departed	interior	\group{\inllo{←\actor}\large{\argument}}	#	out of									
+	adverbial	associated	interior	\group{\inllo{\actor}\large{\argument}}	#	in									
+	adverbial	approached	interior	\group{\large{\argument}\inrlo{←\actor}}	#	into									
+	adverbial	acquired	interior	\group{\large{\argument}\inrlo{\actor←}}	#	into									
+	adverbial	surpassed	interior	\group{\inllo{←\actor}\large{\argument}\inrlo{←}}	#	into									
+	adverbial	leveraged	interior	\group{\inllo{←}\large{\argument}\inrlo{\actor←}}	#	through									
+	adverbial	departed	surface	\group{\inlhi{↙\actor}\large{\argument}}	#	off of									
+	adverbial	associated	surface	\group{\inlhi{\actor}\large{\argument}}	#	on									
+	adverbial	approached	surface	\group{\large{\argument}\inrhi{↖\actor}}	#	onto									
+	adverbial	acquired	surface	\group{\large{\argument}\inrhi{\actor↖}}	#	onto									
+	adverbial	surpassed	surface	\group{\inlhi{\actor↙}\large{\argument}\inrhi{↖}}	#	onto									
+	adverbial	leveraged	surface	\group{\inlhi{↖\actor}\large{\argument}\inrhi{↖}}	#	over									
+	adverbial	departed	presence	\box{\argument}→\box{\actor}	#	[due to the presence of]									
+	adverbial	associated	presence	\group{\actor\r{\argument}}	#	[in the presence of]									
+	adverbial	approached	presence	\actor←\argument	#	[to draw in]									
+	adverbial	acquired	presence	\actor←\argument	#	[to draw in]									
+	adverbial	surpassed	presence	\actor←\argument	#	[to draw in]									
+	adverbial	leveraged	presence	\group{\actor\r{\argument}}	#	[by using the presence of]									
+	adverbial	departed	aid	\group{\actor\r{\group{\argument\rhi{<span style='filter: brightness(2) sepia(1) contrast(3) hue-rotate(60deg) ;'>➕</span>}}}}	#	[thanks to the aid of]									
+	adverbial	associated	aid	\group{\actor\r{\group{\argument\rhi{<span style='filter: brightness(2) sepia(1) contrast(3) hue-rotate(60deg) ;'>➕</span>}}}}	#	[with the aid of]									
+	adverbial	approached	aid	\group{\lhi{<span style='filter: brightness(2) sepia(1) contrast(3) hue-rotate(60deg) ;'>➕</span>}\actor\r{\group{\argument}}}	#	[to the aid of]									
+	adverbial	acquired	aid	\group{\lhi{<span style='filter: brightness(2) sepia(1) contrast(3) hue-rotate(60deg) ;'>➕</span>}\actor\r{\group{\argument}}}	#	[to the aid of]									
+	adverbial	surpassed	aid	\group{\lhi{<span style='filter: brightness(2) sepia(1) contrast(3) hue-rotate(60deg) ;'>➕</span>}\actor\r{\group{\argument}}}	#	[to the aid of]									
+	adverbial	leveraged	aid	\group{\actor\r{\group{\argument\rhi{<span style='filter: brightness(2) sepia(1) contrast(3) hue-rotate(60deg) ;'>➕</span>}}}}	#	[by using the aid of ]									
+	adverbial	departed	lack	\forbiddenbox{\argument}→\box{\actor}	#	[for want of]									
+	adverbial	associated	lack	\group{\actor\r{\forbiddenbox{\argument}}}	#	[in the absence of]									
+	adverbial	approached	lack	\box{\actor}→\forbiddenbox{\argument}	#	[to avoid]									
+	adverbial	acquired	lack	\box{\actor}→\forbiddenbox{\argument}	#	[to avoid]									
+	adverbial	surpassed	lack	\box{\actor}→\forbiddenbox{\argument}	#	[to avoid]									
+	adverbial	leveraged	lack	\group{\actor\r{\forbiddenbox{\argument}}}	#	[by taking advantage of the lack of]									
+	adverbial	departed	interest	\group{\lhi{❤️}\actor\r{\argument}}	#	[out of the interest of]									
+	adverbial	associated	interest	\group{\lhi{❤️}\actor\r{\argument}}	#	[in the interest of]									
+	adverbial	approached	interest	\group{\lhi{❤️}\actor\r{\argument}}	#	[for the sake of]									
+	adverbial	acquired	interest	\group{\lhi{❤️}\actor\r{\argument}}	#	[for the sake of]									
+	adverbial	surpassed	interest	\group{\lhi{❤️}\actor\r{\argument}}	#	[for the sake of]									
+	adverbial	leveraged	interest	\group{\mirror{\lhi{💬}}\actor\r{\group{\argument\rhi{❤️}}}}	#	[by appealing to the interest of]									
+	adverbial	departed	possession	\group{←\actor\r{\argument}}	#	from [the possession of]									
+	adverbial	associated	possession	\group{\actor\r{\argument}}	#	[in the possession of]									
+	adverbial	approached	possession	\group{\mirror{←\actor}\r{\argument}}	#	to [the possession of]									
+	adverbial	acquired	possession	\group{\mirror{←\actor}\r{\argument}}	#	to [the possession of]									
+	adverbial	surpassed	possession	\group{\mirror{←\actor}\r{\argument}}	#	to [the possession of]									
+	adverbial	leveraged	possession	\group{\actor\r{\argument}}	#	[due to the possession of]									
+	adverbial	departed	time	\group{\large{\argument}\actor→}	#	after									
+	adverbial	associated	time	\group{\large{\inllo{\actor}\argument}}	#	during									
+	adverbial	approached	time	\group{\actor→\large{\argument}}	#	until									
+	adverbial	acquired	time	\group{\actor→\large{\argument}}	#	until									
+	adverbial	surpassed	time	\group{\actor→\large{\argument}}	#	until									
+	adverbial	leveraged	time	\group{\large{\inllo{\actor}\argument}}	#	by [making use of]									
+	adverbial	departed	state-of-being	\box{\argument}→\actor	#	from having been									
+	adverbial	associated	state-of-being	\argument	#	as a									
+	adverbial	approached	state-of-being	\actor→\box{\argument}	#	in order to be									
+	adverbial	acquired	state-of-being	\actor→\box{\argument}	#	in order to be									
+	adverbial	surpassed	state-of-being	\actor→\box{\argument}	#	in order to be									
+	adverbial	leveraged	state-of-being	\box{\argument}→\actor	#	due to having been									
+	adverbial	departed	topic	\argument\mirror{\group{\actor\inrmid{↺}}\r{💬}}	#	away from [the topic of]									
+	adverbial	associated	topic	\argument\group{\mirror{\actor}\r{💬}}	#	on [the topic of]									
+	adverbial	approached	topic	\argument\group{\actor\inrmid{↺}\r{💬}}	#	to [the topic of]									
+	adverbial	acquired	topic	\argument\group{\actor\inrmid{↺}\r{💬}}	#	to [the topic of]									
+	adverbial	surpassed	topic	\argument\group{\actor\inrmid{↺}\r{💬}}	#	to [the topic of]									
+	adverbial	leveraged	topic	\argument\group{💁\c3\m\r{💬}}	#	by using [the topic of]									
+	adverbial	departed	company	\group{←\actor\r{←\argument}}	#	out of the compnay of									
+	adverbial	associated	company	\group{←\actor\r{←\argument}}	#	alongside									
+	adverbial	approached	company	\group{←\actor\r{←\argument}}	#	to the company of									
+	adverbial	acquired	company	\group{←\actor\r{←\argument}}	#	leveraging the company of									
+	adverbial	surpassed	company	\group{←\actor\r{←\argument}}	#	leveraging the company of									
+	adverbial	leveraged	company	\group{←\actor\r{←\argument}}	#	leveraging the company of									
+	adverbial	associated	resemblance	\actor≈\argument	#	like									
