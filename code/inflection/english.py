@@ -1,0 +1,202 @@
+# HUMAN VETTED
+
+"""English for the dialog, written like the languages repo's `inflections_for_*.py` scripts.
+
+Nothing is generated when this module is imported. The dialog calls (TODO: we should really move this to a class category):
+    inflections(lexeme)         the `Rule` tree of each tagpoint of the lexeme's traversal
+    default_inflection(lexeme)  the `Rule` tree a newly placed word starts with
+    inventory()                 lexeme → the `Rule` trees its inventory entry shows, in inventory order
+    lexeme(rule)                the lexeme a `Rule` tree of `inflections` inflects
+    clause()                    an empty 'clause' `Rule`, to which the player adds the statement's phrases
+    text(node)                  what a `Rule` tree, or a word in one, reads as
+
+This module imports library modules: import it through
+`adapter.LanguagesLibrary.import_module`.
+"""
+
+from tools.dictbundles import DictBundles
+from tools.dictstores import DictSpace, UniformDictLookup
+from tools.indexing import DictTupleIndexing
+from tools.inflections import (parse_any, tag_defaults, termaxis_to_terms,
+                               LanguageSpecificTextDemonstration)
+from tools.nodes import Rule
+from tools.treemaps import RuleTreeMap
+from tools.orthography import Orthography
+from tools.parsing import TermParsing
+from languages.english import english_language
+
+from .InflectionGeneration import InflectionGeneration
+from .RuleLanguage import RuleLanguage
+
+english_termaxis_to_terms = {
+    **termaxis_to_terms,
+    **parse_any.token_to_tokens('''
+        noun:      man ball boy dog house
+        verb:      give talk walk
+        adjective: big red
+    '''),
+}
+
+dict_bundles = DictBundles()
+
+english_term_to_termaxis = dict_bundles.bundle_to_map(english_termaxis_to_terms)
+
+parse = TermParsing(english_term_to_termaxis)
+
+constant = {
+    term: DictSpace(term, DictTupleIndexing([termaxis]), {termaxis: term})
+    for (term, termaxis) in english_term_to_termaxis.items()
+}
+
+defaults = DictSpace('defaults', DictTupleIndexing([]), {**tag_defaults})
+
+nouns = parse.terms('ball boy dog house')
+verbs = parse.terms('give talk walk')
+adjectives = parse.terms('big red')
+
+english_demonstration = LanguageSpecificTextDemonstration(
+    Orthography('latin', RuleLanguage(
+        english_language.semantics,
+        english_language.grammar,
+        english_language.tags,
+        english_language.list_tools,
+        english_language.substitutions,
+    )),
+    lambda tags, tree: tree,  # no context, such as the mood templates of flashcards
+    lambda tree: tree,        # a `Rule` tree, not a card
+)
+
+noun_phrase_demonstration = english_demonstration.generator(
+    tree_lookup=UniformDictLookup('test np [adposition] [n noun]'))
+verb_phrase_demonstration = english_demonstration.generator(
+    tree_lookup=UniformDictLookup('test vp [v verb]'))
+adjective_demonstration = english_demonstration.generator(
+    tree_lookup=UniformDictLookup('test adj adjective'))
+
+# Where a noun phrase sits in its clause; its adposition comes from case-usage.tsv.
+placement_traversal = parse.termpath(
+    'placement_traversal',
+    'subjectivity motion role',
+    '''
+    subject        associated  agent
+    direct-object  associated  patient
+    adverbial      acquired    location   # to
+    adverbial      departed    location   # away from
+    adverbial      associated  interior   # in
+    adverbial      associated  company    # with
+    ''')
+
+definiteness_number_space = parse.termspace(
+    'definiteness_number_space',
+    'definiteness number',
+    '''
+    definiteness: adefinite definite indefinite
+    number:       singular plural
+    ''')
+
+pronoun_traversal = parse.termpath(
+    'pronoun_traversal',
+    'noun person number gender',
+    '''
+    man  1  singular  masculine
+    man  2  singular  masculine
+    man  3  singular  masculine
+    man  3  singular  feminine
+    man  3  singular  neuter
+    man  1  plural    masculine
+    man  2  plural    masculine
+    man  3  plural    masculine
+    ''')
+
+conjugation_subject_traversal = parse.termpath(
+    'conjugation_subject_traversal',
+    'person number',
+    '''
+    1  singular
+    2  singular
+    3  singular
+    1  plural
+    2  plural
+    3  plural
+    ''')
+
+tense_progress_space = parse.termspace(
+    'tense_progress_space',
+    'tense progress',
+    '''
+    tense:    present past future
+    progress: atelic unfinished finished
+    ''')
+
+degree_space = parse.termspace(
+    'degree_space',
+    'degree',
+    'degree: positive comparative superlative')
+
+# Agreement needs a case, which semantics derives from where the noun phrase sits.
+adjective_placement_traversal = parse.termpath(
+    'adjective_placement_traversal',
+    'subjectivity motion role',
+    'direct-object associated patient')
+
+# The inflection a newly placed word starts with; the noun's matches the inventory.
+noun_default = parse.termmask('noun_default', 'definiteness number subjectivity', 'adefinite singular subject')
+pronoun_default = parse.termmask('pronoun_default', 'person number subjectivity', '1 singular subject')
+verb_default = parse.termmask('verb_default', 'person number tense progress', '1 singular present atelic')
+adjective_default = parse.termmask('adjective_default', 'degree', 'positive')
+pronoun_listing = parse.termmask('pronoun_listing', 'number subjectivity', 'singular subject')
+
+inflection_generation = InflectionGeneration()
+
+traversals = {
+    'personal': (noun_phrase_demonstration, pronoun_default,
+                 pronoun_traversal * placement_traversal * constant['personal']),
+    **{noun: (noun_phrase_demonstration, noun_default,
+              definiteness_number_space * placement_traversal * constant['common'] * constant[noun])
+       for noun in nouns},
+    **{verb: (verb_phrase_demonstration, verb_default,
+              tense_progress_space * conjugation_subject_traversal * constant[verb])
+       for verb in verbs},
+    **{adjective: (adjective_demonstration, adjective_default,
+                   degree_space * adjective_placement_traversal * constant[adjective])
+       for adjective in adjectives},
+}
+
+def inflections(lexeme, mask=None):
+    """The `Rule` tree of each tagpoint of `lexeme`'s traversal, or of those that `mask` contains.
+
+    They are generated on each call. A mask that contains no tagpoint raises `ValueError`.
+    """
+    demonstration, _, traversal = traversals[lexeme]
+    completed = defaults.override(traversal)
+    if mask is not None:
+        completed = completed & mask
+    return [tree for _, [tree] in inflection_generation.generate([demonstration], completed)]
+
+def default_inflection(lexeme):
+    """The `Rule` tree a newly placed word of `lexeme` starts with, selected by its default mask."""
+    _, default, _ = traversals[lexeme]
+    return inflections(lexeme, default)[0]
+
+def inventory():
+    """lexeme → the `Rule` trees its inventory entry shows: the pronouns first, by their first
+    three singular subjects ("I, you, he"), then every other lexeme by its default inflection."""
+    return {'personal': tuple(inflections('personal', pronoun_listing)[:3]),
+            **{lexeme: (default_inflection(lexeme),) for lexeme in sorted(traversals) if lexeme != 'personal'}}
+
+def lexeme(rule):
+    """The lexeme a `Rule` tree of `inflections` inflects, from the tags it was inflected with."""
+    if rule.tag == 'np':
+        return 'personal' if rule.tags['noun-form'] == 'personal' else rule.tags['noun']
+    return rule.tags['verb'] if rule.tag == 'vp' else rule.tags['adjective']
+
+def clause():
+    """An empty 'clause' `Rule`: a statement before the player adds its phrases."""
+    return Rule('clause', {}, [])
+
+formatting = RuleTreeMap({tag: english_language.formatting.default for tag in RuleLanguage.RULES.split()})
+
+def text(node):
+    """What a `Rule` tree, or a word in one, reads as: the last step of `Language.map`,
+    which formats each `Rule` with the language's `RuleFormatting`. '∅' reads as nothing."""
+    return english_language.formatting.default(formatting, node)
