@@ -27,7 +27,7 @@ def dialog_styles(font_size=22):
         'phrase-dragged': style((22, 33, 37, 150), (*AMBER, 255), 2),
         'cell': style(CHIP, LINE),
         'cell-selected': selected,
-        'talk': style((78, 140, 84, 255), (190, 225, 170, 255), 1, (245, 250, 235)),
+        'speak': style((78, 140, 84, 255), (190, 225, 170, 255), 1, (245, 250, 235)),
         'close': style((168, 74, 70, 255), (235, 170, 160, 255), 1, (250, 240, 235)),
         'track': style((12, 20, 23, 255), DIM_LINE),
         'thumb': style(LINE, NONE, 0),

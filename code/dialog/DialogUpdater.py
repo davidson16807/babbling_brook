@@ -1,6 +1,6 @@
-"""Dialog MVU transitions: press, drag, drop, click, scroll, close, and talk.
+"""Dialog MVU transitions: press, drag, drop, click, scroll, close, clear, and speak.
 
-Talking sets `is_spoken` on the state it returns, and the next update clears it,
+Speaking sets `is_spoken` on the state it returns, and the next update clears it,
 so the caller sees the statement spoken for exactly one update. Nothing dismisses
 the dialog: in a text adventure, a dialog that does not come back soft-locks the
 game. Escape only cancels a drag or collapses the grid, and X clears the statement.
@@ -66,7 +66,7 @@ class DialogUpdater:
             return state
         target = self.layout.layout(state).hit(position)
         if isinstance(target, ButtonTarget):
-            return self._talk(state) if target.name == 'talk' else self._clear(state)
+            return self._speak(state) if target.name == 'speak' else self._clear(state)
         if isinstance(target, CellTarget):
             option = state.grid.options[target.index]
             statement = self.addresses.replace(state.statement, state.grid.address, option)
@@ -123,8 +123,6 @@ class DialogUpdater:
         return replace(state, statement=statement, grid=GridState((*drop.parent, drop.index), options), grid_scroll=None)
 
     def _click(self, state, target):
-        if isinstance(target, InventoryTarget):
-            return replace(state, message='Drag a word onto the bar below to use it.')
         if isinstance(target, WordTarget):
             state = replace(state, message='')
             if state.grid is not None and state.grid.address == self._inflected(state.statement, target.address):
@@ -155,11 +153,11 @@ class DialogUpdater:
         return replace(state, statement=type(statement)(statement.tag, statement.tags, []),
                        grid=None, press=None, message='')
 
-    def _talk(self, state):
+    def _speak(self, state):
         if state.drag is not None:
             return state
         if not state.statement.content:
-            return replace(state, message='Drag words onto the bar below, then talk.')
+            return state
         return replace(state, grid=None, press=None, is_spoken=True)
 
     def update(self, state, message):
@@ -184,7 +182,7 @@ class DialogUpdater:
             if message.key == 'escape':
                 return self._close(state)
             if message.key == 'e':
-                return self._talk(state)
+                return self._speak(state)
             if message.key in ('delete', 'backspace') and state.grid is not None and state.drag is None:
                 # A grid is only ever open on something the player added, so it can be removed.
                 statement = self.addresses.remove(state.statement, state.grid.address)

@@ -3,8 +3,7 @@
 Run from the repository root with:
 
     python demo/dialog/main.py
-    python demo/dialog/main.py --demo --seed 7      # start with "you give the red ball to the boy"
-    python demo/dialog/main.py --headless --demo --frames 2 --screenshot dialog.png
+    python demo/dialog/main.py --headless --frames 2 --screenshot dialog.png
 
 It needs the languages repo at lib/languages (or ../languages, --languages PATH, or
 $BB_LANGUAGES). Pygame window, input, and timing stay here; `DialogState`,
@@ -87,13 +86,13 @@ def main(argv=None):
             pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
             pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE)
             pygame.display.set_mode(viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.RESIZABLE)
-            pygame.display.set_caption(f'{APPLICATION_TITLE} - Dialog (English)')
+            pygame.display.set_caption(APPLICATION_TITLE)
             gl = moderngl.create_context(require=330)
             gl.screen.use()
             queue = PygameMessageQueue()
         fonts = PygameFonts(args.font)
         addresses = RuleAddresses()
-        layout = DialogLayout(english.inventory(), DialogMetrics(fonts, args.font_size),
+        layout = DialogLayout(english.inventory(), english.speak(), DialogMetrics(fonts, args.font_size),
                               addresses=addresses, text=english.text)
         updater = DialogUpdater(layout, addresses=addresses, text=english.text, lexeme=english.lexeme,
                                 inflections=english.inflections, default_inflection=english.default_inflection)
@@ -101,6 +100,7 @@ def main(argv=None):
         view = DialogView(layout, ui, dialog_styles(args.font_size))
         seed = args.seed if args.seed is not None else time.time_ns()
         state = DialogState(english.clause(), viewport=viewport, seed=seed)
+        you = english.text(english.you())  # marks what the player says
         clock = pygame.time.Clock()
         running, frames = True, 0
         while running and (args.frames is None or frames < args.frames):
@@ -114,7 +114,7 @@ def main(argv=None):
                 if state.is_spoken:
                     said = english.text(state.statement)
                     print(said, flush=True)
-                    state = replace(state, message=f'You said: "{said}"')
+                    state = replace(state, message=f'{you}: {said}')
             gl.viewport = (0, 0, *state.viewport)
             gl.clear(*BACKGROUND, 1.0)
             view.draw(state)

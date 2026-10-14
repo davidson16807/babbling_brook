@@ -9,6 +9,8 @@ Nothing is generated when this module is imported. The dialog calls (TODO: we sh
     lexeme(rule)                the lexeme a `DialogRule` tree of `inflections` inflects
     clause()                    an empty 'clause' `DialogRule`, to which the player adds the statement's phrases
     text(node)                  what a `DialogRule` tree, or a word in one, reads as
+    you()                       the 2nd person singular pronoun, which marks what the player says
+    speak()                     the 2nd person singular imperative of "speak", which labels the button that speaks
 
 This module imports library modules: import it through
 `adapter.LanguagesLibrary.import_module`.
@@ -33,7 +35,7 @@ english_termaxis_to_terms = {
     **termaxis_to_terms,
     **parse_any.token_to_tokens('''
         noun:      man ball boy dog house
-        verb:      give talk walk
+        verb:      give talk walk speak
         adjective: big red
     '''),
 }
@@ -145,6 +147,13 @@ noun_default = parse.termmask('noun_default', 'definiteness number subjectivity'
 pronoun_default = parse.termmask('pronoun_default', 'person number subjectivity', '1 singular subject')
 verb_default = parse.termmask('verb_default', 'person number tense progress', '1 singular present atelic')
 adjective_default = parse.termmask('adjective_default', 'degree', 'positive')
+# "speak" labels the button that speaks; it is not in the inventory.
+speak_traversal = parse.termpath(
+    'speak_traversal',
+    'verb mood person number tense',
+    'speak imperative 2 singular present')
+
+you_mask = parse.termmask('you_mask', 'person number subjectivity', '2 singular subject')
 pronoun_listing = parse.termmask('pronoun_listing', 'number subjectivity', 'singular subject')
 
 inflection_generation = InflectionGeneration()
@@ -196,6 +205,15 @@ def lexeme(rule):
     if rule.tag == 'np':
         return 'personal' if tags['noun-form'] == 'personal' else tags['noun']
     return tags['verb'] if rule.tag == 'vp' else tags['adjective']
+
+def you():
+    """The 2nd person singular pronoun, as a subject: it marks what the player says, as in "you: …"."""
+    return inflections('personal', you_mask)[0]
+
+def speak():
+    """The 2nd person singular imperative of "speak", which labels the button that speaks."""
+    completed = defaults.override(speak_traversal)
+    return homonyms.group(tree for _, [tree] in inflection_generation.generate([verb_phrase_demonstration], completed))[0]
 
 def clause():
     """An empty 'clause' `DialogRule`: a statement before the player adds its phrases.

@@ -45,7 +45,7 @@ class CellTarget:
 
 @dataclass(frozen=True)
 class ButtonTarget:
-    name: str        # 'talk' or 'close'
+    name: str        # 'speak' or 'close'
 
 @dataclass(frozen=True)
 class PanelTarget:
@@ -121,16 +121,17 @@ class _Placed:
 
 
 class DialogLayout:
-    TALK = 'talk (E)'
     CLOSE = 'X'
 
-    def __init__(self, inventory, metrics: DialogMetrics, *, addresses, text):
+    def __init__(self, inventory, speak, metrics: DialogMetrics, *, addresses, text):
         """`inventory` is lexeme → the `DialogRule` trees its entry shows, in order; several are a
         sample of the lexeme's inflections, as in "I, you, he…". `text(node)` is what a `DialogRule`
-        tree, or a word in one, reads as."""
+        tree, or a word in one, reads as. `speak` is the `DialogRule` tree that labels the button
+        that speaks: a word of the language learned, since the player is not presumed to read any other."""
         self.metrics = metrics
         self.addresses = addresses      # see RuleAddresses.py
         self.text = text
+        self.speak = f'{text(speak)} (E)'
         self.inventory = {lexeme: ', '.join(text(rule) for rule in rules) + '…' * (len(rules) > 1)
                           for lexeme, rules in inventory.items()}
 
@@ -215,7 +216,7 @@ class DialogLayout:
             anchors[target] = rect
         boxes += self.scrollbar(inventory, first, visible, len(self.inventory))
 
-        # Playmat: placed phrases left to right, then the close and talk buttons.
+        # Playmat: placed phrases left to right, then the close and speak buttons.
         left = inventory[0] + inventory_w + m.margin
         phrase_h = chip_h + 2 * m.phrase_padding
         bar_h = phrase_h + 2 * m.padding
@@ -237,13 +238,13 @@ class DialogLayout:
                     anchors.setdefault(box.target, rect if box.target == WordTarget(address) else box.rect)
             placed.append(_Placed(address, node, rect, children))
             x += rect[2] + m.gap
-        talk_w, button_h = self.chip_size(self.TALK)
+        speak_w, button_h = self.chip_size(self.speak)
         close_w, _ = self.chip_size(self.CLOSE)
         button_y = bar[1] + (bar_h - button_h) // 2
-        talk = (bar[0] + bar[2] - m.padding - talk_w, button_y, talk_w, button_h)
-        close = (talk[0] - m.gap - close_w, button_y, close_w, button_h)
+        speak = (bar[0] + bar[2] - m.padding - speak_w, button_y, speak_w, button_h)
+        close = (speak[0] - m.gap - close_w, button_y, close_w, button_h)
         boxes.append(LaidBox(close, 'close', self.CLOSE, ButtonTarget('close')))
-        boxes.append(LaidBox(talk, 'talk', self.TALK, ButtonTarget('talk')))
+        boxes.append(LaidBox(speak, 'speak', self.speak, ButtonTarget('speak')))
 
         # Inflection grid for the selected phrase or adjective, above the playmat.
         if state.grid is not None:
@@ -301,11 +302,7 @@ class DialogLayout:
             if (drop is None and drag.address is not None and added(source, node)
                     and contains(inventory, pointer)):
                 drop = RemoveDrop()
-                label_w, label_h = self.chip_size('remove')
-                boxes += [LaidBox(inventory, 'remove'),
-                          LaidBox((inventory[0] + (inventory[2] - label_w) // 2,
-                                   inventory[1] + inventory[3] - m.padding - label_h, label_w, label_h),
-                                  'remove', 'remove')]
+                boxes.append(LaidBox(inventory, 'remove'))
             origin = pointer - drag.grab
             if tag(node) != 'np':
                 origin.y -= m.phrase_padding  # `word()` insets single chips by this much
