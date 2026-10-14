@@ -4,7 +4,7 @@
 GUI keeps no positions of its own between frames. Boxes carry style names, not
 colors; `DialogView` maps names to appearances. The statement's phrases are laid
 out left to right on the playmat, and a noun phrase's words within its frame, both
-in the order of their `HomonymRule`'s content.
+in the order of their `DialogRule`'s content.
 """
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ from pyglm import glm
 Rect = tuple[int, int, int, int]  # left, top, width, height in viewport pixels
 
 # The parts of speech the player may add to each part of speech. Everything else in a
-# `HomonymRule` came with its inflection, and moves only within the phrase it came with.
+# `DialogRule` came with its inflection, and moves only within the phrase it came with.
 ACCEPTS = {'clause': {'np', 'vp'}, 'np': {'adj'}}
 
 
 def tag(node):
-    """The part of speech of a `HomonymRule`, or None for a word."""
+    """The part of speech of a `DialogRule`, or None for a word."""
     return getattr(node, 'tag', None)
 
 
@@ -55,8 +55,8 @@ class PanelTarget:
 # Where a drag would land.
 @dataclass(frozen=True)
 class PlaceDrop:
-    parent: tuple    # address of the `HomonymRule` it goes in, in the statement without the dragged node
-    index: int       # in that `HomonymRule`'s content
+    parent: tuple    # address of the `DialogRule` it goes in, in the statement without the dragged node
+    index: int       # in that `DialogRule`'s content
 
 @dataclass(frozen=True)
 class RemoveDrop:
@@ -125,8 +125,8 @@ class DialogLayout:
     CLOSE = 'X'
 
     def __init__(self, inventory, metrics: DialogMetrics, *, addresses, text):
-        """`inventory` is lexeme → the `HomonymRule` trees its entry shows, in order; several are a
-        sample of the lexeme's inflections, as in "I, you, he…". `text(node)` is what a `HomonymRule`
+        """`inventory` is lexeme → the `DialogRule` trees its entry shows, in order; several are a
+        sample of the lexeme's inflections, as in "I, you, he…". `text(node)` is what a `DialogRule`
         tree, or a word in one, reads as."""
         self.metrics = metrics
         self.addresses = addresses      # see RuleAddresses.py

@@ -25,8 +25,8 @@ from .DialogState import Dismissed, Drag, Grid, Press, Spoke
 class DialogUpdater:
     def __init__(self, layout, *, addresses, text, lexeme, inflections, default_inflection,
                  drag_threshold=4.0):
-        """`text(node)` is what a `HomonymRule` tree reads as, `lexeme(rule)` the lexeme a `HomonymRule` tree
-        inflects, `inflections(lexeme)` a `HomonymRule` tree per way the lexeme reads, each listing the
+        """`text(node)` is what a `DialogRule` tree reads as, `lexeme(rule)` the lexeme a `DialogRule` tree
+        inflects, `inflections(lexeme)` a `DialogRule` tree per way the lexeme reads, each listing the
         tags of all its homonyms, and `default_inflection(lexeme)` what a newly placed word reads as."""
         self.layout = layout
         self.addresses = addresses

@@ -1,6 +1,6 @@
 from tools.treemaps import ListTreeMap
 
-class RuleLanguage:
+class DialogLanguage:
     """
     A `Language` is a "tree mapping" class, analogous to those under nodemaps.py of the `languages` repo.
     As a tree mapping class, a `Language` contains a single method `map()`
