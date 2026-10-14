@@ -48,3 +48,4 @@ class DialogState:
     inventory_scroll: int = 0         # rows
     grid_scroll: int | None = None    # rows; None scrolls to the selected inflection
     message: str = ''
+    is_spoken: bool = False           # true only in the state returned by the update that spoke `statement`

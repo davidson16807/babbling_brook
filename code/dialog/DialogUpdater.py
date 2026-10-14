@@ -1,5 +1,10 @@
 """Dialog MVU transitions: press, drag, drop, click, scroll, close, and talk.
 
+Talking sets `is_spoken` on the state it returns, and the next update clears it,
+so the caller sees the statement spoken for exactly one update. Nothing dismisses
+the dialog: in a text adventure, a dialog that does not come back soft-locks the
+game. Escape and X only cancel a drag or collapse the grid.
+
 Every pointer message is resolved against `DialogLayout`, the same layout the
 view draws, so a press always lands on what the player sees under the pointer.
 Inflections are generated here, when a grid opens, and kept in the state, so the
@@ -58,17 +63,17 @@ class DialogUpdater:
 
     def _press(self, state, position):
         if state.drag is not None:
-            return state, None
+            return state
         target = self.layout.layout(state).hit(position)
         if isinstance(target, ButtonTarget):
             return self._talk(state) if target.name == 'talk' else self._close(state)
         if isinstance(target, CellTarget):
             option = state.grid.options[target.index]
             statement = self.addresses.replace(state.statement, state.grid.address, option)
-            return replace(state, statement=statement, message=''), None
+            return replace(state, statement=statement, message='')
         if isinstance(target, (WordTarget, InventoryTarget)):
-            return replace(state, press=PressState(target, position)), None
-        return state, None
+            return replace(state, press=PressState(target, position))
+        return state
 
     def _motion(self, state, message):
         position = glm.vec2(message.position)
@@ -119,7 +124,7 @@ class DialogUpdater:
 
     def _click(self, state, target):
         if isinstance(target, InventoryTarget):
-            return replace(state, message='DragState a word onto the bar below to use it.')
+            return replace(state, message='Drag a word onto the bar below to use it.')
         if isinstance(target, WordTarget):
             state = replace(state, message='')
             if state.grid is not None and state.grid.address == self._inflected(state.statement, target.address):
@@ -138,38 +143,37 @@ class DialogUpdater:
         return replace(state, **{f'{panel}_scroll': first})
 
     def _close(self, state):
-        """Close the innermost open thing: a drag, then the grid, then the dialog."""
+        """Close the innermost open thing: a drag, else the grid. The dialog itself stays open."""
         if state.drag is not None or state.press is not None:
-            return replace(state, drag=None, press=None), None
-        if state.grid is not None:
-            # Collapsing the grid keeps whatever inflection is selected.
-            return replace(state, grid=None), None
-        return state, DialogRule('',[],[])
+            return replace(state, drag=None, press=None)
+        # Collapsing the grid keeps whatever inflection is selected.
+        return replace(state, grid=None)
 
     def _talk(self, state):
         if state.drag is not None:
-            return state, None
+            return state
         if not state.statement.content:
-            return replace(state, message='DragState words onto the bar below, then talk.'), None
-        return replace(state, grid=None, press=None), state.statement
+            return replace(state, message='Drag words onto the bar below, then talk.')
+        return replace(state, grid=None, press=None, is_spoken=True)
 
     def update(self, state, message):
-        """Return (state, outcome), where outcome is None if the dialog is not closed yet, 
-        or a DialogRule (empty or otherwise) if the dialog is closed."""
+        """The state after `message`. Its `is_spoken` is true only if the player spoke its `statement`."""
+        if state.is_spoken:
+            state = replace(state, is_spoken=False)
         if isinstance(message, WindowResizeMessage):
-            return replace(state, viewport=message.size), None
+            return replace(state, viewport=message.size)
         if isinstance(message, FocusLostMessage):
             # The release may never arrive, so drop whatever was held.
-            return replace(state, press=None, drag=None), None
+            return replace(state, press=None, drag=None)
         if (isinstance(message, MouseButtonMessage) and message.button == MouseButton.LEFT
                 and message.position is not None):
             if message.action == ButtonAction.PRESS:
                 return self._press(state, glm.vec2(message.position))
-            return self._release(state, glm.vec2(message.position)), None
+            return self._release(state, glm.vec2(message.position))
         if isinstance(message, MouseMotionMessage):
-            return self._motion(state, message), None
+            return self._motion(state, message)
         if isinstance(message, ScrollMessage) and message.position is not None:
-            return self._scroll(state, message), None
+            return self._scroll(state, message)
         if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS:
             if message.key == 'escape':
                 return self._close(state)
@@ -178,5 +182,5 @@ class DialogUpdater:
             if message.key in ('delete', 'backspace') and state.grid is not None and state.drag is None:
                 # A grid is only ever open on something the player added, so it can be removed.
                 statement = self.addresses.remove(state.statement, state.grid.address)
-                return replace(state, statement=statement, grid=None), None
-        return state, None
+                return replace(state, statement=statement, grid=None)
+        return state

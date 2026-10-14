@@ -74,7 +74,7 @@ def main(argv=None):
     print(f'Building English with {library.directory}…', flush=True)
     english = library.import_module('babbling_brook.inflection.english')
 
-    gl = view = framebuffer = fonts = None
+    gl = ui = framebuffer = fonts = None
     try:
         if args.headless:
             gl = moderngl.create_standalone_context(require=330, backend='egl')
@@ -97,7 +97,8 @@ def main(argv=None):
                               addresses=addresses, text=english.text)
         updater = DialogUpdater(layout, addresses=addresses, text=english.text, lexeme=english.lexeme,
                                 inflections=english.inflections, default_inflection=english.default_inflection)
-        view = DialogView(layout, PygameUiBoxView(UiProgram(gl), fonts), dialog_styles(args.font_size))
+        ui = PygameUiBoxView(UiProgram(gl), fonts)
+        view = DialogView(layout, ui, dialog_styles(args.font_size))
         seed = args.seed if args.seed is not None else time.time_ns()
         state = DialogState(english.clause(), viewport=viewport, seed=seed)
         clock = pygame.time.Clock()
@@ -109,14 +110,11 @@ def main(argv=None):
                 if isinstance(message, QuitMessage):
                     running = False
                     break
-                state, outcome = updater.update(state, message)
-                if outcome is not None:
-                    if outcome.content:
-                        said = english.text(outcome)
-                        print(said, flush=True)
-                        state = replace(state, message=f'You said: "{said}"')
-                    else:
-                        state = replace(state, message='Dismissed. Trainer mode would close the dialog here.')
+                state = updater.update(state, message)
+                if state.is_spoken:
+                    said = english.text(state.statement)
+                    print(said, flush=True)
+                    state = replace(state, message=f'You said: "{said}"')
             gl.viewport = (0, 0, *state.viewport)
             gl.clear(*BACKGROUND, 1.0)
             view.draw(state)
@@ -130,8 +128,8 @@ def main(argv=None):
             if not args.headless:
                 pygame.display.flip()
     finally:
-        if view is not None:
-            view.release()
+        if ui is not None:
+            ui.release()
         if fonts is not None:
             fonts.release()
         if framebuffer is not None:
