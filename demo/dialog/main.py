@@ -48,7 +48,6 @@ from babbling_brook.dialog.DialogUpdater import DialogUpdater
 from babbling_brook.dialog.DialogView import DialogView, dialog_styles
 from babbling_brook.dialog.RuleAddresses import RuleAddresses
 
-from DialogDemo import DialogDemo  # beside this script, which Python puts on sys.path
 
 BACKGROUND = (.29, .38, .64)
 
@@ -61,7 +60,6 @@ def main(argv=None):
     parser.add_argument('--font-size', type=int, default=22)
     parser.add_argument('--seed', type=int, help='Inflection grid order (default: new each run)')
     parser.add_argument('--size', default='1280x720', help='Window size, WIDTHxHEIGHT')
-    parser.add_argument('--demo', action='store_true', help='Start with the mockup statement composed')
     parser.add_argument('--frames', type=int, help='Exit after this many frames (smoke testing)')
     parser.add_argument('--headless', action='store_true', help='Render offscreen with EGL')
     parser.add_argument('--screenshot', type=Path, help='Write the final frame to a PNG')
@@ -102,8 +100,6 @@ def main(argv=None):
         view = DialogView(layout, PygameUiBoxView(UiProgram(gl), fonts), dialog_styles(args.font_size))
         seed = args.seed if args.seed is not None else time.time_ns()
         state = DialogState(english.clause(), viewport=viewport, seed=seed)
-        if args.demo:
-            state = DialogDemo(updater).mockup(state)
         clock = pygame.time.Clock()
         running, frames = True, 0
         while running and (args.frames is None or frames < args.frames):
