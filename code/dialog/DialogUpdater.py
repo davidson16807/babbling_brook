@@ -19,7 +19,7 @@ from ..messages import (ButtonAction, FocusLostMessage, KeyboardAction, Keyboard
                         WindowResizeMessage)
 from .DialogLayout import (ButtonTarget, CellTarget, InventoryTarget, PlaceDrop, RemoveDrop,
                            WordTarget, added)
-from .DialogState import Dismissed, Drag, Grid, Press, Spoke
+from .DialogState import Drag, Grid, Press
 
 
 class DialogUpdater:
@@ -57,7 +57,8 @@ class DialogUpdater:
         return replace(state, grid=Grid(address, self._options(state.seed, lexeme)), grid_scroll=None)
 
     def update(self, state, message):
-        """Return (state, outcome), where outcome is None, `Spoke`, or `Dismissed`."""
+        """Return (state, outcome), where outcome is None if the dialog is not closed yet, 
+        or a DialogRule (empty or otherwise) if the dialog is closed."""
         if isinstance(message, WindowResizeMessage):
             return replace(state, viewport=message.size), None
         if isinstance(message, FocusLostMessage):
@@ -171,11 +172,11 @@ class DialogUpdater:
         if state.grid is not None:
             # Collapsing the grid keeps whatever inflection is selected.
             return replace(state, grid=None), None
-        return state, Dismissed()
+        return state, DialogRule('',[],[])
 
     def _talk(self, state):
         if state.drag is not None:
             return state, None
         if not state.statement.content:
             return replace(state, message='Drag words onto the bar below, then talk.'), None
-        return replace(state, grid=None, press=None), Spoke(state.statement)
+        return replace(state, grid=None, press=None), state.statement

@@ -48,16 +48,3 @@ class DialogState:
     inventory_scroll: int = 0         # rows
     grid_scroll: int | None = None    # rows; None scrolls to the selected inflection
     message: str = ''
-
-# TODO: we probably need to remove the following and 
-
-@dataclass(frozen=True)
-class Spoke:
-    """Outcome: the player pressed talk. `statement` is the 'clause' `DialogRule`, in the player's order.
-    The `tags` of each inflected node list the tags of every homonym it could be (see DialogRules.py)."""
-    statement: object
-
-
-@dataclass(frozen=True)
-class Dismissed:
-    """Outcome: the player closed the dialog with nothing left open inside it."""

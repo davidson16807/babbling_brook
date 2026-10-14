@@ -43,7 +43,7 @@ from babbling_brook.adapter.LanguagesLibrary import LanguagesLibrary
 from babbling_brook.messages import QuitMessage
 from babbling_brook.view.program.UiProgram import UiProgram
 from babbling_brook.dialog.DialogLayout import DialogLayout, DialogMetrics
-from babbling_brook.dialog.DialogState import DialogState, Dismissed, Spoke
+from babbling_brook.dialog.DialogState import DialogState
 from babbling_brook.dialog.DialogUpdater import DialogUpdater
 from babbling_brook.dialog.DialogView import DialogView, dialog_styles
 from babbling_brook.dialog.RuleAddresses import RuleAddresses
@@ -114,12 +114,13 @@ def main(argv=None):
                     running = False
                     break
                 state, outcome = updater.update(state, message)
-                if isinstance(outcome, Spoke):
-                    said = english.text(outcome.statement)
-                    print(said, flush=True)
-                    state = replace(state, message=f'You said: "{said}"')
-                elif isinstance(outcome, Dismissed):
-                    state = replace(state, message='Dismissed. Trainer mode would close the dialog here.')
+                if outcome is not None:
+                    if outcome.content:
+                        said = english.text(outcome)
+                        print(said, flush=True)
+                        state = replace(state, message=f'You said: "{said}"')
+                    else:
+                        state = replace(state, message='Dismissed. Trainer mode would close the dialog here.')
             gl.viewport = (0, 0, *state.viewport)
             gl.clear(*BACKGROUND, 1.0)
             view.draw(state)
