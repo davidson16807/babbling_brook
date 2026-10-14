@@ -3,7 +3,7 @@
 Talking sets `is_spoken` on the state it returns, and the next update clears it,
 so the caller sees the statement spoken for exactly one update. Nothing dismisses
 the dialog: in a text adventure, a dialog that does not come back soft-locks the
-game. Escape and X only cancel a drag or collapse the grid.
+game. Escape only cancels a drag or collapses the grid, and X clears the statement.
 
 Every pointer message is resolved against `DialogLayout`, the same layout the
 view draws, so a press always lands on what the player sees under the pointer.
@@ -66,7 +66,7 @@ class DialogUpdater:
             return state
         target = self.layout.layout(state).hit(position)
         if isinstance(target, ButtonTarget):
-            return self._talk(state) if target.name == 'talk' else self._close(state)
+            return self._talk(state) if target.name == 'talk' else self._clear(state)
         if isinstance(target, CellTarget):
             option = state.grid.options[target.index]
             statement = self.addresses.replace(state.statement, state.grid.address, option)
@@ -148,6 +148,12 @@ class DialogUpdater:
             return replace(state, drag=None, press=None)
         # Collapsing the grid keeps whatever inflection is selected.
         return replace(state, grid=None)
+
+    def _clear(self, state):
+        """Empty the statement, and close the grid, whose address no longer leads anywhere."""
+        statement = state.statement
+        return replace(state, statement=type(statement)(statement.tag, statement.tags, []),
+                       grid=None, press=None, message='')
 
     def _talk(self, state):
         if state.drag is not None:
