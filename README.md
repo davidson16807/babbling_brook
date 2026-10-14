@@ -130,7 +130,7 @@ that is loaded; zones whose maps are missing are skipped with a warning. See
 | F9 | Load that slot |
 | Escape | Quit |
 
-The player starts beside an apple. Press E and Tab to exercise pickup and the
+The player starts beside an apple. PressState E and Tab to exercise pickup and the
 actual `defaultdict[str, int]` inventory. Grass rises to the northwest; the stone
 platform to the east can be reached by jumping. Trees, crates, a stationary
 villager, apples, and sticks demonstrate static objects, characters, collision,

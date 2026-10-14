@@ -16,21 +16,21 @@ Address = tuple[int, ...]  # see RuleAddresses.py
 
 
 @dataclass(frozen=True)
-class Grid:
+class GridState:
     """An open inflection grid: the phrase or adjective it inflects, and the inflections to choose from."""
     address: Address
     options: tuple          # `DialogRule` trees that read differently, in grid order
 
 
 @dataclass(frozen=True)
-class Press:
+class PressState:
     """The left button went down on a chip and has not yet moved far enough to drag."""
     target: object          # a DialogLayout target
     position: glm.vec2
 
 
 @dataclass(frozen=True)
-class Drag:
+class DragState:
     address: Address | None  # where the dragged node was, or None for a new one from the inventory
     node: object             # the `DialogRule` or word dragged
     grab: glm.vec2           # pointer offset from the dragged chip's top-left corner
@@ -42,9 +42,9 @@ class DialogState:
     statement: object                 # the 'clause' `DialogRule`, in the player's order
     viewport: tuple[int, int] = (1280, 720)
     seed: int = 0                     # orders each lexeme's grid, once per dialog session
-    grid: Grid | None = None
-    press: Press | None = None
-    drag: Drag | None = None
+    grid: GridState | None = None
+    press: PressState | None = None
+    drag: DragState | None = None
     inventory_scroll: int = 0         # rows
     grid_scroll: int | None = None    # rows; None scrolls to the selected inflection
     message: str = ''

@@ -147,7 +147,7 @@ class DialogLayout:
         """Lay out `node`, at this address, with its top-left at (x, y): (rect, boxes, children).
 
         A noun phrase is a frame around a chip per word it shows; anything else is one chip.
-        `grid` is the open `Grid`, if any, whose node is drawn selected.
+        `grid` is the open `GridState`, if any, whose node is drawn selected.
         """
         m = self.metrics
         selected = '-selected' if grid is not None and grid.address == address else ''

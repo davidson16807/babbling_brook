@@ -19,7 +19,7 @@ from ..messages import (ButtonAction, FocusLostMessage, KeyboardAction, Keyboard
                         WindowResizeMessage)
 from .DialogLayout import (ButtonTarget, CellTarget, InventoryTarget, PlaceDrop, RemoveDrop,
                            WordTarget, added)
-from .DialogState import Drag, Grid, Press
+from .DialogState import DragState, GridState, PressState
 
 
 class DialogUpdater:
@@ -54,35 +54,7 @@ class DialogUpdater:
         """Open the grid of what the node at this address inflects, scrolled to show its inflection."""
         address = self._inflected(state.statement, address)
         lexeme = self.lexeme(self.addresses.resolve(state.statement, address))
-        return replace(state, grid=Grid(address, self._options(state.seed, lexeme)), grid_scroll=None)
-
-    def update(self, state, message):
-        """Return (state, outcome), where outcome is None if the dialog is not closed yet, 
-        or a DialogRule (empty or otherwise) if the dialog is closed."""
-        if isinstance(message, WindowResizeMessage):
-            return replace(state, viewport=message.size), None
-        if isinstance(message, FocusLostMessage):
-            # The release may never arrive, so drop whatever was held.
-            return replace(state, press=None, drag=None), None
-        if (isinstance(message, MouseButtonMessage) and message.button == MouseButton.LEFT
-                and message.position is not None):
-            if message.action == ButtonAction.PRESS:
-                return self._press(state, glm.vec2(message.position))
-            return self._release(state, glm.vec2(message.position)), None
-        if isinstance(message, MouseMotionMessage):
-            return self._motion(state, message), None
-        if isinstance(message, ScrollMessage) and message.position is not None:
-            return self._scroll(state, message), None
-        if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS:
-            if message.key == 'escape':
-                return self._close(state)
-            if message.key == 'e':
-                return self._talk(state)
-            if message.key in ('delete', 'backspace') and state.grid is not None and state.drag is None:
-                # A grid is only ever open on something the player added, so it can be removed.
-                statement = self.addresses.remove(state.statement, state.grid.address)
-                return replace(state, statement=statement, grid=None), None
-        return state, None
+        return replace(state, grid=GridState(address, self._options(state.seed, lexeme)), grid_scroll=None)
 
     def _press(self, state, position):
         if state.drag is not None:
@@ -95,7 +67,7 @@ class DialogUpdater:
             statement = self.addresses.replace(state.statement, state.grid.address, option)
             return replace(state, statement=statement, message=''), None
         if isinstance(target, (WordTarget, InventoryTarget)):
-            return replace(state, press=Press(target, position)), None
+            return replace(state, press=PressState(target, position)), None
         return state, None
 
     def _motion(self, state, message):
@@ -108,13 +80,13 @@ class DialogUpdater:
         # Dragging closes the grid, so no address held in the state needs to follow the move.
         return replace(state, press=None, grid=None, drag=self._begin(state, position), message='')
 
-    def _begin(self, state, position) -> Drag:
+    def _begin(self, state, position) -> DragState:
         target = state.press.target
         left, top, _, _ = self.layout.layout(state).anchors[target]
         grab = state.press.position - glm.vec2(left, top)
         if isinstance(target, InventoryTarget):
-            return Drag(None, self.default_inflection(target.lexeme), grab, position)
-        return Drag(target.address, self.addresses.resolve(state.statement, target.address), grab, position)
+            return DragState(None, self.default_inflection(target.lexeme), grab, position)
+        return DragState(target.address, self.addresses.resolve(state.statement, target.address), grab, position)
 
     def _release(self, state, position):
         if state.drag is not None:
@@ -143,11 +115,11 @@ class DialogUpdater:
         options = self._options(state.seed, self.lexeme(drag.node))
         node = next(option for option in options if self.text(option) == self.text(drag.node))
         statement = self.addresses.insert(statement, drop.parent, drop.index, node)
-        return replace(state, statement=statement, grid=Grid((*drop.parent, drop.index), options), grid_scroll=None)
+        return replace(state, statement=statement, grid=GridState((*drop.parent, drop.index), options), grid_scroll=None)
 
     def _click(self, state, target):
         if isinstance(target, InventoryTarget):
-            return replace(state, message='Drag a word onto the bar below to use it.')
+            return replace(state, message='DragState a word onto the bar below to use it.')
         if isinstance(target, WordTarget):
             state = replace(state, message='')
             if state.grid is not None and state.grid.address == self._inflected(state.statement, target.address):
@@ -178,5 +150,33 @@ class DialogUpdater:
         if state.drag is not None:
             return state, None
         if not state.statement.content:
-            return replace(state, message='Drag words onto the bar below, then talk.'), None
+            return replace(state, message='DragState words onto the bar below, then talk.'), None
         return replace(state, grid=None, press=None), state.statement
+
+    def update(self, state, message):
+        """Return (state, outcome), where outcome is None if the dialog is not closed yet, 
+        or a DialogRule (empty or otherwise) if the dialog is closed."""
+        if isinstance(message, WindowResizeMessage):
+            return replace(state, viewport=message.size), None
+        if isinstance(message, FocusLostMessage):
+            # The release may never arrive, so drop whatever was held.
+            return replace(state, press=None, drag=None), None
+        if (isinstance(message, MouseButtonMessage) and message.button == MouseButton.LEFT
+                and message.position is not None):
+            if message.action == ButtonAction.PRESS:
+                return self._press(state, glm.vec2(message.position))
+            return self._release(state, glm.vec2(message.position)), None
+        if isinstance(message, MouseMotionMessage):
+            return self._motion(state, message), None
+        if isinstance(message, ScrollMessage) and message.position is not None:
+            return self._scroll(state, message), None
+        if isinstance(message, KeyboardMessage) and message.action == KeyboardAction.PRESS:
+            if message.key == 'escape':
+                return self._close(state)
+            if message.key == 'e':
+                return self._talk(state)
+            if message.key in ('delete', 'backspace') and state.grid is not None and state.drag is None:
+                # A grid is only ever open on something the player added, so it can be removed.
+                statement = self.addresses.remove(state.statement, state.grid.address)
+                return replace(state, statement=statement, grid=None), None
+        return state, None

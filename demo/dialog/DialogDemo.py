@@ -56,7 +56,7 @@ class DialogDemo:
         return self.send(state, [self.press(point), self.release(point)])
 
     def drag(self, state, target, destination):
-        """Drag `target` to `destination`: a point, or a function of the state once the drag
+        """DragState `target` to `destination`: a point, or a function of the state once the drag
         has begun, when the dragged word has left its place and the rest have closed up."""
         start = self.point(state, target)
         state, outcomes = self.send(state, [self.press(start), self.move(start + glm.vec2(8, 0))])
@@ -94,7 +94,7 @@ class DialogDemo:
         raise LookupError(f'{inflection!r} never appeared in the grid')
 
     def place(self, state, lexeme, inflection=None, destination=None):
-        """Drag a lexeme from the inventory and pick an inflection: (state, address of what was placed).
+        """DragState a lexeme from the inventory and pick an inflection: (state, address of what was placed).
 
         Placing opens the new word's grid, so its address is the grid's.
         """
