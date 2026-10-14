@@ -53,7 +53,8 @@ class DialogState:
 
 @dataclass(frozen=True)
 class Spoke:
-    """Outcome: the player pressed talk. `statement` is the 'clause' `Rule`, in the player's order."""
+    """Outcome: the player pressed talk. `statement` is the 'clause' `Rule`, in the player's order.
+    The `tags` of each inflected node list the tags of every homonym it could be (see RuleHomonyms.py)."""
     statement: object
 
 

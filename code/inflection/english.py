@@ -3,7 +3,7 @@
 """English for the dialog, written like the languages repo's `inflections_for_*.py` scripts.
 
 Nothing is generated when this module is imported. The dialog calls (TODO: we should really move this to a class category):
-    inflections(lexeme)         the `Rule` tree of each tagpoint of the lexeme's traversal
+    inflections(lexeme)         a `Rule` tree per way the lexeme's inflections read, listing their tags
     default_inflection(lexeme)  the `Rule` tree a newly placed word starts with
     inventory()                 lexeme → the `Rule` trees its inventory entry shows, in inventory order
     lexeme(rule)                the lexeme a `Rule` tree of `inflections` inflects
@@ -26,6 +26,7 @@ from tools.parsing import TermParsing
 from languages.english import english_language
 
 from .InflectionGeneration import InflectionGeneration
+from .RuleHomonyms import RuleHomonyms
 from .RuleLanguage import RuleLanguage
 
 english_termaxis_to_terms = {
@@ -163,18 +164,23 @@ traversals = {
 }
 
 def inflections(lexeme, mask=None):
-    """The `Rule` tree of each tagpoint of `lexeme`'s traversal, or of those that `mask` contains.
+    """A `Rule` tree per way the tagpoints of `lexeme`'s traversal read, or those that `mask` contains.
 
-    They are generated on each call. A mask that contains no tagpoint raises `ValueError`.
+    Homonyms are one `Rule` tree, whose nodes each list, as `tags`, the tags of that node in
+    every tagpoint that reads so (see RuleHomonyms.py). They are generated on each call. A mask
+    that contains no tagpoint raises `ValueError`.
     """
     demonstration, _, traversal = traversals[lexeme]
     completed = defaults.override(traversal)
     if mask is not None:
         completed = completed & mask
-    return [tree for _, [tree] in inflection_generation.generate([demonstration], completed)]
+    return homonyms.group(tree for _, [tree] in inflection_generation.generate([demonstration], completed))
 
 def default_inflection(lexeme):
-    """The `Rule` tree a newly placed word of `lexeme` starts with, selected by its default mask."""
+    """The `Rule` tree a newly placed word of `lexeme` starts with, selected by its default mask.
+
+    It lists only the default's tags, not those of its homonyms: `inflections(lexeme)` has the
+    `Rule` tree that reads the same and lists them all."""
     _, default, _ = traversals[lexeme]
     return inflections(lexeme, default)[0]
 
@@ -185,10 +191,12 @@ def inventory():
             **{lexeme: (default_inflection(lexeme),) for lexeme in sorted(traversals) if lexeme != 'personal'}}
 
 def lexeme(rule):
-    """The lexeme a `Rule` tree of `inflections` inflects, from the tags it was inflected with."""
+    """The lexeme a `Rule` tree of `inflections` inflects, from the tags it was inflected with.
+    Homonyms of a `Rule` tree are inflections of one lexeme, so the first tags will do."""
+    tags = rule.tags[0]
     if rule.tag == 'np':
-        return 'personal' if rule.tags['noun-form'] == 'personal' else rule.tags['noun']
-    return rule.tags['verb'] if rule.tag == 'vp' else rule.tags['adjective']
+        return 'personal' if tags['noun-form'] == 'personal' else tags['noun']
+    return tags['verb'] if rule.tag == 'vp' else tags['adjective']
 
 def clause():
     """An empty 'clause' `Rule`: a statement before the player adds its phrases."""
@@ -200,3 +208,5 @@ def text(node):
     """What a `Rule` tree, or a word in one, reads as: the last step of `Language.map`,
     which formats each `Rule` with the language's `RuleFormatting`. '∅' reads as nothing."""
     return english_language.formatting.default(formatting, node)
+
+homonyms = RuleHomonyms(text)
