@@ -3,12 +3,12 @@
 """English for the dialog, written like the languages repo's `inflections_for_*.py` scripts.
 
 Nothing is generated when this module is imported. The dialog calls (TODO: we should really move this to a class category):
-    inflections(lexeme)         a `Rule` tree per way the lexeme's inflections read, listing their tags
-    default_inflection(lexeme)  the `Rule` tree a newly placed word starts with
-    inventory()                 lexeme → the `Rule` trees its inventory entry shows, in inventory order
-    lexeme(rule)                the lexeme a `Rule` tree of `inflections` inflects
-    clause()                    an empty 'clause' `Rule`, to which the player adds the statement's phrases
-    text(node)                  what a `Rule` tree, or a word in one, reads as
+    inflections(lexeme)         a `HomonymRule` tree per way the lexeme's inflections read
+    default_inflection(lexeme)  the `HomonymRule` tree a newly placed word starts with
+    inventory()                 lexeme → the `HomonymRule` trees its inventory entry shows, in inventory order
+    lexeme(rule)                the lexeme a `HomonymRule` tree of `inflections` inflects
+    clause()                    an empty 'clause' `HomonymRule`, to which the player adds the statement's phrases
+    text(node)                  what a `HomonymRule` tree, or a word in one, reads as
 
 This module imports library modules: import it through
 `adapter.LanguagesLibrary.import_module`.
@@ -19,14 +19,14 @@ from tools.dictstores import DictSpace, UniformDictLookup
 from tools.indexing import DictTupleIndexing
 from tools.inflections import (parse_any, tag_defaults, termaxis_to_terms,
                                LanguageSpecificTextDemonstration)
-from tools.nodes import Rule
-from tools.treemaps import RuleTreeMap
 from tools.orthography import Orthography
 from tools.parsing import TermParsing
 from languages.english import english_language
 
+from .HomonymRule import HomonymRule
+from .HomonymRuleFormatting import HomonymRuleFormatting
 from .InflectionGeneration import InflectionGeneration
-from .RuleHomonyms import RuleHomonyms
+from .HomonymRules import HomonymRules
 from .RuleLanguage import RuleLanguage
 
 english_termaxis_to_terms = {
@@ -164,11 +164,10 @@ traversals = {
 }
 
 def inflections(lexeme, mask=None):
-    """A `Rule` tree per way the tagpoints of `lexeme`'s traversal read, or those that `mask` contains.
-
-    Homonyms are one `Rule` tree, whose nodes each list, as `tags`, the tags of that node in
-    every tagpoint that reads so (see RuleHomonyms.py). They are generated on each call. A mask
-    that contains no tagpoint raises `ValueError`.
+    """A `HomonymRule` tree per way the tagpoints of `lexeme`'s traversal read, or those that
+    `mask` contains. Each node lists, as `tags`, its tags in every tagpoint that reads so (see
+    HomonymRules.py). They are generated on each call. A mask that contains no tagpoint raises
+    `ValueError`.
     """
     demonstration, _, traversal = traversals[lexeme]
     completed = defaults.override(traversal)
@@ -177,36 +176,36 @@ def inflections(lexeme, mask=None):
     return homonyms.group(tree for _, [tree] in inflection_generation.generate([demonstration], completed))
 
 def default_inflection(lexeme):
-    """The `Rule` tree a newly placed word of `lexeme` starts with, selected by its default mask.
+    """The `HomonymRule` tree a newly placed word of `lexeme` starts with, selected by its default mask.
 
     It lists only the default's tags, not those of its homonyms: `inflections(lexeme)` has the
-    `Rule` tree that reads the same and lists them all."""
+    `HomonymRule` tree that reads the same and lists them all."""
     _, default, _ = traversals[lexeme]
     return inflections(lexeme, default)[0]
 
 def inventory():
-    """lexeme → the `Rule` trees its inventory entry shows: the pronouns first, by their first
+    """lexeme → the `HomonymRule` trees its inventory entry shows: the pronouns first, by their first
     three singular subjects ("I, you, he"), then every other lexeme by its default inflection."""
     return {'personal': tuple(inflections('personal', pronoun_listing)[:3]),
             **{lexeme: (default_inflection(lexeme),) for lexeme in sorted(traversals) if lexeme != 'personal'}}
 
 def lexeme(rule):
-    """The lexeme a `Rule` tree of `inflections` inflects, from the tags it was inflected with.
-    Homonyms of a `Rule` tree are inflections of one lexeme, so the first tags will do."""
+    """The lexeme a `HomonymRule` tree of `inflections` inflects, from the tags it was inflected
+    with. Its homonyms are inflections of one lexeme, so the first homonym's tags will do."""
     tags = rule.tags[0]
     if rule.tag == 'np':
         return 'personal' if tags['noun-form'] == 'personal' else tags['noun']
     return tags['verb'] if rule.tag == 'vp' else tags['adjective']
 
 def clause():
-    """An empty 'clause' `Rule`: a statement before the player adds its phrases."""
-    return Rule('clause', {}, [])
+    """An empty 'clause' `HomonymRule`: a statement before the player adds its phrases.
+    It is not inflected, so it has one reading, with no tags."""
+    return HomonymRule('clause', [{}], [])
 
-formatting = RuleTreeMap({tag: english_language.formatting.default for tag in RuleLanguage.RULES.split()})
+formatting = HomonymRuleFormatting()
 
 def text(node):
-    """What a `Rule` tree, or a word in one, reads as: the last step of `Language.map`,
-    which formats each `Rule` with the language's `RuleFormatting`. '∅' reads as nothing."""
-    return english_language.formatting.default(formatting, node)
+    """What a `HomonymRule` tree, or a word in one, reads as."""
+    return formatting.format(node)
 
-homonyms = RuleHomonyms(text)
+homonyms = HomonymRules(formatting)

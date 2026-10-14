@@ -2,7 +2,7 @@
 
 """
 `DialogState` is the model layer representation for a statement being formed by the player in dialog.
-The statement is represented as a `Rule` tree from the languages repo 
+The statement is represented as a `HomonymRule` tree (see inflection/HomonymRule.py)
 where inflection and word order is chosen by the player
 """
 
@@ -19,7 +19,7 @@ Address = tuple[int, ...]  # see RuleAddresses.py
 class Grid:
     """An open inflection grid: the phrase or adjective it inflects, and the inflections to choose from."""
     address: Address
-    options: tuple          # `Rule` trees that read differently, in grid order
+    options: tuple          # `HomonymRule` trees that read differently, in grid order
 
 
 @dataclass(frozen=True)
@@ -32,14 +32,14 @@ class Press:
 @dataclass(frozen=True)
 class Drag:
     address: Address | None  # where the dragged node was, or None for a new one from the inventory
-    node: object             # the `Rule` or word dragged
+    node: object             # the `HomonymRule` or word dragged
     grab: glm.vec2           # pointer offset from the dragged chip's top-left corner
     pointer: glm.vec2
 
 
 @dataclass(frozen=True)
 class DialogState:
-    statement: object                 # the 'clause' `Rule`, in the player's order
+    statement: object                 # the 'clause' `HomonymRule`, in the player's order
     viewport: tuple[int, int] = (1280, 720)
     seed: int = 0                     # orders each lexeme's grid, once per dialog session
     grid: Grid | None = None
@@ -53,8 +53,8 @@ class DialogState:
 
 @dataclass(frozen=True)
 class Spoke:
-    """Outcome: the player pressed talk. `statement` is the 'clause' `Rule`, in the player's order.
-    The `tags` of each inflected node list the tags of every homonym it could be (see RuleHomonyms.py)."""
+    """Outcome: the player pressed talk. `statement` is the 'clause' `HomonymRule`, in the player's order.
+    The `tags` of each inflected node list the tags of every homonym it could be (see HomonymRules.py)."""
     statement: object
 
 
