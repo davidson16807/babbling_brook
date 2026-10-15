@@ -10,6 +10,7 @@ Nothing is generated when this module is imported. The dialog calls (TODO: we sh
     clause()                    an empty 'clause' `DialogRule`, to which the player adds the statement's phrases
     text(node)                  what a `DialogRule` tree, or a word in one, reads as
     you()                       the 2nd person singular pronoun, which marks what the player says
+    order(reading)              a reading of a statement, in the order English gives it (see DialogRuleMeaning.py)
     speak()                     the 2nd person singular imperative of "speak", which labels the button that speaks
 
 This module imports library modules: import it through
@@ -23,6 +24,8 @@ from tools.inflections import (parse_any, tag_defaults, termaxis_to_terms,
                                LanguageSpecificTextDemonstration)
 from tools.orthography import Orthography
 from tools.parsing import TermParsing
+from tools.nodes import Rule
+from tools.treemaps import RuleTreeMap
 from languages.english import english_language
 
 from .DialogRule import DialogRule
@@ -160,10 +163,17 @@ speak_traversal = parse.termpath(
 you_mask = parse.termmask('you_mask', 'person number subjectivity', '2 singular subject')
 pronoun_listing = parse.termmask('pronoun_listing', 'number subjectivity', 'singular subject')
 
+# How English constrains the meaning of a statement; see DialogRuleMeaning.py.
 # Tagaxes on which a verb agrees with its subject, and a modifier, such as an adjective, with
-# the noun phrase it modifies; see DialogRuleMeaning.py.
+# the noun phrase it modifies:
 subject_agreement = ('person', 'number')
 modifier_agreement = ('number', 'gender', 'case')
+# Places a noun phrase is in without an adposition, as (subjectivity, motion, role):
+core_placements = (('subject', 'associated', 'agent'), ('direct-object', 'associated', 'patient'))
+is_pro_drop = False              # "I give", not "give"
+is_pro_drop_imperative = True    # "give!" as well as "you give!"
+is_pro_drop_mandatory = False
+is_free_word_order = False
 
 inflection_generation = InflectionGeneration()
 
@@ -223,6 +233,21 @@ def speak():
     """The 2nd person singular imperative of "speak", which labels the button that speaks."""
     completed = defaults.override(speak_traversal)
     return homonyms.group(tree for _, [tree] in inflection_generation.generate([verb_phrase_demonstration], completed))[0]
+
+syntax = RuleTreeMap({
+    'clause': english_language.syntax.order_clause,
+    'np':     english_language.syntax.order_noun_phrase,
+})
+
+def order(reading):
+    """A reading of a statement, a `DialogRule` tree whose nodes each list one tagpoint, in the
+    order English gives it: the syntax step of `Language.map`, which orders a clause's phrases
+    and each noun phrase's words."""
+    def to_rule(node):
+        return Rule(node.tag, node.tags[0], [to_rule(child) for child in node.content]) if isinstance(node, DialogRule) else node
+    def to_dialog_rule(node):
+        return DialogRule(node.tag, [node.tags], [to_dialog_rule(child) for child in node.content]) if isinstance(node, Rule) else node
+    return to_dialog_rule(syntax.map(to_rule(reading)))
 
 def clause():
     """An empty 'clause' `DialogRule`: a statement before the player adds its phrases.
