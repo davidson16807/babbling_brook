@@ -136,11 +136,15 @@ degree_space = parse.termspace(
     'degree',
     'degree: positive comparative superlative')
 
-# Agreement needs a case, which semantics derives from where the noun phrase sits.
-adjective_placement_traversal = parse.termpath(
-    'adjective_placement_traversal',
-    'subjectivity motion role',
-    'direct-object associated patient')
+number_space = parse.termspace(
+    'number_space',
+    'number',
+    'number: singular plural')
+
+# An adjective is generated for every place and number of the noun phrase it may modify, so
+# that it can be checked to agree with that noun phrase. In English these read alike, and
+# share a cell of the grid.
+adjective_agreement_traversal = placement_traversal * number_space
 
 # The inflection a newly placed word starts with; the noun's matches the inventory.
 noun_default = parse.termmask('noun_default', 'definiteness number subjectivity', 'adefinite singular subject')
@@ -156,6 +160,11 @@ speak_traversal = parse.termpath(
 you_mask = parse.termmask('you_mask', 'person number subjectivity', '2 singular subject')
 pronoun_listing = parse.termmask('pronoun_listing', 'number subjectivity', 'singular subject')
 
+# Tagaxes on which a verb agrees with its subject, and a modifier, such as an adjective, with
+# the noun phrase it modifies; see DialogRuleMeaning.py.
+subject_agreement = ('person', 'number')
+modifier_agreement = ('number', 'gender', 'case')
+
 inflection_generation = InflectionGeneration()
 
 traversals = {
@@ -168,7 +177,7 @@ traversals = {
               tense_progress_space * conjugation_subject_traversal * constant[verb])
        for verb in verbs},
     **{adjective: (adjective_demonstration, adjective_default,
-                   degree_space * adjective_placement_traversal * constant[adjective])
+                   degree_space * adjective_agreement_traversal * constant[adjective])
        for adjective in adjectives},
 }
 
