@@ -4,9 +4,10 @@
 `DialogRule` is much like `Rule` of the languages repo,
 but it is specially designed for use with the dialog GUI in Babbling Brook.
 In particular, its `tags` attribute represent one-to-many homonymous tagpoints,
-which simplifies the interpretation of user statements for validity and meaning.
+which simplifies the interpretation of user statements for validity and meaning
+while still allowing the user to pick from strings without clarifying
+which meaning is intended by those strings.
 """
-
 
 class DialogRule:
     def __init__(self, tag, tags, content):
