@@ -15,7 +15,7 @@ from .Scatterer import Scatterer
 
 class LightQuery:
 
-    def __init__(self, full_moon_color, sun_color):
+    def __init__(self, moon_albedo, sun_color):
         # all units here are in meter-kelvin-second (MKS) base units
         # a tile is assumed to be 1 meter in width
         self.tiny = 1e-14
@@ -31,7 +31,7 @@ class LightQuery:
         ]
         self.atmosphere_height = 35_000
         self.sun_color = sun_color
-        self.full_moon_color = full_moon_color
+        self.moon_albedo = moon_albedo
         self.exposure_intensity = 10.0  # W/m^2
 
     @staticmethod
@@ -217,8 +217,20 @@ class LightQuery:
             F += self._rgb_fraction_of_distant_light_scattered_by_atmosphere(v0, v1, y2, zv2, l0, VL, r, beta_sum) * beta_gamma
         return F
 
+    '''
+    `rgb_fraction_of_diffusely_reflected_light_of_sphere` returns rgb light fraction 
+    diffusely reflected off the entire visible surface of a sphere according to lambertian reflection.
+    It can be used to estimate light from reflected spheres, e.g. moonlight.
+    It has only one parameter, `light_angle`, which expresses the angle from the viewer to the sphere to the light source.
+    It is only an estimate, but it is very accurate - its absolute error never exceeds 0.0011 for any `light_angle`.
+    '''
     @staticmethod
-    def solar_rgb_intensity():
+    def rgb_fraction_of_diffusely_reflected_light_of_sphere(light_angle):
+        fudge = 0.149 # this value minimizes the maximum error across all possible `light_angle`s
+        return (cos(light_angle + fudge*(1-cos(2*light_angle))/2)+1)/4 
+
+    @staticmethod
+    def rgb_intensity_of_sun():
         """Port of the shader's blackbody RGB irradiance at one AU, in W/m^2."""
         temperature = 5772.0
         planck = 6.62607004e-34
@@ -292,12 +304,12 @@ class LightQuery:
         )
 
     def query(self, cycles, precipitation_factor=1):
-        day = cycles['day'].phase
-        month = cycles['month'].phase % 1
+        day = cycles['day'].phase % 1 # 0: midday, 1: midnight
+        month = cycles['month'].phase % 1 # 0: new moon, 2: full moon
         water_vapor_multiplier = precipitation_factor * 10**(4*sin(pi*(cycles['precipitation'].phase % 1)))
         sun = self.direction(day)
         moon = self.direction(day + month)
-        moon_color = self.full_moon_color * sin(pi*(month))
+        moon_color = self.sun_color * self.moon_albedo * self.rgb_fraction_of_diffusely_reflected_light_of_sphere(2*pi*(month+0.5))
         sun_occlusion = glm.smoothstep(-0.1, 0.0, sun.z)
         moon_occlusion = glm.smoothstep(-0.1, 0.0, moon.z)
         scatterer_multipliers = (1, water_vapor_multiplier)
