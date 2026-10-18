@@ -8,7 +8,6 @@ Anki clozes, parentheses, brackets, and diagnostics are left out.
 """
 import re
 
-from .DialogRule import DialogRule
 
 
 class DialogRuleFormatting:
@@ -17,10 +16,11 @@ class DialogRuleFormatting:
         self.affix_regex = re.compile(r'\s*-\s*')
 
     def format(self, node) -> str:
-        """What a `DialogRule` tree, or a word in one, reads as."""
+        """What a `DialogRule` tree, or a word in one, reads as. A `Rule` tree of the languages
+        repo reads the same way, as `DialogRuleInterpretation` returns them."""
         if node is None:
             return '[MISSING]'
         text = (' '.join(self.format(child) for child in node.content)
-                if isinstance(node, DialogRule) else node)
+                if hasattr(node, 'content') else node)
         text = self.affix_regex.sub(self.affix_delimiter, text.replace('∅', ' '))
         return ' '.join(text.split())

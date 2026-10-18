@@ -35,7 +35,7 @@ english_termaxis_to_terms = {
     **termaxis_to_terms,
     **parse_any.token_to_tokens('''
         noun:      man ball boy dog house
-        verb:      give talk walk speak
+        verb:      give talk walk speak do say
         adjective: big red
     '''),
 }
@@ -153,6 +153,10 @@ speak_traversal = parse.termpath(
     'verb mood person number tense',
     'speak imperative 2 singular present')
 
+# "did you say" asks about a misheard statement; neither verb is in the inventory.
+did_traversal = parse.termpath('did_traversal', 'verb tense person number', 'do past 2 singular')
+say_traversal = parse.termpath('say_traversal', 'verb verb-form', 'say infinitive')
+
 you_mask = parse.termmask('you_mask', 'person number subjectivity', '2 singular subject')
 pronoun_listing = parse.termmask('pronoun_listing', 'number subjectivity', 'singular subject')
 
@@ -214,6 +218,15 @@ def speak():
     """The 2nd person singular imperative of "speak", which labels the button that speaks."""
     completed = defaults.override(speak_traversal)
     return homonyms.group(tree for _, [tree] in inflection_generation.generate([verb_phrase_demonstration], completed))[0]
+
+def did_you_say():
+    """"did you say", which asks about a statement that was misheard: the past of "do", the
+    2nd person singular pronoun, and the infinitive of "say", each inflected as the languages
+    repo inflects them. English's syntax there has no order for polar questions, so it is given here."""
+    did, say = (homonyms.group(tree for _, [tree] in inflection_generation.generate(
+                    [verb_phrase_demonstration], defaults.override(traversal)))[0]
+                for traversal in (did_traversal, say_traversal))
+    return f'{text(did)} {text(you())} {text(say)}'
 
 def clause():
     """An empty 'clause' `DialogRule`: a statement before the player adds its phrases.

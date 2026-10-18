@@ -72,6 +72,7 @@ def main(argv=None):
         parser.exit(1, f'{error}\n')
     print(f'Building English with {library.directory}…', flush=True)
     english = library.import_module('babbling_brook.inflection.english')
+    interpretations = library.import_module('babbling_brook.inflection.DialogRuleInterpretation')
 
     gl = ui = framebuffer = fonts = None
     try:
@@ -101,6 +102,10 @@ def main(argv=None):
         seed = args.seed if args.seed is not None else time.time_ns()
         state = DialogState(english.clause(), viewport=viewport, seed=seed)
         you = english.text(english.you())  # marks what the player says
+        did_you_say = english.did_you_say()
+        interpretation = interpretations.DialogRuleInterpretation(
+            interpretations.RuleInterpretation(english.english_language.syntax, ['person', 'number'], [],
+                                               pro_drop_subject=0, pro_drop_imperative=1))
         clock = pygame.time.Clock()
         running, frames = True, 0
         while running and (args.frames is None or frames < args.frames):
@@ -114,7 +119,14 @@ def main(argv=None):
                 if state.is_spoken:
                     said = english.text(state.statement)
                     print(said, flush=True)
-                    state = replace(state, message=f'{you}: {said}')
+                    # A statement with one meaning is understood; one with several is not. One with
+                    # none may have a single error, so ask whether it was meant without that error.
+                    meanings = interpretation.interpret(state.statement)
+                    corrections = {english.text(meaning) for meaning in interpretation.interpret(state.statement, strict=False)}
+                    reply = (f'{you}: {said}' if len(meanings) == 1
+                             else f"{did_you_say} '{corrections.pop()}'?" if not meanings and len(corrections) == 1
+                             else 'what?')  # not translated: the demo has no one to reply but itself
+                    state = replace(state, message=reply)
             gl.viewport = (0, 0, *state.viewport)
             gl.clear(*BACKGROUND, 1.0)
             view.draw(state)
