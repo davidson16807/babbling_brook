@@ -1,4 +1,12 @@
 
+* dialog functionality:
+	move to cardinal waypoint
+	move to landmark
+	tutorial: character is toddler, wasd to move to your mom/dad
+	tutorial: q: "who do you love?" a: "I love mother/father" q: "who does mother/father love?" a: "who does dog love?" a: "dog loves us" a: "who do we love?" a: "we love dog"
+	tutorial: "how many rocks/dogs/balls are there?" "3" [later in development:] "there are 3 rocks"
+	tutorial: mom asks you to catch 3 fish: "I need 3 fish. Walk to the water." "I need 3 eggs. Give me 2 eggs"
+
 * parameter in TileProgram that indicates whether sides and tops on the border of a map should be discarded by flipping their normal
 
 * "Liquid" archetype component:
